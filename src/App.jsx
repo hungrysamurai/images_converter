@@ -1,11 +1,17 @@
 import GlobalStyles from "./GlobalStyles";
-import ImagesUploadArea from "./components/ImagesUploadArea";
+
+import UploadContainer from "./components/UploadContainer";
+import ActionsPanel from "./components/ActionsPanel";
+import DownloadContainer from "./components/DownloadContainer";
 
 function App() {
   return (
     <>
       <GlobalStyles />
-      <ImagesUploadArea />
+
+      <UploadContainer />
+      <ActionsPanel />
+      <DownloadContainer />
     </>
   );
 }

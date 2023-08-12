@@ -51,6 +51,10 @@ const GlobalStyles = createGlobalStyle`
     --format-color-gif:#2EC4B6;
     --format-color-pdf:#FF9F1C;
 
+    --container-inner-shadow: box-shadow: 0px 24px 48px 0px rgba(0, 0, 0, 0.25) inset;
+    --image-element-shadow: box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25); 
+    --icon-inner-shadow: box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25) inset;
+
     height: 100vh;
     width: 100vw;
     background-color: var(--bg-container-gray);

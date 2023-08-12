@@ -6,7 +6,7 @@ import { addSourceFile } from "../store/slices/sourceFilesSlice/sourceFilesSlice
 
 import { checkFileType } from "../utils/checkFileType";
 
-const ImagesUploadArea = () => {
+const UploadContainer = () => {
   // const rawImages = useSelector((state) => state.rawImages.rawFiles);
   const dispatch = useDispatch();
 
@@ -54,41 +54,45 @@ const ImagesUploadArea = () => {
   };
 
   return (
-    <StyledImagesUploadArea
-      id="form-file-upload"
-      onDragEnter={handleDrag}
-      onSubmit={(e) => e.preventDefault()}
-    >
-      <input
-        type="file"
-        id="input-file-upload"
-        multiple={true}
-        onChange={handleChange}
-        hidden
-      />
-
-      <label
-        id="file-upload-label"
-        htmlFor="input-file-upload"
-        className={dragActive ? "drag-active" : ""}
+    <StyledUploadContainer>
+      <StyledImagesUploadArea
+        id="form-file-upload"
+        onDragEnter={handleDrag}
+        onSubmit={(e) => e.preventDefault()}
       >
-        <div>
-          <h3>Drop your images here or click</h3>
-        </div>
-      </label>
+        <input
+          type="file"
+          id="input-file-upload"
+          multiple={true}
+          onChange={handleChange}
+          hidden
+        />
 
-      {dragActive && (
-        <div
-          className="drag-placeholder"
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        ></div>
-      )}
-    </StyledImagesUploadArea>
+        <label
+          id="file-upload-label"
+          htmlFor="input-file-upload"
+          className={dragActive ? "drag-active" : ""}
+        >
+          <div>
+            <h3>Drop your images here or click</h3>
+          </div>
+        </label>
+
+        {dragActive && (
+          <div
+            className="drag-placeholder"
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+          ></div>
+        )}
+      </StyledImagesUploadArea>
+    </StyledUploadContainer>
   );
 };
+
+const StyledUploadContainer = styled.div``;
 
 const StyledImagesUploadArea = styled.form`
   height: 50%;
@@ -140,4 +144,4 @@ const StyledImagesUploadArea = styled.form`
   }
 `;
 
-export default ImagesUploadArea;
+export default UploadContainer;
