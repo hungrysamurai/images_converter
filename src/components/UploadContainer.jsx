@@ -1,14 +1,23 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addSourceFile } from "../store/slices/sourceFilesSlice/sourceFilesSlice";
+import { getAllSourceFiles } from "../store/slices/sourceFilesSlice/sourceFilesSlice";
 
 import { checkFileType } from "../utils/checkFileType";
+import { getFileFormat } from "../utils/getFileFormat";
+import { getFileSize } from "../utils/getFileSize";
+
+import FileElement from "./FileElement";
+import { trimFileName } from "../utils/trimFileName";
 
 const UploadContainer = () => {
-  // const rawImages = useSelector((state) => state.rawImages.rawFiles);
+  const sourceFiles = useSelector(getAllSourceFiles);
   const dispatch = useDispatch();
+
+  const inputLabelRef = useRef(null);
+  const sourceFilesListBackground = useRef(null);
 
   // drag state
   const [dragActive, setDragActive] = useState(false);
@@ -37,7 +46,7 @@ const UploadContainer = () => {
   };
 
   // triggers when file is selected with click
-  const handleChange = function (e) {
+  const handleClick = function (e) {
     e.preventDefault();
     if (e.target.files.length !== 0) {
       handleFiles([...e.target.files]);
@@ -53,94 +62,132 @@ const UploadContainer = () => {
     // revokeObjectUrl
   };
 
+  const handleContainerClick = (e) => {
+    e.stopPropagation();
+    if (sourceFilesListBackground.current === e.target) {
+      inputLabelRef.current.click();
+    }
+  };
+
   return (
-    <StyledUploadContainer>
-      <StyledImagesUploadArea
-        id="form-file-upload"
-        onDragEnter={handleDrag}
-        onSubmit={(e) => e.preventDefault()}
-      >
+    <StyledUploadContainer
+      onDragEnter={handleDrag}
+      onClick={handleContainerClick}
+    >
+      {sourceFiles.length !== 0 && (
+        <StyledSourceFilesList ref={sourceFilesListBackground}>
+          {sourceFiles.map(({ id, type, name, size }) => (
+            <FileElement
+              key={id}
+              format={getFileFormat(type)}
+              name={trimFileName(name)}
+              size={getFileSize(size)}
+            />
+          ))}
+        </StyledSourceFilesList>
+      )}
+
+      <StyledImagesUploadForm id="form-file-upload">
         <input
           type="file"
           id="input-file-upload"
           multiple={true}
-          onChange={handleChange}
+          onChange={handleClick}
           hidden
         />
 
         <label
-          id="file-upload-label"
           htmlFor="input-file-upload"
-          className={dragActive ? "drag-active" : ""}
+          className={`file-upload-label ${
+            sourceFiles.length !== 0 ? "files-added" : ""
+          }`}
+          ref={inputLabelRef}
         >
           <div>
-            <h3>Drop your images here or click</h3>
+            <h3>
+              Drop your images here or <span>click</span>
+            </h3>
           </div>
         </label>
+      </StyledImagesUploadForm>
 
-        {dragActive && (
-          <div
-            className="drag-placeholder"
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-          ></div>
-        )}
-      </StyledImagesUploadArea>
+      {dragActive && (
+        <div
+          className="drag-placeholder"
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+        ></div>
+      )}
     </StyledUploadContainer>
   );
 };
 
-const StyledUploadContainer = styled.div``;
-
-const StyledImagesUploadArea = styled.form`
-  height: 50%;
-  width: 100%;
-  text-align: center;
+const StyledUploadContainer = styled.div`
   position: relative;
-  padding: 0.5rem;
-  overflow: hidden;
+  margin-top: 4vh;
+  width: 95%;
+  height: 42vh;
+  background-color: var(--bg-light-gray);
+  border-radius: 2.5rem 2.5rem 0rem 0rem;
+  box-shadow: var(--container-inner-shadow);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 
-  #file-upload-label {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-width: 2px;
-    border-radius: 1rem;
-    border-style: dashed;
-    border-color: #cbd5e1;
-    background-color: #f8fafc;
+  scrollbar-width: none;
 
-    .upload-button {
-      cursor: pointer;
-      padding: 0.25rem;
-      font-size: 1rem;
-      border: none;
-      background-color: transparent;
-      font-family: inherit;
-
-      &:hover {
-        text-decoration-line: underline;
-      }
-    }
-
-    &.drag-active {
-      background-color: #ffffff;
-    }
+  &::-webkit-scrollbar {
+    display: none;
   }
 
   .drag-placeholder {
     position: absolute;
-    width: calc(100% - 1rem);
-    height: calc(100% - 1rem);
-    border-radius: 1rem;
-    background-color: var(--color-primary);
-    top: 0.5rem;
-    right: 0.5rem;
-    bottom: 0.5rem;
-    left: 0.5rem;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: var(--text-dark-gray);
+    z-index: 2;
+  }
+`;
+
+const StyledSourceFilesList = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 6rem);
+  grid-auto-rows: 6rem;
+  align-items: start;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 1;
+`;
+
+const StyledImagesUploadForm = styled.form`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+
+  .file-upload-label {
+    &.files-added {
+      visibility: hidden;
+    }
+
+    span {
+      text-decoration: underline;
+    }
   }
 `;
 

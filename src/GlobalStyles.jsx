@@ -10,22 +10,26 @@ const GlobalStyles = createGlobalStyle`
 
   body {
     height: 100vh;
+    width:100vw;
     font-family: 'Kanit', sans-serif;
   }
 
   h1{
     font-size: 3rem;
     font-weight: 300;
+    color: var(--text-medium-gray);
   }
 
   h2 {
     font-size: 2rem;
     font-weight: 500;
+    color: var(--text-dark-gray);
   }
 
   h3{
     font-size: 1.5rem;
     font-weight: 500;
+    color: var(--text-dark-gray);
   }
 
   p {
@@ -33,8 +37,6 @@ const GlobalStyles = createGlobalStyle`
   }
 
   #root {
-    --color-primary: #94d2bd;
-
     --bg-container-gray: #E3E3E3;
     --bg-light-gray: #F8F8F8;
     --icon-gray: #9F9F9F;
@@ -51,13 +53,8 @@ const GlobalStyles = createGlobalStyle`
     --format-color-gif:#2EC4B6;
     --format-color-pdf:#FF9F1C;
 
-    --container-inner-shadow: box-shadow: 0px 24px 48px 0px rgba(0, 0, 0, 0.25) inset;
-    --image-element-shadow: box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25); 
-    --icon-inner-shadow: box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25) inset;
-
-    height: 100vh;
-    width: 100vw;
-    background-color: var(--bg-container-gray);
+    --container-inner-shadow: 0px 24px 48px 0px rgba(0, 0, 0, 0.25) inset;
+    --image-element-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25); 
   }
 `;
 

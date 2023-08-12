@@ -27,5 +27,7 @@ export const sourceFilesSlice = createSlice({
   },
 });
 
+export const getAllSourceFiles = (state) => state.sourceFiles;
+
 export const { addSourceFile } = sourceFilesSlice.actions;
 export default sourceFilesSlice.reducer;
