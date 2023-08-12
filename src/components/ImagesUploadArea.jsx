@@ -1,32 +1,32 @@
-import styled from 'styled-components';
-import { useState } from 'react';
+import styled from "styled-components";
+import { useState } from "react";
 
-import { useDispatch } from 'react-redux';
-import { addRawImage } from '../store/slices/rawImages/rawImagesSlice';
+import { useDispatch } from "react-redux";
+import { addSourceFile } from "../store/slices/sourceFilesSlice/sourceFilesSlice";
 
-import { nanoid } from 'nanoid';
+import { checkFileType } from "../utils/checkFileType";
 
 const ImagesUploadArea = () => {
- // const rawImages = useSelector((state) => state.rawImages.rawFiles);
- const dispatch = useDispatch();
+  // const rawImages = useSelector((state) => state.rawImages.rawFiles);
+  const dispatch = useDispatch();
 
   // drag state
   const [dragActive, setDragActive] = useState(false);
 
   // handle drag events
-  const handleDrag = function(e) {
+  const handleDrag = function (e) {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
     } else if (e.type === "dragleave") {
       setDragActive(false);
     }
   };
-  
+
   // triggers when file is dropped
-  const handleDrop = function(e) {
+  const handleDrop = function (e) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -35,9 +35,9 @@ const ImagesUploadArea = () => {
       handleFiles([...e.dataTransfer.files]);
     }
   };
-  
+
   // triggers when file is selected with click
-  const handleChange = function(e) {
+  const handleChange = function (e) {
     e.preventDefault();
     if (e.target.files.length !== 0) {
       handleFiles([...e.target.files]);
@@ -45,65 +45,57 @@ const ImagesUploadArea = () => {
   };
 
   const handleFiles = (files) => {
-
-   for (let i = 0; i < files.length; i++) {
-      const {name, type, size} = files[i];
-       dispatch(
-        addRawImage({
-         URL: window.URL.createObjectURL(files[i]),
-         name,
-         type, 
-         size,
-         id: nanoid()
-        })
-        )
+    for (let i = 0; i < files.length; i++) {
+      if (checkFileType(files[i].type)) {
+        dispatch(addSourceFile(files[i]));
+      }
     }
     // revokeObjectUrl
-  }
-  
+  };
 
- return (
-  <StyledImagesUploadArea 
-  id="form-file-upload"
-  onDragEnter={handleDrag} 
-  onSubmit={(e) => e.preventDefault()}
-  >
-      <input 
-      type="file" 
-      id="input-file-upload" 
-      multiple={true} 
-      onChange={handleChange} 
-      hidden/>
+  return (
+    <StyledImagesUploadArea
+      id="form-file-upload"
+      onDragEnter={handleDrag}
+      onSubmit={(e) => e.preventDefault()}
+    >
+      <input
+        type="file"
+        id="input-file-upload"
+        multiple={true}
+        onChange={handleChange}
+        hidden
+      />
 
-      <label 
-      id="file-upload-label" 
-      htmlFor="input-file-upload" 
-      className={dragActive ? "drag-active" : "" }>
+      <label
+        id="file-upload-label"
+        htmlFor="input-file-upload"
+        className={dragActive ? "drag-active" : ""}
+      >
         <div>
           <h3>Drop your images here or click</h3>
-        </div> 
+        </div>
       </label>
 
-      { dragActive && 
-        <div 
-        className='drag-placeholder' 
-        onDragEnter={handleDrag} 
-        onDragLeave={handleDrag} 
-        onDragOver={handleDrag} 
-        onDrop={handleDrop}>
-        </div> 
-        }
-
-  </StyledImagesUploadArea>
- )
-}
+      {dragActive && (
+        <div
+          className="drag-placeholder"
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+        ></div>
+      )}
+    </StyledImagesUploadArea>
+  );
+};
 
 const StyledImagesUploadArea = styled.form`
   height: 50%;
   width: 100%;
   text-align: center;
   position: relative;
-  padding:0.5rem;
+  padding: 0.5rem;
   overflow: hidden;
 
   #file-upload-label {
@@ -118,12 +110,12 @@ const StyledImagesUploadArea = styled.form`
     background-color: #f8fafc;
 
     .upload-button {
-     cursor: pointer;
-     padding: 0.25rem;
-     font-size: 1rem;
-     border: none;
-     background-color: transparent;
-     font-family: inherit;
+      cursor: pointer;
+      padding: 0.25rem;
+      font-size: 1rem;
+      border: none;
+      background-color: transparent;
+      font-family: inherit;
 
       &:hover {
         text-decoration-line: underline;
@@ -138,7 +130,7 @@ const StyledImagesUploadArea = styled.form`
   .drag-placeholder {
     position: absolute;
     width: calc(100% - 1rem);
-    height:  calc(100% - 1rem);
+    height: calc(100% - 1rem);
     border-radius: 1rem;
     background-color: var(--color-primary);
     top: 0.5rem;
