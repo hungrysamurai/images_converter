@@ -1,15 +1,20 @@
 import styled from "styled-components";
 
+import { useDispatch } from "react-redux";
+
 import IconPlay from "./icons/IconPlay";
 import IconSettings from "./icons/IconSettings";
+import { convertFiles } from "../store/slices/processFilesSlice/processFilesSlice";
 
 const ActionsPanel = () => {
+  const dispatch = useDispatch();
+
   return (
     <StyledActionPanel>
       <StyledActionButton>
         <IconSettings />
       </StyledActionButton>
-      <StyledActionButton>
+      <StyledActionButton onClick={() => dispatch(convertFiles())}>
         <IconPlay />
       </StyledActionButton>
     </StyledActionPanel>

@@ -28,7 +28,7 @@ const DownloadContainer = () => {
 
 const StyledDownloadContainer = styled.div`
   width: 95%;
-  height: 42vh;
+  height: 40vh;
   background-color: var(--bg-light-gray);
   border-radius: 0rem 0rem 2.5rem 2.5rem;
   box-shadow: var(--container-inner-shadow);

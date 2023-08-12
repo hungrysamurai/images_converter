@@ -128,7 +128,7 @@ const StyledUploadContainer = styled.div`
   position: relative;
   margin-top: 4vh;
   width: 95%;
-  height: 42vh;
+  height: 40vh;
   background-color: var(--bg-light-gray);
   border-radius: 2.5rem 2.5rem 0rem 0rem;
   box-shadow: var(--container-inner-shadow);
