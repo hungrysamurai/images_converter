@@ -1,9 +1,27 @@
 import styled from "styled-components";
 
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getActiveTargetFormat,
+  getAllTargetFormats,
+  switchTargetFormat,
+} from "../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+
 const DownloadContainer = () => {
+  const activeTargetFormat = useSelector(getActiveTargetFormat);
+  const allTargetFormats = useSelector(getAllTargetFormats);
+  const dispatch = useDispatch();
+
+  const { name: currentFromatName } = allTargetFormats[activeTargetFormat];
+
   return (
     <StyledDownloadContainer>
-      <h2 className="placeholder">JPEG</h2>
+      <span
+        className="placeholder"
+        onClick={() => dispatch(switchTargetFormat())}
+      >
+        {currentFromatName.toUpperCase()}
+      </span>
     </StyledDownloadContainer>
   );
 };
@@ -22,7 +40,12 @@ const StyledDownloadContainer = styled.div`
 
   .placeholder {
     font-size: 6rem;
+    font-weight: 500;
     color: var(--text-medium-gray);
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+    cursor: pointer;
   }
 
   @media (max-width: 500px) {
