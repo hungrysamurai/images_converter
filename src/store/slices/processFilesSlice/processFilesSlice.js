@@ -9,7 +9,7 @@ const initialState = {
 
 export const convertFiles = createAsyncThunk(
   "processFiles/convertFiles",
-  async (_, { getState }) => {
+  async (_, { getState, dispatch }) => {
     const state = getState();
     const {
       sourceFiles,
@@ -18,11 +18,9 @@ export const convertFiles = createAsyncThunk(
 
     const targetFormat = targetFormats[activeTargetFormat].name;
 
-    let result;
-
     for (const { URL: blobURL } of sourceFiles) {
       const processed = await testImageProcess(blobURL, targetFormat);
-      console.log(URL.createObjectURL(processed));
+      dispatch(addConvertedFile(URL.createObjectURL(processed)));
 
       //   const blob = await fetch(URL).then((res) => res.blob());
 
@@ -42,11 +40,17 @@ export const convertFiles = createAsyncThunk(
 const processFilesSlice = createSlice({
   name: "processFiles",
   initialState,
-  reducers: {},
+  reducers: {
+    addConvertedFile: (state, action) => {
+      state.files.push(action.payload);
+    },
+  },
   //   extraReducers(builder) {
   //     builder.addCase();
   //   },
 });
+
+export const { addConvertedFile } = processFilesSlice.actions;
 
 export const getAllProcessedFiles = (state) => state.processFiles.files;
 export const isProcessingLoading = (state) => state.processFiles.loading;
