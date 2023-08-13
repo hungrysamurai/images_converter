@@ -18,7 +18,7 @@ export const convertFiles = createAsyncThunk(
 
     const targetFormat = targetFormats[activeTargetFormat].name;
 
-    for (const { URL: blobURL } of sourceFiles) {
+    for (const { blobURL } of sourceFiles) {
       const processed = await testImageProcess(blobURL, targetFormat);
       dispatch(addConvertedFile(URL.createObjectURL(processed)));
 

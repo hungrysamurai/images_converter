@@ -2,8 +2,12 @@ import styled from "styled-components";
 import { useState, useRef } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { addSourceFile } from "../store/slices/sourceFilesSlice/sourceFilesSlice";
-import { getAllSourceFiles } from "../store/slices/sourceFilesSlice/sourceFilesSlice";
+
+import {
+  getAllSourceFiles,
+  addSourceFile,
+  readSourceFilesData,
+} from "../store/slices/sourceFilesSlice/sourceFilesSlice";
 
 import { checkFileType } from "../utils/checkFileType";
 import { getFileFormat } from "../utils/getFileFormat";
@@ -56,7 +60,7 @@ const UploadContainer = () => {
   const handleFiles = (files) => {
     for (let i = 0; i < files.length; i++) {
       if (checkFileType(files[i].type)) {
-        dispatch(addSourceFile(files[i]));
+        dispatch(readSourceFilesData(files[i]));
       }
     }
     // revokeObjectUrl
