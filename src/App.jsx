@@ -5,6 +5,7 @@ import GlobalStyles from "./GlobalStyles";
 import UploadContainer from "./components/UploadContainer";
 import ActionsPanel from "./components/ActionsPanel";
 import DownloadContainer from "./components/DownloadContainer";
+import DownloadPanel from "./components/DownloadPanel";
 
 function App() {
   return (
@@ -13,8 +14,11 @@ function App() {
 
       <StyledMainContainer>
         <UploadContainer />
+        
         <ActionsPanel />
+
         <DownloadContainer />
+        <DownloadPanel/>
       </StyledMainContainer>
     </>
   );

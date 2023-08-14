@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   getAllSourceFiles,
-  addSourceFile,
   readSourceFilesData,
 } from "../store/slices/sourceFilesSlice/sourceFilesSlice";
 
@@ -13,7 +12,9 @@ import { checkFileType } from "../utils/checkFileType";
 import { getFileFormat } from "../utils/getFileFormat";
 import { getFileSize } from "../utils/getFileSize";
 
-import FileElement from "./FileElement";
+import FileElement from "./filesList/FileElement";
+import FilesList from "./filesList/FilesList";
+
 import { trimFileName } from "../utils/trimFileName";
 
 const UploadContainer = () => {
@@ -63,7 +64,6 @@ const UploadContainer = () => {
         dispatch(readSourceFilesData(files[i]));
       }
     }
-    // revokeObjectUrl
   };
 
   const handleContainerClick = (e) => {
@@ -79,17 +79,7 @@ const UploadContainer = () => {
       onClick={handleContainerClick}
     >
       {sourceFiles.length !== 0 && (
-        <StyledSourceFilesList ref={sourceFilesListBackground}>
-          {sourceFiles.map(({ id, type, name, size }) => (
-            <FileElement
-              key={id}
-              format={getFileFormat(type)}
-              name={trimFileName(name)}
-              size={getFileSize(size)}
-              id={id}
-            />
-          ))}
-        </StyledSourceFilesList>
+       <FilesList files={sourceFiles}/>
       )}
 
       <StyledImagesUploadForm id="form-file-upload">

@@ -1,7 +1,13 @@
-export const testImageProcess = async (blobURL, targetFormat) => {
+
+export const processImage = async (source, settings) => {
+
+  const { activeTargetFormat, targetFormats } = settings;
+
+  const targetFormat = targetFormats[activeTargetFormat].name;
+
   const convertImage = await new Promise((resolve) => {
     const img = new Image();
-    img.src = blobURL;
+    img.src = source.blobURL;
 
     img.onload = () => {
       const width = img.width;
@@ -11,7 +17,10 @@ export const testImageProcess = async (blobURL, targetFormat) => {
       const ctx = canvas.getContext("2d");
 
       ctx.drawImage(img, 0, 0, width, height);
-      resolve(canvas.convertToBlob({ type: `image/${targetFormat}` }));
+
+      const processedBlobURL = canvas.convertToBlob({ type: `image/${targetFormat}` });
+
+      resolve(processedBlobURL);
     };
   });
 

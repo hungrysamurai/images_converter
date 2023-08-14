@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
-import IconRemoveElement from "./icons/IconRemoveElement";
-
-import useListenWindowWidth from "../hooks/useListenWindowWidth";
+import IconRemoveElement from "../icons/IconRemoveElement";
+import IconDownloadElement from "../icons/IconDownloadElement";
 
 import { useDispatch } from "react-redux";
 
-import { removeSourceFile } from "../store/slices/sourceFilesSlice/sourceFilesSlice";
+import { removeSourceFile } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
+import { removeConvertedFile } from "../../store/slices/processFilesSlice/processFilesSlice";
 
 const elementsColor = {
   pdf: "dark",
@@ -18,12 +18,15 @@ const elementsColor = {
   tiff: "light",
 };
 
-const FileElement = ({ id, format, size, name }) => {
+const FileElement = ({ id, format, size, name, downloadLink }) => {
   const dispatch = useDispatch();
-  const currentWindowWidth = useListenWindowWidth();
 
   const removeElement = (id) => {
-   dispatch(removeSourceFile(id))
+    if (downloadLink) {
+      dispatch(removeConvertedFile(id));
+    } else {
+      dispatch(removeSourceFile(id));
+    }
   }
   
   const trimName = name.length > 7 ? name.slice(0, 7) + "..." : name;
@@ -32,10 +35,17 @@ const FileElement = ({ id, format, size, name }) => {
     <StyledFileElement $bg={format} $color={elementsColor[format]}>
 
       <StyledRemoveElementButton
-      onClick={() => removeElement(id)}
-      >
+      onClick={() => removeElement(id)}>
         <IconRemoveElement bg={elementsColor[format]}/>
       </StyledRemoveElementButton>
+
+      {downloadLink && 
+          <StyledDownloadElementLink 
+          href={downloadLink} 
+          download={name}>
+         <IconDownloadElement bg={elementsColor[format]}/>
+          </StyledDownloadElementLink>
+      }
 
       <div className="file-name">{`${trimName}.${format}`}</div>
       <div className="file-size">{size}</div>
@@ -81,6 +91,22 @@ const StyledRemoveElementButton = styled.button`
  background: none;
  border: none;
  cursor: pointer;
+
+  svg{
+    width:1.25rem;
+    height:1.25rem;
+  }
 `;
+
+const StyledDownloadElementLink = styled.a`
+position: absolute;
+ top: 0.33rem;
+ left:0.66rem;
+ 
+  svg {
+    width:1.25rem;
+    height:1.25rem;
+  }
+`
 
 export default FileElement;

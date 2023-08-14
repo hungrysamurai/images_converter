@@ -7,21 +7,34 @@ import {
   switchTargetFormat,
 } from "../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
+import { getAllProcessedFiles } from "../store/slices/processFilesSlice/processFilesSlice";
+
+import FilesList from "./filesList/FilesList";
+
 const DownloadContainer = () => {
+
   const activeTargetFormat = useSelector(getActiveTargetFormat);
   const allTargetFormats = useSelector(getAllTargetFormats);
+  const allProccecedFiles = useSelector(getAllProcessedFiles);
+ 
   const dispatch = useDispatch();
 
   const { name: currentFromatName } = allTargetFormats[activeTargetFormat];
 
   return (
     <StyledDownloadContainer>
-      <span
-        className="placeholder"
-        onClick={() => dispatch(switchTargetFormat())}
-      >
-        {currentFromatName.toUpperCase()}
-      </span>
+
+      {allProccecedFiles.length === 0 ?
+        <span
+          className="placeholder"
+          onClick={() => dispatch(switchTargetFormat())}
+        >
+          {currentFromatName.toUpperCase()}
+        </span>
+        :
+        <FilesList files={allProccecedFiles} />
+      }
+
     </StyledDownloadContainer>
   );
 };
@@ -37,6 +50,15 @@ const StyledDownloadContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .placeholder {
     font-size: 6rem;

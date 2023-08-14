@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, nanoid, current } from "@reduxjs/toolkit";
 
-import { testImageProcess } from "../../../utils/converter";
+import { processImage } from "../../../utils/converter";
 
 const initialState = {
   loading: false,
@@ -11,29 +11,35 @@ export const convertFiles = createAsyncThunk(
   "processFiles/convertFiles",
   async (_, { getState, dispatch }) => {
     const state = getState();
-    const {
-      sourceFiles,
-      conversionSettings: { activeTargetFormat, targetFormats },
-    } = state;
+    const { sourceFiles, conversionSettings } = state;
+    const { activeTargetFormat, targetFormats } = conversionSettings;
 
     const targetFormat = targetFormats[activeTargetFormat].name;
 
-    for (const { blobURL } of sourceFiles) {
-      const processed = await testImageProcess(blobURL, targetFormat);
-      dispatch(addConvertedFile(URL.createObjectURL(processed)));
+    for (const source of sourceFiles) {
+      const { width, height, name, id } = source;
 
-      //   const blob = await fetch(URL).then((res) => res.blob());
+      const processed = await processImage(
+        source, conversionSettings
+      );
 
-      //   const reader = new FileReader();
-      //   reader.readAsDataURL(blob);
-      //   reader.onloadend = async function () {
-      //     const base64data = reader.result;
-      //     const processed = await testImageProcess(base64data, targetFormat);
-      //     // result.push(processed);
-      //   };
+      const size = processed.size;
+      const URL = window.URL.createObjectURL(processed);
+
+      dispatch(addConvertedFile(
+        {
+          blobURL: URL,
+          downloadLink: URL,
+          name: `${name}.${targetFormat}`,
+          width,
+          height,
+          size,
+          type: `image/${targetFormat}`,
+          id: nanoid(),
+          sourceId: id,
+        }
+      ))
     }
-
-    // console.log(result);
   }
 );
 
@@ -44,13 +50,22 @@ const processFilesSlice = createSlice({
     addConvertedFile: (state, action) => {
       state.files.push(action.payload);
     },
+    removeConvertedFile: (state, action) => {
+      const fileToRemove = current(state).files.find(el => el.id === action.payload);
+      URL.revokeObjectURL(fileToRemove.blobURL)
+
+      return {
+        ...state,
+        files: state.files.filter(el => el.id !== action.payload)
+      }
+    }
   },
   //   extraReducers(builder) {
   //     builder.addCase();
   //   },
 });
 
-export const { addConvertedFile } = processFilesSlice.actions;
+export const { addConvertedFile, removeConvertedFile } = processFilesSlice.actions;
 
 export const getAllProcessedFiles = (state) => state.processFiles.files;
 export const isProcessingLoading = (state) => state.processFiles.loading;

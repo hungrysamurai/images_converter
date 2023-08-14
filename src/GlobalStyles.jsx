@@ -12,6 +12,7 @@ const GlobalStyles = createGlobalStyle`
     height: 100vh;
     width:100vw;
     font-family: 'Kanit', sans-serif;
+    overflow: hidden;
   }
 
   h1{
@@ -39,7 +40,8 @@ const GlobalStyles = createGlobalStyle`
   #root {
     --bg-container-gray: #E3E3E3;
     --bg-light-gray: #F8F8F8;
-    --icon-dark-gray: #9F9F9F;
+    --icon-medium-gray: #9F9F9F;
+    --icon-dark-gray: #373737;
     --icon-light-gray: #F8F8F8;
     --text-dark-gray: #373737;
     --text-medium-gray: #9f9f9f;
