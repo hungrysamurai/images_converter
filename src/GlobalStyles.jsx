@@ -39,8 +39,8 @@ const GlobalStyles = createGlobalStyle`
   #root {
     --bg-container-gray: #E3E3E3;
     --bg-light-gray: #F8F8F8;
-    --icon-gray: #9F9F9F;
-    --icon-disabled-gray: #F8F8F8;
+    --icon-dark-gray: #9F9F9F;
+    --icon-light-gray: #F8F8F8;
     --text-dark-gray: #373737;
     --text-medium-gray: #9f9f9f;
     --text-light-gray: #f8f8f8;

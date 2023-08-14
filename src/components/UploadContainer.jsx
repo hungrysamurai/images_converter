@@ -86,6 +86,7 @@ const UploadContainer = () => {
               format={getFileFormat(type)}
               name={trimFileName(name)}
               size={getFileSize(size)}
+              id={id}
             />
           ))}
         </StyledSourceFilesList>
