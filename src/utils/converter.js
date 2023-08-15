@@ -210,7 +210,34 @@ export const processImage = async (source, settings) => {
         break;
 
       case "application/pdf": {
-        console.log("pdf....");
+        getPDFJS().then(async (PDFJS) => {
+          const loadingTask = PDFJS.getDocument(blobURL);
+          const pdf = await loadingTask.promise;
+
+          const page = await pdf.getPage(1);
+
+          const viewport = page.getViewport({ scale: 1, rotation: 0, dontFlip: false });
+
+          const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
+
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          const renderContext = {
+            canvasContext: ctx,
+            viewport: viewport,
+          };
+
+          await page.render(renderContext).promise
+
+          canvas.toBlob(
+            (blob) => {
+              resolve(blob);
+            },
+            `image/${targetFormat}`,
+            1
+          );
+        })
       }
         break;
 
@@ -262,7 +289,15 @@ export const processImage = async (source, settings) => {
             }
           })
       }
-        break
+        break;
     }
   });
 };
+
+
+const getPDFJS = async () => {
+  const PDFJS = await import('pdfjs-dist/build/pdf');
+  PDFJS.GlobalWorkerOptions.workerSrc = 'node_modules/pdfjs-dist/build/pdf.worker.min.js';
+
+  return PDFJS;
+}
