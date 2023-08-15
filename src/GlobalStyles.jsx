@@ -54,6 +54,7 @@ const GlobalStyles = createGlobalStyle`
     --format-color-tiff:#E71D36;
     --format-color-gif:#2EC4B6;
     --format-color-pdf:#FF9F1C;
+    --format-color-heic:#8E06F9;
 
     --container-inner-shadow: 0px 24px 48px 0px rgba(0, 0, 0, 0.25) inset;
     --image-element-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25); 

@@ -5,24 +5,20 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   getAllSourceFiles,
-  readSourceFilesData,
+  readSourceFileData,
 } from "../store/slices/sourceFilesSlice/sourceFilesSlice";
 
 import { checkFileType } from "../utils/checkFileType";
-import { getFileFormat } from "../utils/getFileFormat";
-import { getFileSize } from "../utils/getFileSize";
 
-import FileElement from "./filesList/FileElement";
 import FilesList from "./filesList/FilesList";
-
-import { trimFileName } from "../utils/trimFileName";
+import { isHEIC } from "../utils/isHEIC";
 
 const UploadContainer = () => {
   const sourceFiles = useSelector(getAllSourceFiles);
   const dispatch = useDispatch();
 
   const inputLabelRef = useRef(null);
-  const sourceFilesListBackground = useRef(null);
+  const filesListWrapperRef = useRef(null);
 
   // drag state
   const [dragActive, setDragActive] = useState(false);
@@ -60,15 +56,14 @@ const UploadContainer = () => {
 
   const handleFiles = (files) => {
     for (let i = 0; i < files.length; i++) {
-      if (checkFileType(files[i].type)) {
-        dispatch(readSourceFilesData(files[i]));
+      if (checkFileType(files[i].type) || isHEIC(files[i])) {
+        dispatch(readSourceFileData(files[i]));
       }
     }
   };
 
   const handleContainerClick = (e) => {
-    e.stopPropagation();
-    if (sourceFilesListBackground.current === e.target) {
+    if (filesListWrapperRef.current === e.target.parentElement) {
       inputLabelRef.current.click();
     }
   };
@@ -79,10 +74,18 @@ const UploadContainer = () => {
       onClick={handleContainerClick}
     >
       {sourceFiles.length !== 0 && (
-       <FilesList files={sourceFiles}/>
+          <StyledFilesListWrapper 
+          ref={filesListWrapperRef}>
+
+          <FilesList 
+          files={sourceFiles}/>
+          
+          </StyledFilesListWrapper>
       )}
 
-      <StyledImagesUploadForm id="form-file-upload">
+      <StyledImagesUploadForm 
+      id="form-file-upload"
+      >
         <input
           type="file"
           id="input-file-upload"
@@ -100,7 +103,11 @@ const UploadContainer = () => {
         >
           <div>
             <h3>
-              Drop your images here or <span>click</span>
+              Drop your images here or <span className="upload-click">click</span>
+              <br/>
+              <span className="formats">
+              (JPEG, PNG, GIF, WEBP, BMP, TIFF, PDF, HEIC)
+              </span>
             </h3>
           </div>
         </label>
@@ -148,22 +155,6 @@ const StyledUploadContainer = styled.div`
   }
 `;
 
-const StyledSourceFilesList = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  min-height: 100%;
-  padding: 1.5rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 6rem);
-  grid-auto-rows: 6rem;
-  align-items: start;
-  justify-content: center;
-  gap: 1rem;
-  z-index: 1;
-`;
-
 const StyledImagesUploadForm = styled.form`
   position: absolute;
   top: 0;
@@ -180,10 +171,29 @@ const StyledImagesUploadForm = styled.form`
       visibility: hidden;
     }
 
-    span {
-      text-decoration: underline;
+    h3{
+      text-align: center;
+      line-height: 100%;
+      .upload-click {
+          text-decoration: underline;
+          cursor: pointer;
+        }
+
+      .formats{
+        color: var(--text-medium-gray);
+        font-size: 1rem;
+      }
     }
+    
   }
+`;
+
+const StyledFilesListWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
 `;
 
 export default UploadContainer;

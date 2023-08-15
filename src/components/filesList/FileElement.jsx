@@ -16,6 +16,7 @@ const elementsColor = {
   gif: "light",
   webp: "light",
   tiff: "light",
+  heic: "light",
 };
 
 const FileElement = ({ id, format, size, name, downloadLink }) => {
@@ -92,7 +93,7 @@ const StyledRemoveElementButton = styled.button`
  border: none;
  cursor: pointer;
 
-  svg{
+  svg {
     width:1.25rem;
     height:1.25rem;
   }

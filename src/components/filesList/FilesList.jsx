@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import FileElement from './FileElement';
 
 import { getFileFormat } from '../../utils/getFileFormat';
-import { trimFileName } from '../../utils/trimFileName';
 import { getFileSize } from '../../utils/getFileSize';
 
 const FilesList = ({ files }) => {
