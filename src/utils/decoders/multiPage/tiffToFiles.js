@@ -4,7 +4,9 @@ import { nanoid } from "@reduxjs/toolkit";
 
 import { addConvertedFile } from "../../../store/slices/processFilesSlice/processFilesSlice";
 
-export const tiffToFiles = async (source, targetFormat, dispatch) => {
+import { encode } from "../../encode";
+
+export const tiffToFiles = async (source, targetFormatSettings, dispatch) => {
 
  const { blobURL, id, name } = source;
 
@@ -34,25 +36,21 @@ export const tiffToFiles = async (source, targetFormat, dispatch) => {
 
    ctx.putImageData(imageData, 0, 0);
 
-   canvas.toBlob(
-    (blob) => {
-     const size = blob.size;
-     const URL = window.URL.createObjectURL(blob);
+   const encoded = await encode(canvas, targetFormatSettings);
 
-     dispatch(
-      addConvertedFile({
-       blobURL: URL,
-       downloadLink: URL,
-       name: `${name}_${index + 1}.${targetFormat}`,
-       size,
-       type: `image/${targetFormat}`,
-       id: nanoid(),
-       sourceId: id,
-      })
-     );
-    },
-    `image/${targetFormat}`,
-    1
+   const size = encoded.size;
+   const URL = window.URL.createObjectURL(encoded);
+
+   dispatch(
+    addConvertedFile({
+     blobURL: URL,
+     downloadLink: URL,
+     name: `${name}_${index + 1}.${targetFormatSettings.name}`,
+     size,
+     type: `image/${targetFormatSettings.name}`,
+     id: nanoid(),
+     sourceId: id,
+    })
    );
   }
  } catch (err) {

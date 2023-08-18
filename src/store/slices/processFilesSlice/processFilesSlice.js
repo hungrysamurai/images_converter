@@ -75,7 +75,7 @@ const processFilesSlice = createSlice({
       })
       .addCase(convertFiles.fulfilled, (state) => {
         console.log('status change - done');
-        state.status = false;
+        state.loading = false;
       })
       .addCase(downloadAllFiles.pending, (state) => {
         console.log('status change - loading');
