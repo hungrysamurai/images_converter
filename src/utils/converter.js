@@ -13,7 +13,7 @@ import { nanoid } from "@reduxjs/toolkit";
 
 export const processImage = async (source, settings, dispatch) => {
   const { activeTargetFormat, targetFormats } = settings;
-  const targetFormat = targetFormats[activeTargetFormat].name;
+  const targetFormat = targetFormats[activeTargetFormat]
 
   switch (source.type) {
     case "image/jpeg":
@@ -22,7 +22,7 @@ export const processImage = async (source, settings, dispatch) => {
     case "image/bmp":
     case "image/heic": {
       try {
-        const processed = await processOnePageFile(source, targetFormat);
+        const processed = await processOnePageFile(source, targetFormat.name);
         const { name, id } = source;
 
         const size = processed.size;
@@ -32,9 +32,9 @@ export const processImage = async (source, settings, dispatch) => {
           addConvertedFile({
             blobURL: URL,
             downloadLink: URL,
-            name: `${name}.${targetFormat}`,
+            name: `${name}.${targetFormat.name}`,
             size,
-            type: `image/${targetFormat}`,
+            type: `image/${targetFormat.name}`,
             id: nanoid(),
             sourceId: id,
           })
@@ -50,7 +50,7 @@ export const processImage = async (source, settings, dispatch) => {
     case "image/gif":
     case "application/pdf": {
       try {
-        await processMultiPagesFile(source, targetFormat, dispatch)
+        await processMultiPagesFile(source, targetFormat.name, dispatch)
       } catch (err) {
         console.log(err);
       }

@@ -1,11 +1,11 @@
 import {
   createSlice,
   createAsyncThunk,
-  nanoid,
   current,
 } from "@reduxjs/toolkit";
 
 import { processImage } from "../../../utils/converter";
+import { zipAndSave } from "../../../utils/zipAndSave";
 
 const initialState = {
   loading: false,
@@ -24,41 +24,25 @@ export const convertFiles = createAsyncThunk(
         conversionSettings,
         dispatch
       );
-      // const { width, height, name, id } = source;
-
-
-      // const processed = await processImage(
-      //   source,
-      //   conversionSettings,
-      //   dispatch
-      // );
-
-      // const size = processed.size;
-      // const URL = window.URL.createObjectURL(processed);
-
-      // dispatch(
-      //   addConvertedFile({
-      //     blobURL: URL,
-      //     downloadLink: URL,
-      //     name: `${name}.${targetFormat}`,
-      //     width,
-      //     height,
-      //     size,
-      //     type: `image/${targetFormat}`,
-      //     id: nanoid(),
-      //     sourceId: id,
-      //   })
-      // );
     }
   }
 );
+
+export const downloadAllFiles = createAsyncThunk(
+  "processFiles/downloadAllFiles",
+  async (_, { getState }) => {
+    const state = getState();
+    const { processFiles, conversionSettings } = state;
+
+    await zipAndSave(processFiles.files, conversionSettings);
+  }
+)
 
 const processFilesSlice = createSlice({
   name: "processFiles",
   initialState,
   reducers: {
     addConvertedFile: (state, action) => {
-      console.log(action.payload);
       state.files.push(action.payload);
     },
     removeConvertedFile: (state, action) => {
@@ -72,14 +56,43 @@ const processFilesSlice = createSlice({
         files: state.files.filter((el) => el.id !== action.payload),
       };
     },
+    removeAllConvertedFiles: (state) => {
+      current(state).files.forEach(file => {
+        URL.revokeObjectURL(file.blobURL);
+      });
+
+      return {
+        ...state,
+        files: []
+      }
+    }
   },
-  //   extraReducers(builder) {
-  //     builder.addCase();
-  //   },
+  extraReducers(builder) {
+    builder
+      .addCase(convertFiles.pending, (state) => {
+        console.log('status change - loading');
+        state.loading = true;
+      })
+      .addCase(convertFiles.fulfilled, (state) => {
+        console.log('status change - done');
+        state.status = false;
+      })
+      .addCase(downloadAllFiles.pending, (state) => {
+        console.log('status change - loading');
+        state.loading = true;
+      })
+      .addCase(downloadAllFiles.fulfilled, (state) => {
+        console.log('status change - done');
+        state.loading = false;
+      })
+  },
 });
 
-export const { addConvertedFile, removeConvertedFile } =
-  processFilesSlice.actions;
+export const {
+  addConvertedFile,
+  removeConvertedFile,
+  removeAllConvertedFiles
+} = processFilesSlice.actions;
 
 export const getAllProcessedFiles = (state) => state.processFiles.files;
 export const isProcessingLoading = (state) => state.processFiles.loading;

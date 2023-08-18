@@ -2,18 +2,23 @@ import styled from 'styled-components';
 import IconDownloadAll from './icons/IconDownloadAll';
 import IconRemoveAll from './icons/IconRemoveAll';
 
-import { useSelector } from 'react-redux/es/hooks/useSelector';
-import { getAllProcessedFiles } from '../store/slices/processFilesSlice/processFilesSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { getAllProcessedFiles, removeAllConvertedFiles, downloadAllFiles, isProcessingLoading } from '../store/slices/processFilesSlice/processFilesSlice';
 
 const DownloadPanel = () => {
- const processedFiles = useSelector(getAllProcessedFiles);
+ const dispatch = useDispatch();
 
+ const processedFiles = useSelector(getAllProcessedFiles);
+ const isLoading = useSelector(isProcessingLoading);
+
+ console.log(isLoading);
  const downloadAllProcessedFiles = () => {
-  console.log('download all...');
+ dispatch(downloadAllFiles())
  }
 
  const removeAllProcessedFiles = () => {
-  console.log('remove all...');
+  dispatch(removeAllConvertedFiles())
  }
 
  if(processedFiles.length !== 0){
