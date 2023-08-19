@@ -4,64 +4,58 @@ import { nanoid } from "@reduxjs/toolkit";
 
 import { addConvertedFile } from "../../../store/slices/processFilesSlice/processFilesSlice";
 
-export const gifToFiles = async (source, targetFormat, dispatch) => {
- const { blobURL, id, name } = source;
+import { encode } from "../../encode";
 
- try {
-  const file = await fetch(blobURL);
-  const arrayBuffer = await file.arrayBuffer();
+export const gifToFiles = async (source, targetFormatSettings, dispatch) => {
+  const { blobURL, id, name } = source;
 
-  const gif = parseGIF(arrayBuffer);
-  const frames = decompressFrames(gif, true);
+  try {
+    const file = await fetch(blobURL);
+    const arrayBuffer = await file.arrayBuffer();
 
-  const {
-   lsd: { width },
-   lsd: { height },
-  } = gif;
+    const gif = parseGIF(arrayBuffer);
+    const frames = decompressFrames(gif, true);
 
-  for (const [index, frame] of frames.entries()) {
-   const {
-    width: frameWidth,
-    height: frameHeight,
-    top,
-    left
-   } = frame.dims;
+    const {
+      lsd: { width },
+      lsd: { height },
+    } = gif;
 
-   const imageData = new ImageData(
-    new Uint8ClampedArray(frame.patch),
-    frameWidth,
-    frameHeight
-   );
+    for (const [index, frame] of frames.entries()) {
+      const { width: frameWidth, height: frameHeight, top, left } = frame.dims;
 
-   const canvas = document.createElement("canvas");
-   const ctx = canvas.getContext("2d");
+      const imageData = new ImageData(
+        new Uint8ClampedArray(frame.patch),
+        frameWidth,
+        frameHeight
+      );
 
-   canvas.width = width;
-   canvas.height = height;
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
 
-   ctx.putImageData(imageData, top, left);
-   canvas.toBlob(
-    (blob) => {
-     const size = blob.size;
-     const URL = window.URL.createObjectURL(blob);
+      canvas.width = width;
+      canvas.height = height;
 
-     dispatch(
-      addConvertedFile({
-       blobURL: URL,
-       downloadLink: URL,
-       name: `${name}_${index + 1}.${targetFormat}`,
-       size,
-       type: `image/${targetFormat}`,
-       id: nanoid(),
-       sourceId: id,
-      })
-     );
-    },
-    `image/${targetFormat}`,
-    1
-   );
+      ctx.putImageData(imageData, top, left);
+
+      const encoded = await encode(canvas, targetFormatSettings);
+
+      const size = encoded.size;
+      const URL = window.URL.createObjectURL(encoded);
+
+      dispatch(
+        addConvertedFile({
+          blobURL: URL,
+          downloadLink: URL,
+          name: `${name}_${index + 1}.${targetFormatSettings.name}`,
+          size,
+          type: `image/${targetFormatSettings.name}`,
+          id: nanoid(),
+          sourceId: id,
+        })
+      );
+    }
+  } catch (err) {
+    throw new Error("Failed to process GIF image file:", err);
   }
- } catch (err) {
-  throw new Error("Failed to process GIF image file:", err)
- }
-}
+};

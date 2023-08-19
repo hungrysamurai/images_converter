@@ -1,8 +1,4 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  current,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 
 import { processImage } from "../../../utils/converter";
 import { zipAndSave } from "../../../utils/zipAndSave";
@@ -19,11 +15,7 @@ export const convertFiles = createAsyncThunk(
     const { sourceFiles, conversionSettings } = state;
 
     for (const source of sourceFiles) {
-      await processImage(
-        source,
-        conversionSettings,
-        dispatch
-      );
+      await processImage(source, conversionSettings, dispatch);
     }
   }
 );
@@ -32,11 +24,14 @@ export const downloadAllFiles = createAsyncThunk(
   "processFiles/downloadAllFiles",
   async (_, { getState }) => {
     const state = getState();
-    const { processFiles, conversionSettings } = state;
+    const {
+      processFiles: { files },
+      conversionSettings,
+    } = state;
 
-    await zipAndSave(processFiles.files, conversionSettings);
+    await zipAndSave(files, conversionSettings);
   }
-)
+);
 
 const processFilesSlice = createSlice({
   name: "processFiles",
@@ -57,41 +52,41 @@ const processFilesSlice = createSlice({
       };
     },
     removeAllConvertedFiles: (state) => {
-      current(state).files.forEach(file => {
+      current(state).files.forEach((file) => {
         URL.revokeObjectURL(file.blobURL);
       });
 
       return {
         ...state,
-        files: []
-      }
-    }
+        files: [],
+      };
+    },
   },
   extraReducers(builder) {
     builder
       .addCase(convertFiles.pending, (state) => {
-        console.log('status change - loading');
+        console.log("status change - loading");
         state.loading = true;
       })
       .addCase(convertFiles.fulfilled, (state) => {
-        console.log('status change - done');
+        console.log("status change - done");
         state.loading = false;
       })
       .addCase(downloadAllFiles.pending, (state) => {
-        console.log('status change - loading');
+        console.log("status change - loading");
         state.loading = true;
       })
       .addCase(downloadAllFiles.fulfilled, (state) => {
-        console.log('status change - done');
+        console.log("status change - done");
         state.loading = false;
-      })
+      });
   },
 });
 
 export const {
   addConvertedFile,
   removeConvertedFile,
-  removeAllConvertedFiles
+  removeAllConvertedFiles,
 } = processFilesSlice.actions;
 
 export const getAllProcessedFiles = (state) => state.processFiles.files;

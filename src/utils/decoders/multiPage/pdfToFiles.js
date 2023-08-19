@@ -4,61 +4,59 @@ import { nanoid } from "@reduxjs/toolkit";
 
 import { addConvertedFile } from "../../../store/slices/processFilesSlice/processFilesSlice";
 
-export const pdfToFiles = async (source, targetFormat, dispatch) => {
- const { blobURL, id, name } = source;
+import { encode } from "../../encode";
 
- try {
-  const PDFJS = await getPDFJS();
-  const loadingTask = PDFJS.getDocument(blobURL);
-  const pdf = await loadingTask.promise;
+export const pdfToFiles = async (source, targetFormatSettings, dispatch) => {
+  const { blobURL, id, name } = source;
 
-  const { numPages } = pdf._pdfInfo;
+  try {
+    const PDFJS = await getPDFJS();
+    const loadingTask = PDFJS.getDocument(blobURL);
+    const pdf = await loadingTask.promise;
 
-  for (let i = 1; i < numPages + 1; i++) {
-   const page = await pdf.getPage(i);
+    const { numPages } = pdf._pdfInfo;
 
-   const viewport = page.getViewport({
-    scale: 1,
-    rotation: 0,
-    dontFlip: false,
-   });
+    for (let i = 1; i < numPages + 1; i++) {
+      const page = await pdf.getPage(i);
 
-   const canvas = document.createElement("canvas"),
-    ctx = canvas.getContext("2d");
+      const viewport = page.getViewport({
+        scale: 1,
+        rotation: 0,
+        dontFlip: false,
+      });
 
-   canvas.height = viewport.height;
-   canvas.width = viewport.width;
+      const canvas = document.createElement("canvas"),
+        ctx = canvas.getContext("2d");
 
-   const renderContext = {
-    canvasContext: ctx,
-    viewport: viewport,
-   };
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
 
-   await page.render(renderContext).promise;
+      const renderContext = {
+        canvasContext: ctx,
+        viewport: viewport,
+      };
 
-   canvas.toBlob(
-    (blob) => {
-     const size = blob.size;
-     const URL = window.URL.createObjectURL(blob);
+      await page.render(renderContext).promise;
 
-     dispatch(
-      addConvertedFile({
-       blobURL: URL,
-       downloadLink: URL,
-       name: `${name}_${i + 1}.${targetFormat}`,
-       size,
-       type: `image/${targetFormat}`,
-       id: nanoid(),
-       sourceId: id,
-      })
-     );
-    },
-    `image/${targetFormat}`,
-    1
-   );
+      const encoded = await encode(canvas, targetFormatSettings);
+      console.log(encoded);
+
+      const size = encoded.size;
+      const URL = window.URL.createObjectURL(encoded);
+
+      dispatch(
+        addConvertedFile({
+          blobURL: URL,
+          downloadLink: URL,
+          name: `${name}_${i + 1}.${targetFormatSettings.name}`,
+          size,
+          type: `image/${targetFormatSettings.name}`,
+          id: nanoid(),
+          sourceId: id,
+        })
+      );
+    }
+  } catch (err) {
+    throw new Error("Failed to process PDF file:", err);
   }
-
- } catch (err) {
-  throw new Error("Failed to process PDF file:", err)
- }
-}
+};

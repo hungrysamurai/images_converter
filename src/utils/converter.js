@@ -1,6 +1,6 @@
 import { bmpToFile } from "./decoders/singlePage/bmpToFile";
 import { heicToFile } from "./decoders/singlePage/heicToFile";
-import { jpegPngWebpToFile } from './decoders/singlePage/jpegPngWebpToFile';
+import { jpegPngWebpToFile } from "./decoders/singlePage/jpegPngWebpToFile";
 
 import { tiffToFiles } from "./decoders/multiPage/tiffToFiles";
 import { gifToFiles } from "./decoders/multiPage/gifToFiles";
@@ -10,87 +10,95 @@ import { addConvertedFile } from "../store/slices/processFilesSlice/processFiles
 
 import { nanoid } from "@reduxjs/toolkit";
 
-
 export const processImage = async (source, settings, dispatch) => {
   const { activeTargetFormat, targetFormats } = settings;
-  const targetFormatSettings = targetFormats[activeTargetFormat]
+  const targetFormatSettings = targetFormats[activeTargetFormat];
 
   switch (source.type) {
     case "image/jpeg":
     case "image/png":
     case "image/webp":
     case "image/bmp":
-    case "image/heic": {
-      try {
-        const processed = await processOnePageFile(source, targetFormatSettings);
-        const { name, id } = source;
+    case "image/heic":
+      {
+        try {
+          const processed = await processOnePageFile(
+            source,
+            targetFormatSettings
+          );
+          const { name, id } = source;
 
-        const size = processed.size;
-        const URL = window.URL.createObjectURL(processed);
+          const size = processed.size;
+          const URL = window.URL.createObjectURL(processed);
 
-        dispatch(
-          addConvertedFile({
-            blobURL: URL,
-            downloadLink: URL,
-            name: `${name}.${targetFormatSettings.name}`,
-            size,
-            type: `image/${targetFormatSettings.name}`,
-            id: nanoid(),
-            sourceId: id,
-          })
-        );
-
-      } catch (err) {
-        console.log(err);
+          dispatch(
+            addConvertedFile({
+              blobURL: URL,
+              downloadLink: URL,
+              name: `${name}.${targetFormatSettings.name}`,
+              size,
+              type: `image/${targetFormatSettings.name}`,
+              id: nanoid(),
+              sourceId: id,
+            })
+          );
+        } catch (err) {
+          console.log(err);
+        }
       }
-    }
       break;
 
     case "image/tiff":
     case "image/gif":
-    case "application/pdf": {
-      try {
-        await processMultiPagesFile(source, targetFormatSettings, dispatch)
-      } catch (err) {
-        console.log(err);
+    case "application/pdf":
+      {
+        try {
+          await processMultiPagesFile(source, targetFormatSettings, dispatch);
+        } catch (err) {
+          console.log(err);
+        }
       }
-    }
       break;
   }
 };
 
-export const processMultiPagesFile = async (source, targetFormatSettings, dispatch) => {
+export const processMultiPagesFile = async (
+  source,
+  targetFormatSettings,
+  dispatch
+) => {
   const { type } = source;
 
   switch (type) {
-    case "image/tiff": {
-      try {
-        await tiffToFiles(source, targetFormatSettings, dispatch);
-      } catch (err) {
-        throw new Error('Failed to process image:', err);
+    case "image/tiff":
+      {
+        try {
+          await tiffToFiles(source, targetFormatSettings, dispatch);
+        } catch (err) {
+          throw new Error("Failed to process image:", err);
+        }
       }
-    }
       break;
 
-    case "image/gif": {
-      try {
-        await gifToFiles(source, targetFormat, dispatch);
-      } catch (err) {
-        throw new Error('Failed to process image:', err);
+    case "image/gif":
+      {
+        try {
+          await gifToFiles(source, targetFormatSettings, dispatch);
+        } catch (err) {
+          throw new Error("Failed to process image:", err);
+        }
       }
-    }
       break;
 
     case "application/pdf": {
       try {
-        await pdfToFiles(source, targetFormat, dispatch);
+        await pdfToFiles(source, targetFormatSettings, dispatch);
       } catch (err) {
-        throw new Error('Failed to process image:', err);
+        throw new Error("Failed to process image:", err);
       }
     }
   }
-}
-
+};
 
 export const processOnePageFile = async (source, targetFormatSettings) => {
   return new Promise((resolve, reject) => {
@@ -98,33 +106,38 @@ export const processOnePageFile = async (source, targetFormatSettings) => {
     switch (type) {
       case "image/jpeg":
       case "image/png":
-      case "image/webp": {
-        jpegPngWebpToFile(blobURL, type, targetFormatSettings)
-          .then(blob => {
-            resolve(blob);
-          }).catch(err => {
-            reject(new Error('Failed to process image:', err))
-          })
-      }
+      case "image/webp":
+        {
+          jpegPngWebpToFile(blobURL, type, targetFormatSettings)
+            .then((blob) => {
+              resolve(blob);
+            })
+            .catch((err) => {
+              reject(new Error("Failed to process image:", err));
+            });
+        }
         break;
 
-      case "image/bmp": {
-        bmpToFile(blobURL, targetFormatSettings)
-          .then(blob => {
-            resolve(blob)
-          }).catch(err => {
-            reject(new Error('Failed to process image:', err))
-          })
-      }
+      case "image/bmp":
+        {
+          bmpToFile(blobURL, targetFormatSettings)
+            .then((blob) => {
+              resolve(blob);
+            })
+            .catch((err) => {
+              reject(new Error("Failed to process image:", err));
+            });
+        }
         break;
       case "image/heic": {
         heicToFile(blobURL, targetFormatSettings)
-          .then(blob => {
+          .then((blob) => {
             resolve(blob);
-          }).catch(err => {
-            reject(new Error('Failed to process image:', err))
           })
+          .catch((err) => {
+            reject(new Error("Failed to process image:", err));
+          });
       }
     }
-  })
-}
+  });
+};
