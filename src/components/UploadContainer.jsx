@@ -8,10 +8,10 @@ import {
   readSourceFileData,
 } from "../store/slices/sourceFilesSlice/sourceFilesSlice";
 
-import { checkFileType } from "../utils/checkFileType";
+import { checkFileType } from "../utils/helpers/checkFileType";
 
 import FilesList from "./filesList/FilesList";
-import { isHEIC } from "../utils/isHEIC";
+import { isHEIC } from "../utils/helpers/isHEIC";
 
 const UploadContainer = () => {
   const sourceFiles = useSelector(getAllSourceFiles);
@@ -74,18 +74,12 @@ const UploadContainer = () => {
       onClick={handleContainerClick}
     >
       {sourceFiles.length !== 0 && (
-          <StyledFilesListWrapper 
-          ref={filesListWrapperRef}>
-
-          <FilesList 
-          files={sourceFiles}/>
-          
-          </StyledFilesListWrapper>
+        <StyledFilesListWrapper ref={filesListWrapperRef}>
+          <FilesList files={sourceFiles} />
+        </StyledFilesListWrapper>
       )}
 
-      <StyledImagesUploadForm 
-      id="form-file-upload"
-      >
+      <StyledImagesUploadForm id="form-file-upload">
         <input
           type="file"
           id="input-file-upload"
@@ -103,10 +97,11 @@ const UploadContainer = () => {
         >
           <div>
             <h3>
-              Drop your images here or <span className="upload-click">click</span>
-              <br/>
+              Drop your images here or{" "}
+              <span className="upload-click">click</span>
+              <br />
               <span className="formats">
-              (JPEG, PNG, GIF, WEBP, BMP, TIFF, PDF, HEIC)
+                (JPEG, PNG, GIF, WEBP, BMP, TIFF, PDF, HEIC)
               </span>
             </h3>
           </div>
@@ -171,20 +166,19 @@ const StyledImagesUploadForm = styled.form`
       visibility: hidden;
     }
 
-    h3{
+    h3 {
       text-align: center;
       line-height: 100%;
       .upload-click {
-          text-decoration: underline;
-          cursor: pointer;
-        }
+        text-decoration: underline;
+        cursor: pointer;
+      }
 
-      .formats{
+      .formats {
         color: var(--text-medium-gray);
         font-size: 1rem;
       }
     }
-    
   }
 `;
 

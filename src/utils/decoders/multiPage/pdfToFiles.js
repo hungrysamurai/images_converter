@@ -1,4 +1,4 @@
-import { getPDFJS } from "../../getPDFJS";
+import { getPDFJS } from "../../helpers/getPDFJS";
 
 import { nanoid } from "@reduxjs/toolkit";
 

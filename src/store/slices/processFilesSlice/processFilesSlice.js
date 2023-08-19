@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 
-import { processImage } from "../../../utils/converter";
+import { processFile } from "../../../utils/converter";
 import { zipAndSave } from "../../../utils/zipAndSave";
 
 const initialState = {
@@ -15,7 +15,7 @@ export const convertFiles = createAsyncThunk(
     const { sourceFiles, conversionSettings } = state;
 
     for (const source of sourceFiles) {
-      await processImage(source, conversionSettings, dispatch);
+      await processFile(source, conversionSettings, dispatch);
     }
   }
 );

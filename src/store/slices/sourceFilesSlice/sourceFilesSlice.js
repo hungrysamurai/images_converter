@@ -5,8 +5,8 @@ import {
   current,
 } from "@reduxjs/toolkit";
 
-import { trimFileName } from "../../../utils/trimFileName";
-import { isHEIC } from "../../../utils/isHEIC";
+import { trimFileName } from "../../../utils/helpers/trimFileName";
+import { isHEIC } from "../../../utils/helpers/isHEIC";
 
 const initialState = [];
 
@@ -14,12 +14,11 @@ export const readSourceFileData = createAsyncThunk(
   "sourceFiles/readSourceFilesData",
   async (file, { dispatch }) => {
     return new Promise(() => {
-
       let { type, size } = file;
 
       // Handle HEIC
       if (!type) {
-        type = isHEIC(file) ? 'image/heic' : null
+        type = isHEIC(file) ? "image/heic" : null;
       }
 
       const name = trimFileName(file.name);

@@ -1,27 +1,26 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import FileElement from './FileElement';
+import FileElement from "./FileElement";
 
-import { getFileFormat } from '../../utils/getFileFormat';
-import { getFileSize } from '../../utils/getFileSize';
+import { getFileFormat } from "../../utils/helpers/getFileFormat";
+import { getFileSize } from "../../utils/helpers/getFileSize";
 
 const FilesList = ({ files }) => {
-
   return (
     <StyledFilesList>
       {files.map(({ id, type, name, size, downloadLink }) => (
-          <FileElement
-            key={id}
-            id={id}
-            format={getFileFormat(type)}
-            name={name}
-            size={getFileSize(size)}
-            downloadLink={downloadLink ? downloadLink : null}
-          />
-          ))}
+        <FileElement
+          key={id}
+          id={id}
+          format={getFileFormat(type)}
+          name={name}
+          size={getFileSize(size)}
+          downloadLink={downloadLink ? downloadLink : null}
+        />
+      ))}
     </StyledFilesList>
-  )
-}
+  );
+};
 
 const StyledFilesList = styled.div`
   position: absolute;
@@ -39,4 +38,4 @@ const StyledFilesList = styled.div`
   z-index: 1;
 `;
 
-export default FilesList
+export default FilesList;
