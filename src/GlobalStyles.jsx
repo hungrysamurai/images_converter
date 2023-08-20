@@ -19,6 +19,10 @@ const GlobalStyles = createGlobalStyle`
     font-size: 3rem;
     font-weight: 300;
     color: var(--text-medium-gray);
+      
+    @media (max-width: 768px){
+        font-size: 2rem;
+      }
   }
 
   h2 {
@@ -39,6 +43,7 @@ const GlobalStyles = createGlobalStyle`
 
   #root {
     --bg-container-gray: #E3E3E3;
+    --bg-panel-gray: #e3e3e3b5;
     --bg-light-gray: #F8F8F8;
     --icon-medium-gray: #9F9F9F;
     --icon-dark-gray: #373737;
@@ -58,6 +63,7 @@ const GlobalStyles = createGlobalStyle`
 
     --container-inner-shadow: 0px 24px 48px 0px rgba(0, 0, 0, 0.25) inset;
     --image-element-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25); 
+    --container-shadow: -12px 0px 24px 0px rgba(0, 0, 0, 0.25); 
   }
 `;
 

@@ -6,12 +6,12 @@ import IconPlay from "./icons/IconPlay";
 import IconSettings from "./icons/IconSettings";
 import { convertFiles } from "../store/slices/processFilesSlice/processFilesSlice";
 
-const ActionsPanel = () => {
+const ActionsPanel = ({ setSettingsPanelVisibility }) => {
   const dispatch = useDispatch();
 
   return (
     <StyledActionPanel>
-      <StyledActionButton>
+      <StyledActionButton onClick={() => setSettingsPanelVisibility(true)}>
         <IconSettings />
       </StyledActionButton>
       <StyledActionButton onClick={() => dispatch(convertFiles())}>

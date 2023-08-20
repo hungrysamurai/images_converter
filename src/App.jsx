@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import styled from "styled-components";
 
 import GlobalStyles from "./GlobalStyles";
@@ -6,19 +8,27 @@ import UploadContainer from "./components/UploadContainer";
 import ActionsPanel from "./components/ActionsPanel";
 import DownloadContainer from "./components/DownloadContainer";
 import DownloadPanel from "./components/DownloadPanel";
+import SettingsPanel from "./components/settingsPanel/SettingsPanel";
 
 function App() {
+  const [settingsPanelVisibility, setSettingsPanelVisibility] = useState(false);
+
   return (
     <>
       <GlobalStyles />
 
+      <SettingsPanel
+        settingsPanelVisibility={settingsPanelVisibility}
+        setSettingsPanelVisibility={setSettingsPanelVisibility}
+      />
+
       <StyledMainContainer>
         <UploadContainer />
-        
-        <ActionsPanel />
+
+        <ActionsPanel setSettingsPanelVisibility={setSettingsPanelVisibility} />
 
         <DownloadContainer />
-        <DownloadPanel/>
+        <DownloadPanel />
       </StyledMainContainer>
     </>
   );

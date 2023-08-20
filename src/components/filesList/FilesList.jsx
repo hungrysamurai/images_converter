@@ -5,24 +5,28 @@ import FileElement from "./FileElement";
 import { getFileFormat } from "../../utils/helpers/getFileFormat";
 import { getFileSize } from "../../utils/helpers/getFileSize";
 
+import { AnimatePresence, motion } from "framer-motion";
+
 const FilesList = ({ files }) => {
   return (
-    <StyledFilesList>
-      {files.map(({ id, type, name, size, downloadLink }) => (
-        <FileElement
-          key={id}
-          id={id}
-          format={getFileFormat(type)}
-          name={name}
-          size={getFileSize(size)}
-          downloadLink={downloadLink ? downloadLink : null}
-        />
-      ))}
+    <StyledFilesList layout layoutRoot>
+      <AnimatePresence>
+        {files.map(({ id, type, name, size, downloadLink }) => (
+          <FileElement
+            key={id}
+            id={id}
+            format={getFileFormat(type)}
+            name={name}
+            size={getFileSize(size)}
+            downloadLink={downloadLink ? downloadLink : null}
+          />
+        ))}
+      </AnimatePresence>
     </StyledFilesList>
   );
 };
 
-const StyledFilesList = styled.div`
+const StyledFilesList = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;

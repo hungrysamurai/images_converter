@@ -1,5 +1,8 @@
 import styled from "styled-components";
 
+import { motion } from "framer-motion";
+import { fileElementAnimation } from "../../animations";
+
 import IconRemoveElement from "../icons/IconRemoveElement";
 import IconDownloadElement from "../icons/IconDownloadElement";
 
@@ -28,25 +31,29 @@ const FileElement = ({ id, format, size, name, downloadLink }) => {
     } else {
       dispatch(removeSourceFile(id));
     }
-  }
-  
+  };
+
   const trimName = name.length > 7 ? name.slice(0, 7) + "..." : name;
 
   return (
-    <StyledFileElement $bg={format} $color={elementsColor[format]}>
-
-      <StyledRemoveElementButton
-      onClick={() => removeElement(id)}>
-        <IconRemoveElement bg={elementsColor[format]}/>
+    <StyledFileElement
+      variants={fileElementAnimation}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+      layout
+      $bg={format}
+      $color={elementsColor[format]}
+    >
+      <StyledRemoveElementButton onClick={() => removeElement(id)}>
+        <IconRemoveElement bg={elementsColor[format]} />
       </StyledRemoveElementButton>
 
-      {downloadLink && 
-          <StyledDownloadElementLink 
-          href={downloadLink} 
-          download={name}>
-         <IconDownloadElement bg={elementsColor[format]}/>
-          </StyledDownloadElementLink>
-      }
+      {downloadLink && (
+        <StyledDownloadElementLink href={downloadLink} download={name}>
+          <IconDownloadElement bg={elementsColor[format]} />
+        </StyledDownloadElementLink>
+      )}
 
       <div className="file-name">{`${trimName}.${format}`}</div>
       <div className="file-size">{size}</div>
@@ -54,7 +61,7 @@ const FileElement = ({ id, format, size, name, downloadLink }) => {
   );
 };
 
-const StyledFileElement = styled.div.attrs((props) => ({
+const StyledFileElement = styled(motion.div).attrs((props) => ({
   $bg: props.$bg,
   $color: props.$color,
 }))`
@@ -86,28 +93,28 @@ const StyledFileElement = styled.div.attrs((props) => ({
 `;
 
 const StyledRemoveElementButton = styled.button`
- position: absolute;
- top: 0.33rem;
- right:0.33rem;
- background: none;
- border: none;
- cursor: pointer;
+  position: absolute;
+  top: 0.33rem;
+  right: 0.33rem;
+  background: none;
+  border: none;
+  cursor: pointer;
 
   svg {
-    width:1.25rem;
-    height:1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
   }
 `;
 
 const StyledDownloadElementLink = styled.a`
-position: absolute;
- top: 0.33rem;
- left:0.66rem;
- 
+  position: absolute;
+  top: 0.33rem;
+  left: 0.66rem;
+
   svg {
-    width:1.25rem;
-    height:1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
   }
-`
+`;
 
 export default FileElement;
