@@ -11,13 +11,13 @@ const GlobalStyles = createGlobalStyle`
   body {
     height: 100vh;
     width:100vw;
-    font-family: 'Kanit', sans-serif;
+    font-family: 'Ubuntu Mono', monospace;
     overflow: hidden;
   }
 
   h1{
     font-size: 3rem;
-    font-weight: 300;
+    font-weight: 400;
     color: var(--text-medium-gray);
       
     @media (max-width: 768px){
@@ -27,13 +27,13 @@ const GlobalStyles = createGlobalStyle`
 
   h2 {
     font-size: 2rem;
-    font-weight: 500;
+    font-weight: 700;
     color: var(--text-dark-gray);
   }
 
   h3{
     font-size: 1.5rem;
-    font-weight: 500;
+    font-weight: 700;
     color: var(--text-dark-gray);
   }
 
@@ -43,7 +43,6 @@ const GlobalStyles = createGlobalStyle`
 
   #root {
     --bg-container-gray: #E3E3E3;
-    --bg-panel-gray: #e3e3e3b5;
     --bg-light-gray: #F8F8F8;
     --icon-medium-gray: #9F9F9F;
     --icon-dark-gray: #373737;
@@ -61,8 +60,8 @@ const GlobalStyles = createGlobalStyle`
     --format-color-pdf:#FF9F1C;
     --format-color-heic:#8E06F9;
 
-    --container-inner-shadow: 0px 24px 48px 0px rgba(0, 0, 0, 0.25) inset;
-    --image-element-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25); 
+    --container-inner-shadow: 0px 24px 36px 0px rgba(0, 0, 0, 0.33) inset;
+    --image-element-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.33); 
     --container-shadow: -12px 0px 24px 0px rgba(0, 0, 0, 0.25); 
   }
 `;

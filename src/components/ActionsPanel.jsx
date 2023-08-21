@@ -1,22 +1,44 @@
 import styled from "styled-components";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import IconPlay from "./icons/IconPlay";
 import IconSettings from "./icons/IconSettings";
-import { convertFiles } from "../store/slices/processFilesSlice/processFilesSlice";
+import IconLoadingSpinner from "./icons/IconLoadingSpinner";
+
+import { convertFiles, isProcessingLoading } from "../store/slices/processFilesSlice/processFilesSlice";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ActionsPanel = ({ setSettingsPanelVisibility }) => {
   const dispatch = useDispatch();
+  const isLoading = useSelector(isProcessingLoading)
 
   return (
     <StyledActionPanel>
-      <StyledActionButton onClick={() => setSettingsPanelVisibility(true)}>
+      
+      <StyledActionButton 
+      className={isLoading ? 'disabled' : ''}
+      onClick={
+        isLoading ? 
+        null :
+        () => setSettingsPanelVisibility(true)}>
         <IconSettings />
       </StyledActionButton>
-      <StyledActionButton onClick={() => dispatch(convertFiles())}>
+      
+      <AnimatePresence>
+      {isLoading ? 
+        <StyledActionButton
+        disabled={true}
+        className="disabled"
+        >
+          <IconLoadingSpinner />
+        </StyledActionButton> :
+        <StyledActionButton onClick={() => dispatch(convertFiles())}>
         <IconPlay />
-      </StyledActionButton>
+        </StyledActionButton>
+      }
+      </AnimatePresence>
+
     </StyledActionPanel>
   );
 };
@@ -24,17 +46,27 @@ const ActionsPanel = ({ setSettingsPanelVisibility }) => {
 const StyledActionPanel = styled.div`
   width: 95%;
   height: 8vh;
+  min-height: 5rem;
   background-color: var(--bg-container-gray);
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-const StyledActionButton = styled.button`
+const StyledActionButton = styled(motion.div)`
   background: none;
   border: none;
   margin: 0 0.75rem;
   cursor: pointer;
+
+  &.disabled {
+    cursor: default;
+    filter: brightness(1.2);
+
+      &:hover {
+         filter: brightness(1.2);
+      }
+  }
 
   svg {
     width: 3rem;
@@ -47,7 +79,7 @@ const StyledActionButton = styled.button`
   @media (max-width: 500px) {
     margin: 0 1rem;
     svg {
-      width: 1.5rem;
+      width: 2rem;
     }
   }
 `;

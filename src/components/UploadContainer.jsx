@@ -13,6 +13,11 @@ import { checkFileType } from "../utils/helpers/checkFileType";
 import FilesList from "./filesList/FilesList";
 import { isHEIC } from "../utils/helpers/isHEIC";
 
+import { fadeAnimation } from "../animations";
+import { AnimatePresence, motion } from "framer-motion";
+
+import IconUpload from "./icons/IconUpload";
+
 const UploadContainer = () => {
   const sourceFiles = useSelector(getAllSourceFiles);
   const dispatch = useDispatch();
@@ -73,11 +78,20 @@ const UploadContainer = () => {
       onDragEnter={handleDrag}
       onClick={handleContainerClick}
     >
+      <AnimatePresence>
       {sourceFiles.length !== 0 && (
-        <StyledFilesListWrapper ref={filesListWrapperRef}>
+        <StyledUploadedFilesListWrapper
+        variants={fadeAnimation} 
+        initial="hidden"
+        animate="show"
+        exit="exit"
+        ref={filesListWrapperRef}
+        key='uploaded-files-list'
+        >
           <FilesList files={sourceFiles} />
-        </StyledFilesListWrapper>
+        </StyledUploadedFilesListWrapper>
       )}
+      </AnimatePresence>
 
       <StyledImagesUploadForm id="form-file-upload">
         <input
@@ -108,15 +122,25 @@ const UploadContainer = () => {
         </label>
       </StyledImagesUploadForm>
 
+      <AnimatePresence>
+
+     
       {dragActive && (
-        <div
-          className="drag-placeholder"
+        <StyledDragPlaceholder
+          variants={fadeAnimation} 
+          initial="hidden"
+          animate="show"
+          exit="exit" 
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
-        ></div>
+        >
+            <IconUpload/>
+        </StyledDragPlaceholder>
       )}
+       
+       </AnimatePresence>
     </StyledUploadContainer>
   );
 };
@@ -137,16 +161,6 @@ const StyledUploadContainer = styled.div`
 
   &::-webkit-scrollbar {
     display: none;
-  }
-
-  .drag-placeholder {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background-color: var(--text-dark-gray);
-    z-index: 2;
   }
 `;
 
@@ -182,12 +196,25 @@ const StyledImagesUploadForm = styled.form`
   }
 `;
 
-const StyledFilesListWrapper = styled.div`
+const StyledUploadedFilesListWrapper = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   min-height: 100%;
 `;
+
+const StyledDragPlaceholder = styled(motion.div)`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    backdrop-filter: blur(24px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
 
 export default UploadContainer;

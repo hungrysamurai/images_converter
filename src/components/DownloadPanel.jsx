@@ -12,7 +12,6 @@ const DownloadPanel = () => {
  const processedFiles = useSelector(getAllProcessedFiles);
  const isLoading = useSelector(isProcessingLoading);
 
- console.log(isLoading);
  const downloadAllProcessedFiles = () => {
  dispatch(downloadAllFiles())
  }
@@ -21,25 +20,38 @@ const DownloadPanel = () => {
   dispatch(removeAllConvertedFiles())
  }
 
- if(processedFiles.length !== 0){
   return (
     <StyledDownloadPanel>
-       <StyledDownloadButton 
-       onClick={downloadAllProcessedFiles}>
-           <IconDownloadAll/>
-       </StyledDownloadButton>
-       <StyledDownloadButton 
-       onClick={removeAllProcessedFiles}>
-           <IconRemoveAll/>
-       </StyledDownloadButton>
+
+      {processedFiles.length !== 0 && 
+        <>
+          <StyledDownloadButton 
+          className={isLoading ? 'disabled' : ''}
+          onClick={isLoading ? 
+            null :
+            () => downloadAllProcessedFiles()}>
+              <IconDownloadAll/>
+          </StyledDownloadButton>
+          <StyledDownloadButton 
+          className={isLoading ? 'disabled' : ''}
+          onClick={
+            isLoading ? 
+            null :
+            () => removeAllProcessedFiles()}>
+              <IconRemoveAll/>
+          </StyledDownloadButton>
+        </>
+      }
+
     </StyledDownloadPanel>
   )
- }
+ 
 }
 
 const StyledDownloadPanel = styled.div`
   width: 95%;
   height: 8vh;
+  min-height: 5rem;
   background-color: var(--bg-container-gray);
   display: flex;
   align-items: center;
@@ -52,6 +64,16 @@ const StyledDownloadButton = styled.button`
   margin: 0 0.75rem;
   cursor: pointer;
 
+  
+  &.disabled {
+    cursor: default;
+    filter: brightness(1.2);
+
+      &:hover {
+         filter: brightness(1.2);
+      }
+  }
+
   svg {
     width: 3rem;
   }
@@ -63,7 +85,7 @@ const StyledDownloadButton = styled.button`
   @media (max-width: 500px) {
     margin: 0 1rem;
     svg {
-      width: 1.5rem;
+      width: 2rem;
     }
   }
 `;

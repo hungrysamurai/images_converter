@@ -33,8 +33,8 @@ const FileElement = ({ id, format, size, name, downloadLink }) => {
     }
   };
 
-  const trimName = name.length > 7 ? name.slice(0, 7) + "..." : name;
-
+  const trimName = name.length > 14 ? name.slice(0, 14) + "..." : name;
+console.log(format);
   return (
     <StyledFileElement
       variants={fileElementAnimation}
@@ -55,8 +55,10 @@ const FileElement = ({ id, format, size, name, downloadLink }) => {
         </StyledDownloadElementLink>
       )}
 
-      <div className="file-name">{`${trimName}.${format}`}</div>
+      <div className="file-name">{`${trimName}`}</div>
       <div className="file-size">{size}</div>
+
+      <div className="format-caption">{format.toUpperCase()}</div>
     </StyledFileElement>
   );
 };
@@ -76,19 +78,31 @@ const StyledFileElement = styled(motion.div).attrs((props) => ({
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  font-family: 'Ubuntu Condensed', sans-serif;
   cursor: pointer;
 
   .file-name {
     color: var(--text-${(props) => props.$color}-gray);
     font-size: 0.75rem;
-    font-weight: 500;
-    margin-top: 0.5rem;
+
   }
 
   .file-size {
     color: var(--text-${(props) => props.$color}-gray);
     font-size: 1rem;
     margin-top: 0.25rem;
+  }
+
+  .format-caption{
+    position: absolute;
+    bottom:0.5rem;
+    right: 50%;
+    transform: translateX(50%);
+    font-family: 'Ubuntu Mono', monospace;
+    font-weight:700;
+    font-size: 0.75rem;
+    color: var(--text-${(props) => props.$color}-gray);
+    
   }
 `;
 
@@ -115,6 +129,7 @@ const StyledDownloadElementLink = styled.a`
     width: 1.25rem;
     height: 1.25rem;
   }
+  
 `;
 
 export default FileElement;

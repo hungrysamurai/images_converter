@@ -58,3 +58,24 @@ export const fileElementAnimation = {
     },
   },
 };
+
+
+export const fadeAnimation = {
+  hidden: {
+    opacity: 0,
+  },
+  show: {
+    opacity: 1,
+    transition: {
+      type: "easeIn",
+      duration: 0.2,
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      type: "easeOut",
+      duration: 0.2,
+    },
+  },
+}

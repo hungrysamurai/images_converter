@@ -53,8 +53,8 @@ const StyledSettingsPanelBackground = styled(motion.div)`
   height: 100vh;
   top: 0;
   left: 0;
-  backdrop-filter: blur(24px);
-  background-color: #37373789;
+  backdrop-filter: blur(4px);
+  /* background-color: #37373789; */
   opacity: 1;
   z-index: 2;
 `;
@@ -63,7 +63,7 @@ const StyledSettingsPanel = styled(motion.div)`
   position: absolute;
   top: 0;
   right: 0;
-  background-color: var(--bg-panel-gray);
+  background-color: #e3e3e3b6;
   backdrop-filter: blur(48px);
   width: 75vw;
   height: 100vh;

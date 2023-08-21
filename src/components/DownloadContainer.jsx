@@ -11,6 +11,8 @@ import { getAllProcessedFiles } from "../store/slices/processFilesSlice/processF
 
 import FilesList from "./filesList/FilesList";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { fadeAnimation } from "../animations";
 const DownloadContainer = () => {
 
   const activeTargetFormat = useSelector(getActiveTargetFormat);
@@ -24,6 +26,7 @@ const DownloadContainer = () => {
   return (
     <StyledDownloadContainer>
 
+    <AnimatePresence>
       {allProccecedFiles.length === 0 ?
         <span
           className="placeholder"
@@ -32,37 +35,48 @@ const DownloadContainer = () => {
           {currentFromatName.toUpperCase()}
         </span>
         :
-        <FilesList files={allProccecedFiles} />
-      }
+          <StyledProcessedFilesListWrapper
+              variants={fadeAnimation} 
+              initial="hidden"
+              animate="show"
+              exit="exit"
+              key='processed-files-list'>
 
-    </StyledDownloadContainer>
+              <FilesList files={allProccecedFiles} />
+              
+          </StyledProcessedFilesListWrapper>
+      }
+    </AnimatePresence>
+
+     </StyledDownloadContainer>
   );
 };
-
-const StyledDownloadContainer = styled.div`
+const StyledDownloadContainer =styled.div`
   width: 95%;
   height: 40vh;
   background-color: var(--bg-light-gray);
   border-radius: 0rem 0rem 2.5rem 2.5rem;
   box-shadow: var(--container-inner-shadow);
   position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow-y: scroll;
   overflow-x: hidden;
   scroll-behavior: smooth;
 
-  scrollbar-width: none;
+   scrollbar-width: none;
 
+   
   &::-webkit-scrollbar {
     display: none;
   }
 
   .placeholder {
+    width:100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 6rem;
-    font-weight: 500;
+    font-weight: 700;
     color: var(--text-medium-gray);
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
@@ -75,6 +89,14 @@ const StyledDownloadContainer = styled.div`
       font-size: 3.5rem;
     }
   }
+`
+
+const StyledProcessedFilesListWrapper = styled(motion.div)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
 `;
 
 export default DownloadContainer;

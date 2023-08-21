@@ -40,6 +40,10 @@ const StyledFilesList = styled(motion.div)`
   justify-content: center;
   gap: 1rem;
   z-index: 1;
+
+   @media (max-width: 500px) {
+    padding: 1rem;
+  }
 `;
 
 export default FilesList;
