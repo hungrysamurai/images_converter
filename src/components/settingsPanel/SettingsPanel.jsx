@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  settingsPanelBackgroundAnimation,
+  fadeAnimation,
   settingsPanelAnimation,
 } from "../../animations";
 
@@ -18,7 +18,7 @@ const SettingsPanel = ({
         <>
           <StyledSettingsPanelBackground
             key="bg"
-            variants={settingsPanelBackgroundAnimation}
+            variants={fadeAnimation}
             initial="hidden"
             animate="show"
             exit="exit"
@@ -40,6 +40,8 @@ const SettingsPanel = ({
 
               <h1>Output settings</h1>
             </StyledCloseSettingsPanelHeader>
+
+
           </StyledSettingsPanel>
         </>
       )}

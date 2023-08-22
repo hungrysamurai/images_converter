@@ -23,12 +23,12 @@ function App() {
       />
 
       <StyledMainContainer>
+
         <UploadContainer />
-
         <ActionsPanel setSettingsPanelVisibility={setSettingsPanelVisibility} />
-
         <DownloadContainer />
         <DownloadPanel />
+        
       </StyledMainContainer>
     </>
   );

@@ -78,9 +78,9 @@ const StyledDownloadContainer =styled.div`
     font-size: 6rem;
     font-weight: 700;
     color: var(--text-medium-gray);
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none; 
     cursor: pointer;
   }
 

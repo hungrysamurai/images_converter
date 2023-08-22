@@ -81,12 +81,12 @@ const UploadContainer = () => {
       <AnimatePresence>
       {sourceFiles.length !== 0 && (
         <StyledUploadedFilesListWrapper
-        variants={fadeAnimation} 
-        initial="hidden"
-        animate="show"
-        exit="exit"
-        ref={filesListWrapperRef}
-        key='uploaded-files-list'
+          variants={fadeAnimation} 
+          initial="hidden"
+          animate="show"
+          exit="exit"
+          ref={filesListWrapperRef}
+          key='uploaded-files-list'
         >
           <FilesList files={sourceFiles} />
         </StyledUploadedFilesListWrapper>
