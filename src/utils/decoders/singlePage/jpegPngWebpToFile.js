@@ -3,7 +3,8 @@ import { encode } from "../../encode";
 export const jpegPngWebpToFile = async (
   blobURL,
   type,
-  targetFormatSettings
+  targetFormatSettings,
+  activeTargetFormatName
 ) => {
   return new Promise((resolve, reject) => {
     try {
@@ -19,7 +20,11 @@ export const jpegPngWebpToFile = async (
 
         ctx.drawImage(img, 0, 0);
 
-        const encoded = await encode(canvas, targetFormatSettings);
+        const encoded = await encode(
+          canvas,
+          targetFormatSettings,
+          activeTargetFormatName
+        );
 
         resolve(encoded);
       };

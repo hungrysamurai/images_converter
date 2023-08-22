@@ -6,8 +6,10 @@ import { addConvertedFile } from "../store/slices/processFilesSlice/processFiles
 import { nanoid } from "@reduxjs/toolkit";
 
 export const processFile = async (source, settings, dispatch) => {
-  const { activeTargetFormat, targetFormats } = settings;
-  const targetFormatSettings = targetFormats[activeTargetFormat];
+  const { inputSettings, outputSettings } = settings;
+  const { activeTargetFormatName } = outputSettings;
+
+  const targetFormatSettings = outputSettings.settings[activeTargetFormatName];
 
   switch (source.type) {
     case "image/jpeg":
@@ -19,7 +21,9 @@ export const processFile = async (source, settings, dispatch) => {
         try {
           const processed = await processSinglePageFile(
             source,
-            targetFormatSettings
+            targetFormatSettings,
+            activeTargetFormatName,
+            inputSettings
           );
           const { name, id } = source;
 
@@ -30,9 +34,9 @@ export const processFile = async (source, settings, dispatch) => {
             addConvertedFile({
               blobURL: URL,
               downloadLink: URL,
-              name: `${name}.${targetFormatSettings.name}`,
+              name: `${name}.${activeTargetFormatName}`,
               size,
-              type: `image/${targetFormatSettings.name}`,
+              type: `image/${activeTargetFormatName}`,
               id: nanoid(),
               sourceId: id,
             })

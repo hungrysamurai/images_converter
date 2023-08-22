@@ -1,16 +1,55 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 const initialState = {
-  targetFormats: [
-    { name: "jpeg" },
-    { name: "png" },
-    { name: "gif" },
-    { name: "bmp" },
-    { name: "tiff" },
-    { name: "webp" },
-    { name: "pdf" },
-  ],
-  activeTargetFormat: 0,
+  inputSettings: {},
+  outputSettings: {
+    allFormats: ["jpeg", "png", "webp", "pdf", "bmp", "gif", "tiff"],
+    activeTargetFormatName: "jpeg",
+    settings: {
+      jpeg: {
+        resize: true,
+        targetWidth: null,
+        targetHeight: null,
+        smoothing: "medium",
+        quality: 0.75,
+      },
+      png: {
+        resize: true,
+        targetWidth: null,
+        targetHeight: null,
+        smoothing: "medium",
+        quality: 1,
+      },
+      webp: {
+        resize: true,
+        targetWidth: null,
+        targetHeight: null,
+        smoothing: "medium",
+        quality: 0.75,
+      },
+      bmp: {
+        resize: true,
+        targetWidth: 2000,
+        targetHeight: null,
+        smoothing: "medium",
+      },
+      gif: {
+        resize: true,
+        targetWidth: null,
+        targetHeight: null,
+        smoothing: "medium",
+        quality: 20,
+        dither: "FloydSteinberg",
+      },
+      tiff: {
+        resize: true,
+        targetWidth: null,
+        targetHeight: null,
+        smoothing: "medium",
+      },
+      pdf: {},
+    },
+  },
 };
 
 export const conversionSettingsSlice = createSlice({
@@ -18,23 +57,28 @@ export const conversionSettingsSlice = createSlice({
   initialState,
   reducers: {
     switchTargetFormat: (state) => {
-      const { targetFormats, activeTargetFormat } = state;
-      let newFormatIndex = activeTargetFormat + 1;
+      const {
+        outputSettings: { allFormats, activeTargetFormatName },
+      } = current(state);
 
-      if (newFormatIndex === targetFormats.length) {
+      const currentFormatIndex = allFormats.indexOf(activeTargetFormatName);
+      let newFormatIndex = currentFormatIndex + 1;
+
+      if (newFormatIndex === allFormats.length) {
         newFormatIndex = 0;
       }
 
-      state.activeTargetFormat = newFormatIndex;
+      state.outputSettings.activeTargetFormatName = allFormats[newFormatIndex];
     },
   },
 });
 
 export const getActiveTargetFormat = (state) =>
-  state.conversionSettings.activeTargetFormat;
+  state.conversionSettings.outputSettings.activeTargetFormatName;
 
 export const getAllTargetFormats = (state) =>
-  state.conversionSettings.targetFormats;
+  state.conversionSettings.outputSettings.allFormats;
 
 export const { switchTargetFormat } = conversionSettingsSlice.actions;
+
 export default conversionSettingsSlice.reducer;

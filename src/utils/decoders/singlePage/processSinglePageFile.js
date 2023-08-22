@@ -2,7 +2,12 @@ import { bmpToFile } from "./bmpToFile";
 import { heicToFile } from "./heicToFile";
 import { jpegPngWebpToFile } from "./jpegPngWebpToFile";
 
-export const processSinglePageFile = async (source, targetFormatSettings) => {
+export const processSinglePageFile = async (
+  source,
+  targetFormatSettings,
+  activeTargetFormatName,
+  inputSettings
+) => {
   return new Promise((resolve, reject) => {
     const { blobURL, type } = source;
     switch (type) {
@@ -10,7 +15,13 @@ export const processSinglePageFile = async (source, targetFormatSettings) => {
       case "image/png":
       case "image/webp":
         {
-          jpegPngWebpToFile(blobURL, type, targetFormatSettings)
+          jpegPngWebpToFile(
+            blobURL,
+            type,
+            targetFormatSettings,
+            activeTargetFormatName,
+            inputSettings
+          )
             .then((blob) => {
               resolve(blob);
             })

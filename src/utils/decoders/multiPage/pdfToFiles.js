@@ -39,7 +39,6 @@ export const pdfToFiles = async (source, targetFormatSettings, dispatch) => {
       await page.render(renderContext).promise;
 
       const encoded = await encode(canvas, targetFormatSettings);
-      console.log(encoded);
 
       const size = encoded.size;
       const URL = window.URL.createObjectURL(encoded);

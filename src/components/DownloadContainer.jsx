@@ -15,13 +15,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { fadeAnimation } from "../animations";
 const DownloadContainer = () => {
 
-  const activeTargetFormat = useSelector(getActiveTargetFormat);
-  const allTargetFormats = useSelector(getAllTargetFormats);
+  const activeTargetFormatName = useSelector(getActiveTargetFormat);
   const allProccecedFiles = useSelector(getAllProcessedFiles);
  
   const dispatch = useDispatch();
-
-  const { name: currentFromatName } = allTargetFormats[activeTargetFormat];
 
   return (
     <StyledDownloadContainer>
@@ -32,7 +29,7 @@ const DownloadContainer = () => {
           className="placeholder"
           onClick={() => dispatch(switchTargetFormat())}
         >
-          {currentFromatName.toUpperCase()}
+          {activeTargetFormatName.toUpperCase()}
         </span>
         :
           <StyledProcessedFilesListWrapper

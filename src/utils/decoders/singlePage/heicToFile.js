@@ -9,9 +9,7 @@ export const heicToFile = async (blobURL, targetFormatSettings) => {
   try {
     const result = await heic2any({
       blob,
-      // PRESUMABLY
-      toType: `image/jpeg`,
-      quality: 1,
+      toType: `image/png`
     });
 
     return new Promise((resolve, reject) => {

@@ -26,10 +26,12 @@ export const downloadAllFiles = createAsyncThunk(
     const state = getState();
     const {
       processFiles: { files },
-      conversionSettings,
+      conversionSettings: {
+        outputSettings: { activeTargetFormatName },
+      },
     } = state;
-
-    await zipAndSave(files, conversionSettings);
+    console.log(activeTargetFormatName);
+    await zipAndSave(files, activeTargetFormatName);
   }
 );
 

@@ -4,16 +4,22 @@ import { encodeTiff } from "./encoders/encodeTiff";
 import { encodeGif } from "./encoders/encodeGif";
 import { encodePdf } from "./encoders/encodePdf";
 
-export const encode = async (canvas, targetFormatSettings) => {
-  const { name: targetFormatName } = targetFormatSettings;
-
-  switch (targetFormatName) {
+export const encode = async (
+  canvas,
+  targetFormatSettings,
+  activeTargetFormatName
+) => {
+  switch (activeTargetFormatName) {
     case "jpeg":
     case "webp":
     case "png":
       {
         try {
-          return encodeJpgPngWebp(canvas, targetFormatSettings);
+          return encodeJpgPngWebp(
+            canvas,
+            targetFormatSettings,
+            activeTargetFormatName
+          );
         } catch (err) {
           console.log(err);
         }
@@ -23,7 +29,7 @@ export const encode = async (canvas, targetFormatSettings) => {
     case "bmp":
       {
         try {
-          return encodeBmp(canvas);
+          return encodeBmp(canvas, targetFormatSettings);
         } catch (err) {
           console.log(err);
         }
