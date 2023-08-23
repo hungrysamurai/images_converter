@@ -58,5 +58,7 @@ export const sourceFilesSlice = createSlice({
 
 export const getAllSourceFiles = (state) => state.sourceFiles;
 
+export const checkPDFInSourceFiles = (state) => state.sourceFiles.some(f => f.type === 'application/pdf')
+
 export const { addSourceFile, removeSourceFile } = sourceFilesSlice.actions;
 export default sourceFilesSlice.reducer;

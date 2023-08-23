@@ -23,7 +23,7 @@ export const encodePdf = async (
     let pdf;
     const canvasWidth = resultingCanvas.width;
     const canvasHeight = resultingCanvas.height;
-    console.log(canvasHeight, canvasWidth);
+
     if (canvasWidth > canvasHeight) {
       pdf = new jsPDF("l", "px", [canvasWidth, canvasHeight]);
     } else {

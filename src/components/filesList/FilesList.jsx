@@ -6,8 +6,9 @@ import { getFileFormat } from "../../utils/helpers/getFileFormat";
 import { getFileSize } from "../../utils/helpers/getFileSize";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { memo } from "react";
 
-const FilesList = ({ files }) => {
+const FilesList = memo(function FilesList({ files }){
   return (
     <StyledFilesList layout layoutRoot>
       <AnimatePresence>
@@ -24,7 +25,7 @@ const FilesList = ({ files }) => {
       </AnimatePresence>
     </StyledFilesList>
   );
-};
+});
 
 const StyledFilesList = styled(motion.div)`
   position: absolute;

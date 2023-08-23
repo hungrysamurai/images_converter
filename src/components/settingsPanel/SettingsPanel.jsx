@@ -1,17 +1,25 @@
 import styled from "styled-components";
 
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  fadeAnimation,
-  settingsPanelAnimation,
-} from "../../animations";
+import { fadeAnimation, settingsPanelAnimation } from "../../animations";
+
+import { useSelector, useDispatch } from "react-redux";
+
+import { checkPDFInSourceFiles } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
+import { getAllTargetFormats } from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
+
+import FormatSelect from "./FormatSelect";
+import SliderInput from "./SliderInput";
 
 const SettingsPanel = ({
   setSettingsPanelVisibility,
   settingsPanelVisibility,
 }) => {
+  const isPDF = useSelector(checkPDFInSourceFiles);
+  const formats = useSelector(getAllTargetFormats);
+
   return (
     <AnimatePresence>
       {settingsPanelVisibility && (
@@ -41,7 +49,9 @@ const SettingsPanel = ({
               <h1>Output settings</h1>
             </StyledCloseSettingsPanelHeader>
 
+            <FormatSelect formats={formats} />
 
+            <SliderInput defaultValue={75} />
           </StyledSettingsPanel>
         </>
       )}
@@ -89,6 +99,12 @@ const StyledCloseSettingsPanelHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media (max-width: 500px) {
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
 `;
 
 const StyledCloseSettingsPanelButton = styled.button`

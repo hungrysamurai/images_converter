@@ -11,6 +11,8 @@ import { useDispatch } from "react-redux";
 import { removeSourceFile } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
 import { removeConvertedFile } from "../../store/slices/processFilesSlice/processFilesSlice";
 
+import { memo } from "react";
+
 const elementsColor = {
   pdf: "dark",
   bmp: "dark",
@@ -22,7 +24,7 @@ const elementsColor = {
   heic: "light",
 };
 
-const FileElement = ({ id, format, size, name, downloadLink }) => {
+const FileElement = memo(function FileElement({ id, format, size, name, downloadLink }){
   const dispatch = useDispatch();
 
   const removeElement = (id) => {
@@ -61,7 +63,7 @@ console.log(format);
       <div className="format-caption">{format.toUpperCase()}</div>
     </StyledFileElement>
   );
-};
+})
 
 const StyledFileElement = styled(motion.div).attrs((props) => ({
   $bg: props.$bg,
