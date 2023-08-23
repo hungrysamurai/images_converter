@@ -1,7 +1,12 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 
 const initialState = {
-  inputSettings: {},
+  inputSettings: {
+    pdf: {
+      resolution: 300,
+      rotation: 0
+    }
+  },
   outputSettings: {
     allFormats: ["jpeg", "png", "webp", "pdf", "bmp", "gif", "tiff"],
     activeTargetFormatName: "jpeg",
@@ -36,18 +41,24 @@ const initialState = {
       gif: {
         resize: true,
         targetWidth: null,
-        targetHeight: null,
+        targetHeight: 500,
         smoothing: "medium",
         quality: 20,
         dither: "FloydSteinberg",
       },
       tiff: {
         resize: true,
-        targetWidth: null,
+        targetWidth: 2000,
         targetHeight: null,
         smoothing: "medium",
       },
-      pdf: {},
+      pdf: {
+        resize: true,
+        targetWidth: 1000,
+        targetHeight: null,
+        smoothing: "medium",
+        compression: 'JPG'
+      },
     },
   },
 };

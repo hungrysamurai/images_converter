@@ -5,22 +5,20 @@ import { jpegPngWebpToFile } from "./jpegPngWebpToFile";
 export const processSinglePageFile = async (
   source,
   targetFormatSettings,
-  activeTargetFormatName,
-  inputSettings
+  activeTargetFormatName
 ) => {
   return new Promise((resolve, reject) => {
-    const { blobURL, type } = source;
-    switch (type) {
+    const { blobURL, type: srcType } = source;
+    switch (srcType) {
       case "image/jpeg":
       case "image/png":
       case "image/webp":
         {
           jpegPngWebpToFile(
             blobURL,
-            type,
+            srcType,
             targetFormatSettings,
             activeTargetFormatName,
-            inputSettings
           )
             .then((blob) => {
               resolve(blob);
@@ -33,7 +31,7 @@ export const processSinglePageFile = async (
 
       case "image/bmp":
         {
-          bmpToFile(blobURL, targetFormatSettings)
+          bmpToFile(blobURL, targetFormatSettings, activeTargetFormatName)
             .then((blob) => {
               resolve(blob);
             })
@@ -43,7 +41,7 @@ export const processSinglePageFile = async (
         }
         break;
       case "image/heic": {
-        heicToFile(blobURL, targetFormatSettings)
+        heicToFile(blobURL, targetFormatSettings, activeTargetFormatName)
           .then((blob) => {
             resolve(blob);
           })

@@ -2,14 +2,18 @@ import heic2any from "heic2any";
 
 import { encode } from "../../encode";
 
-export const heicToFile = async (blobURL, targetFormatSettings) => {
+export const heicToFile = async (
+  blobURL,
+  targetFormatSettings,
+  activeTargetFormatName
+) => {
   const file = await fetch(blobURL);
   const blob = await file.blob();
 
   try {
     const result = await heic2any({
       blob,
-      toType: `image/png`
+      toType: `image/png`,
     });
 
     return new Promise((resolve, reject) => {
@@ -26,15 +30,13 @@ export const heicToFile = async (blobURL, targetFormatSettings) => {
           canvas.height = img.height;
 
           ctx.drawImage(img, 0, 0);
-
-          resolve(encode(canvas, targetFormatSettings));
-        }
+          resolve(encode(canvas, targetFormatSettings, activeTargetFormatName));
+        };
       } catch (err) {
-        reject(new Error('Failed to process HEIC image file.'));
+        reject(new Error("Failed to process HEIC image file."));
       }
-    })
+    });
   } catch (err) {
-
     // "different" jpeg-like HEIC case
     if (err.code === 1) {
       return new Promise((resolve, reject) => {
@@ -52,14 +54,16 @@ export const heicToFile = async (blobURL, targetFormatSettings) => {
 
             ctx.drawImage(img, 0, 0);
 
-            resolve(encode(canvas, targetFormatSettings));
-          }
+            resolve(
+              encode(canvas, targetFormatSettings, activeTargetFormatName)
+            );
+          };
         } catch (err) {
-          reject(new Error('Failed to process HEIC image file.'));
+          reject(new Error("Failed to process HEIC image file."));
         }
-      })
+      });
     } else {
-      throw new Error('Failed to process HEIC image file.')
+      throw new Error("Failed to process HEIC image file.");
     }
   }
-}
+};

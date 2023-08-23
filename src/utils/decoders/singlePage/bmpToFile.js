@@ -1,6 +1,6 @@
 import { encode } from "../../encode";
 
-export const bmpToFile = async (blobURL, targetFormatSettings) => {
+export const bmpToFile = async (blobURL, targetFormatSettings, activeTargetFormatName) => {
   const blob = await fetch(blobURL);
   const arrayBuffer = await blob.arrayBuffer();
 
@@ -64,7 +64,7 @@ export const bmpToFile = async (blobURL, targetFormatSettings) => {
 
   return new Promise((resolve, reject) => {
     try {
-      resolve(encode(canvas, targetFormatSettings));
+      resolve(encode(canvas, targetFormatSettings, activeTargetFormatName));
     } catch (err) {
       reject(new Error(`Failed to process BMP image file.`));
     }

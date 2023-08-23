@@ -5,15 +5,22 @@ import { pdfToFiles } from "./pdfToFiles";
 export const processMultiPagesFile = async (
   source,
   targetFormatSettings,
+  activeTargetFormatName,
+  inputSettings,
   dispatch
 ) => {
-  const { type } = source;
+  const { type: srcType } = source;
 
-  switch (type) {
+  switch (srcType) {
     case "image/tiff":
       {
         try {
-          await tiffToFiles(source, targetFormatSettings, dispatch);
+          await tiffToFiles(
+            source,
+            targetFormatSettings,
+            activeTargetFormatName,
+            dispatch
+          );
         } catch (err) {
           throw new Error("Failed to process image:", err);
         }
@@ -23,7 +30,12 @@ export const processMultiPagesFile = async (
     case "image/gif":
       {
         try {
-          await gifToFiles(source, targetFormatSettings, dispatch);
+          await gifToFiles(
+            source,
+            targetFormatSettings,
+            activeTargetFormatName,
+            dispatch
+          );
         } catch (err) {
           throw new Error("Failed to process image:", err);
         }
@@ -32,7 +44,12 @@ export const processMultiPagesFile = async (
 
     case "application/pdf": {
       try {
-        await pdfToFiles(source, targetFormatSettings, dispatch);
+        await pdfToFiles(
+          source,
+          targetFormatSettings,
+          activeTargetFormatName,
+          inputSettings,
+          dispatch);
       } catch (err) {
         throw new Error("Failed to process image:", err);
       }

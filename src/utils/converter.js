@@ -22,8 +22,7 @@ export const processFile = async (source, settings, dispatch) => {
           const processed = await processSinglePageFile(
             source,
             targetFormatSettings,
-            activeTargetFormatName,
-            inputSettings
+            activeTargetFormatName
           );
           const { name, id } = source;
 
@@ -52,7 +51,14 @@ export const processFile = async (source, settings, dispatch) => {
     case "application/pdf":
       {
         try {
-          await processMultiPagesFile(source, targetFormatSettings, dispatch);
+          await processMultiPagesFile(
+            source,
+            targetFormatSettings,
+            activeTargetFormatName,
+            inputSettings,
+            dispatch
+          )
+            ;
         } catch (err) {
           console.log(err);
         }

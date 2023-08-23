@@ -30,7 +30,6 @@ export const downloadAllFiles = createAsyncThunk(
         outputSettings: { activeTargetFormatName },
       },
     } = state;
-    console.log(activeTargetFormatName);
     await zipAndSave(files, activeTargetFormatName);
   }
 );

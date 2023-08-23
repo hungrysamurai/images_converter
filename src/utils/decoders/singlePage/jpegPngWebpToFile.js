@@ -2,7 +2,7 @@ import { encode } from "../../encode";
 
 export const jpegPngWebpToFile = async (
   blobURL,
-  type,
+  srcType,
   targetFormatSettings,
   activeTargetFormatName
 ) => {
@@ -29,7 +29,7 @@ export const jpegPngWebpToFile = async (
         resolve(encoded);
       };
     } catch (err) {
-      reject(new Error(`Failed to process ${type} image file.`));
+      reject(new Error(`Failed to process ${srcType} image file.`));
     }
   });
 };

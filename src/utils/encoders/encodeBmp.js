@@ -3,7 +3,6 @@ import { getResizedCanvas } from "../getResizedCanvas";
 
 export const encodeBmp = async (canvas, targetFormatSettings) => {
   let resultingCanvas = canvas;
-
   const { resize, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
   if (resize) {

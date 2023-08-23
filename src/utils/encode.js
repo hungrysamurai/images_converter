@@ -29,7 +29,10 @@ export const encode = async (
     case "bmp":
       {
         try {
-          return encodeBmp(canvas, targetFormatSettings);
+          return encodeBmp(
+            canvas,
+            targetFormatSettings
+          );
         } catch (err) {
           console.log(err);
         }
@@ -39,7 +42,11 @@ export const encode = async (
     case "tiff":
       {
         try {
-          return encodeTiff(canvas);
+          return encodeTiff(
+            canvas,
+            targetFormatSettings,
+            activeTargetFormatName
+          );
         } catch (err) {
           console.log(err);
         }
@@ -50,7 +57,11 @@ export const encode = async (
       {
         {
           try {
-            return encodeGif(canvas);
+            return encodeGif(
+              canvas,
+              targetFormatSettings,
+              activeTargetFormatName
+            );
           } catch (err) {
             console.log(err);
           }
@@ -62,7 +73,11 @@ export const encode = async (
       {
         {
           try {
-            return encodePdf(canvas);
+            return encodePdf(
+              canvas,
+              targetFormatSettings,
+              activeTargetFormatName
+            );
           } catch (err) {
             console.log(err);
           }

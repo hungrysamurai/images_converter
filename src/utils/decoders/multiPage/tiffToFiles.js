@@ -6,7 +6,12 @@ import { addConvertedFile } from "../../../store/slices/processFilesSlice/proces
 
 import { encode } from "../../encode";
 
-export const tiffToFiles = async (source, targetFormatSettings, dispatch) => {
+export const tiffToFiles = async (
+ source,
+ targetFormatSettings,
+ activeTargetFormatName,
+ dispatch
+) => {
 
  const { blobURL, id, name } = source;
 
@@ -36,7 +41,8 @@ export const tiffToFiles = async (source, targetFormatSettings, dispatch) => {
 
    ctx.putImageData(imageData, 0, 0);
 
-   const encoded = await encode(canvas, targetFormatSettings);
+   const encoded = await encode(canvas, targetFormatSettings,
+    activeTargetFormatName);
 
    const size = encoded.size;
    const URL = window.URL.createObjectURL(encoded);
@@ -45,9 +51,9 @@ export const tiffToFiles = async (source, targetFormatSettings, dispatch) => {
     addConvertedFile({
      blobURL: URL,
      downloadLink: URL,
-     name: `${name}_${index + 1}.${targetFormatSettings.name}`,
+     name: `${name}_${index + 1}.${activeTargetFormatName}`,
      size,
-     type: `image/${targetFormatSettings.name}`,
+     type: `image/${activeTargetFormatName}`,
      id: nanoid(),
      sourceId: id,
     })

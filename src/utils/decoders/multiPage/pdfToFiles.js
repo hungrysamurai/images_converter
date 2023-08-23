@@ -6,8 +6,16 @@ import { addConvertedFile } from "../../../store/slices/processFilesSlice/proces
 
 import { encode } from "../../encode";
 
-export const pdfToFiles = async (source, targetFormatSettings, dispatch) => {
+export const pdfToFiles = async (
+  source,
+  targetFormatSettings,
+  activeTargetFormatName,
+  inputSettings,
+  dispatch
+) => {
   const { blobURL, id, name } = source;
+
+  const { pdf: { resolution, rotation } } = inputSettings;
 
   try {
     const PDFJS = await getPDFJS();
@@ -19,9 +27,11 @@ export const pdfToFiles = async (source, targetFormatSettings, dispatch) => {
     for (let i = 1; i < numPages + 1; i++) {
       const page = await pdf.getPage(i);
 
+      const scale = resolution / 72;
+      console.log(scale);
       const viewport = page.getViewport({
-        scale: 1,
-        rotation: 0,
+        scale,
+        rotation,
         dontFlip: false,
       });
 
@@ -38,7 +48,11 @@ export const pdfToFiles = async (source, targetFormatSettings, dispatch) => {
 
       await page.render(renderContext).promise;
 
-      const encoded = await encode(canvas, targetFormatSettings);
+      const encoded = await encode(
+        canvas,
+        targetFormatSettings,
+        activeTargetFormatName
+      );
 
       const size = encoded.size;
       const URL = window.URL.createObjectURL(encoded);
@@ -47,9 +61,9 @@ export const pdfToFiles = async (source, targetFormatSettings, dispatch) => {
         addConvertedFile({
           blobURL: URL,
           downloadLink: URL,
-          name: `${name}_${i + 1}.${targetFormatSettings.name}`,
+          name: `${name}_${i + 1}.${activeTargetFormatName}`,
           size,
-          type: `image/${targetFormatSettings.name}`,
+          type: `image/${activeTargetFormatName}`,
           id: nanoid(),
           sourceId: id,
         })
