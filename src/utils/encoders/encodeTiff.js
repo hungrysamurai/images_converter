@@ -7,14 +7,15 @@ export const encodeTiff = async (
 ) => {
 
   let resultingCanvas = canvas;
-  const { resize, smoothing, targetHeight, targetWidth } = targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
   if (resize) {
     resultingCanvas = await getResizedCanvas(
       canvas,
       targetWidth,
       targetHeight,
-      smoothing
+      smoothing,
+      units
     );
   }
 

@@ -7,7 +7,7 @@ export const encodeJpgPngWebp = async (
 ) => {
   let resultingCanvas = canvas;
 
-  const { quality, resize, smoothing, targetHeight, targetWidth } =
+  const { quality, resize, units, smoothing, targetHeight, targetWidth } =
     targetFormatSettings;
 
   if (resize) {
@@ -15,7 +15,8 @@ export const encodeJpgPngWebp = async (
       canvas,
       targetWidth,
       targetHeight,
-      smoothing
+      smoothing,
+      units
     );
   }
 

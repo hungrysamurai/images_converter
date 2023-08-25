@@ -8,14 +8,15 @@ export const encodeGif = async (
 ) => {
 
   let resultingCanvas = canvas;
-  const { resize, smoothing, targetHeight, targetWidth, quality, dither } = targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth, quality, dither } = targetFormatSettings;
 
   if (resize) {
     resultingCanvas = await getResizedCanvas(
       canvas,
       targetWidth,
       targetHeight,
-      smoothing
+      smoothing,
+      units
     );
   }
 

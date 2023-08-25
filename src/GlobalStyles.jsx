@@ -51,6 +51,10 @@ const GlobalStyles = createGlobalStyle`
     --text-medium-gray: #9f9f9f;
     --text-light-gray: #f8f8f8;
 
+    --element-light-gray:#F8F8F8;
+    --element-medium-gray:#9f9f9f;
+    --element-dark-gray: #373737;
+
     --format-color-jpeg:#011627;
     --format-color-png:#1B8ACB;
     --format-color-bmp:#FDFFFC;

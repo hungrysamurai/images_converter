@@ -7,8 +7,10 @@ import {
 } from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 const FormatSelect = ({ formats }) => {
+
   const dispatch = useDispatch();
   const activeTargetFormatName = useSelector(getActiveTargetFormat);
+
   return (
     <StyledFormatSelect>
       <StyledLabel>
@@ -54,7 +56,7 @@ const StyledSelect = styled.select`
   width: 12rem;
   max-width: 80%;
   height: 3rem;
-  border: 0.25rem solid var(--icon-medium-gray);
+  border: 0.25rem solid var(--element-medium-gray);
   border-radius: 0.5rem;
   margin-left: 0.5rem;
   padding: 0.5rem;
@@ -62,6 +64,7 @@ const StyledSelect = styled.select`
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-dark-gray);
+  background: var(--bg-light-gray);
   cursor: pointer;
 `;
 

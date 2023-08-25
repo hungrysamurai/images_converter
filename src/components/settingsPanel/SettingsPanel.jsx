@@ -11,7 +11,11 @@ import { getAllTargetFormats } from "../../store/slices/conversionSettingsSlice/
 import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
 
 import FormatSelect from "./FormatSelect";
+
 import SliderInput from "./SliderInput";
+import CheckboxInput from "./CheckboxInput";
+import NumberInput from "./NumberInput";
+import SelectInput from "./SelectInput";
 
 const SettingsPanel = ({
   setSettingsPanelVisibility,
@@ -51,7 +55,56 @@ const SettingsPanel = ({
 
             <FormatSelect formats={formats} />
 
-            <SliderInput defaultValue={75} />
+            <SliderInput />
+            <CheckboxInput/>
+
+             <SelectInput 
+            options={
+              ['pixels','percentages']
+              }
+              label={'Units:'}
+              />
+
+            <div className="temp">
+
+          <NumberInput caption='width' units='pixels'/>
+          <NumberInput caption='height' units='percentages' max={100}/>
+
+
+            </div>
+
+            <div className="temp">
+            <NumberInput caption='resolution' defaultValue='72' units='ppi'/>
+          <NumberInput caption='rotation' defaultValue='0' min={0} max={360} units='deg'/>
+            </div>
+
+           <SelectInput 
+            options={
+              ['off','low','medium','high']
+              }
+              label={'Resize smoothing:'}
+              defaultValue={'low'}
+              />
+
+            <SelectInput 
+            options={
+              ['off','FloydSteinberg','FloydSteinberg-serpentine',
+              'FalseFloydSteinberg', 'FalseFloydSteinberg-serpentine','Stucki', 'Stucki-serpentine','Atkinson','Atkinson--serpentine']
+              }
+              label={'Dither:'}
+              />
+
+
+            <SelectInput 
+            options={
+              ['PNG', 'JPEG']
+              }
+              label={'Compression:'}
+              />
+
+
+  
+
           </StyledSettingsPanel>
         </>
       )}
@@ -66,7 +119,6 @@ const StyledSettingsPanelBackground = styled(motion.div)`
   top: 0;
   left: 0;
   backdrop-filter: blur(4px);
-  /* background-color: #37373789; */
   opacity: 1;
   z-index: 2;
 `;
@@ -90,6 +142,15 @@ const StyledSettingsPanel = styled(motion.div)`
 
   @media (max-width: 500px) {
     width: 100vw;
+  }
+
+  .temp {
+    margin:1rem;
+    height:3rem;
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 

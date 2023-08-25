@@ -13,6 +13,7 @@ const initialState = {
     settings: {
       jpeg: {
         resize: true,
+        units: 'percentages',
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
@@ -20,6 +21,7 @@ const initialState = {
       },
       png: {
         resize: true,
+        units: 'percentages',
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
@@ -27,6 +29,7 @@ const initialState = {
       },
       webp: {
         resize: true,
+        units: 'percentages',
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
@@ -34,12 +37,14 @@ const initialState = {
       },
       bmp: {
         resize: true,
+        units: 'percentages',
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
       },
       gif: {
         resize: true,
+        units: 'percentages',
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
@@ -48,12 +53,14 @@ const initialState = {
       },
       tiff: {
         resize: true,
+        units: 'pixels',
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
       },
       pdf: {
         resize: true,
+        units: 'pixels',
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
@@ -82,7 +89,6 @@ export const conversionSettingsSlice = createSlice({
       state.outputSettings.activeTargetFormatName = allFormats[newFormatIndex];
     },
     selectTargetFormat: (state, action) => {
-      console.log(action.payload);
       state.outputSettings.activeTargetFormatName = action.payload;
     },
   },
