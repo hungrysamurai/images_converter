@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-const NumberInput = ({caption, units, min,max, defaultValue, action}) => {
+const NumberInput = ({ caption, units, min, max, defaultValue, name, active}) => {
 
   const [numValue, setNumValue] = useState(defaultValue ? defaultValue : '');
 
@@ -9,7 +9,7 @@ const NumberInput = ({caption, units, min,max, defaultValue, action}) => {
     setNumValue(e.target.value);
   }
   return (
-    <StyledNumberContainer>
+    <StyledNumberContainer className={!active && 'inactive'}>
      <StyledNumberInput 
      type='number'
      placeholder={numValue ? numValue : 'auto'}
@@ -17,6 +17,7 @@ const NumberInput = ({caption, units, min,max, defaultValue, action}) => {
      onChange={handleChange}
      max={max ? max : null}
      min={min ? min : 1}
+     name={name}
      />
 
     {caption && 
@@ -38,6 +39,11 @@ const NumberInput = ({caption, units, min,max, defaultValue, action}) => {
 const StyledNumberContainer = styled.label`
  margin: 1rem;
  position: relative;
+
+   &.inactive{
+    opacity: 0.5;
+    pointer-events: none;
+  }
 `;
 
 const StyledNumberInput = styled.input`

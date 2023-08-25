@@ -12,7 +12,7 @@ const initialState = {
     activeTargetFormatName: "jpeg",
     settings: {
       jpeg: {
-        resize: true,
+        resize: false,
         units: 'percentages',
         targetWidth: null,
         targetHeight: null,
@@ -20,7 +20,7 @@ const initialState = {
         quality: 0.75,
       },
       png: {
-        resize: true,
+        resize: false,
         units: 'percentages',
         targetWidth: null,
         targetHeight: null,
@@ -28,7 +28,7 @@ const initialState = {
         quality: 1,
       },
       webp: {
-        resize: true,
+        resize: false,
         units: 'percentages',
         targetWidth: null,
         targetHeight: null,
@@ -36,14 +36,14 @@ const initialState = {
         quality: 0.75,
       },
       bmp: {
-        resize: true,
+        resize: false,
         units: 'percentages',
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
       },
       gif: {
-        resize: true,
+        resize: false,
         units: 'percentages',
         targetWidth: null,
         targetHeight: null,
@@ -59,7 +59,7 @@ const initialState = {
         smoothing: "medium",
       },
       pdf: {
-        resize: true,
+        resize: false,
         units: 'pixels',
         targetWidth: null,
         targetHeight: null,
@@ -91,16 +91,31 @@ export const conversionSettingsSlice = createSlice({
     selectTargetFormat: (state, action) => {
       state.outputSettings.activeTargetFormatName = action.payload;
     },
+    updateActiveFormatSettings: (state, action) => {
+      const { property, value } = action.payload;
+
+      const { outputSettings: { activeTargetFormatName } } = current(state);
+
+      state.outputSettings.settings[activeTargetFormatName][property] = value;
+    }
   },
 });
 
-export const getActiveTargetFormat = (state) =>
-  state.conversionSettings.outputSettings.activeTargetFormatName;
+export const getActiveTargetFormat = (state) => state.conversionSettings.outputSettings.activeTargetFormatName;
 
 export const getAllTargetFormats = (state) =>
   state.conversionSettings.outputSettings.allFormats;
 
-export const { switchTargetFormat, selectTargetFormat } =
-  conversionSettingsSlice.actions;
+export const getActiveFormatOutputSettings = (state) => {
+  const activeTargetFormatName = state.conversionSettings.outputSettings.activeTargetFormatName;
+
+  return state.conversionSettings.outputSettings.settings[activeTargetFormatName]
+}
+
+export const {
+  switchTargetFormat,
+  selectTargetFormat,
+  updateActiveFormatSettings
+} = conversionSettingsSlice.actions;
 
 export default conversionSettingsSlice.reducer;

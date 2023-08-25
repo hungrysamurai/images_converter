@@ -12,10 +12,11 @@ import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
 
 import FormatSelect from "./FormatSelect";
 
-import SliderInput from "./SliderInput";
-import CheckboxInput from "./CheckboxInput";
-import NumberInput from "./NumberInput";
-import SelectInput from "./SelectInput";
+import SliderInput from "./InputComponents/SliderInput";
+import CheckboxInput from "./InputComponents/CheckboxInput";
+import NumberInput from "./InputComponents/NumberInput";
+import SelectInput from "./InputComponents/SelectInput";
+import OutputSettings from "./OutputSettings";
 
 const SettingsPanel = ({
   setSettingsPanelVisibility,
@@ -54,8 +55,8 @@ const SettingsPanel = ({
             </StyledCloseSettingsPanelHeader>
 
             <FormatSelect formats={formats} />
-
-            <SliderInput />
+            <OutputSettings/>
+            {/* <SliderInput />
             <CheckboxInput/>
 
              <SelectInput 
@@ -100,7 +101,7 @@ const SettingsPanel = ({
               ['PNG', 'JPEG']
               }
               label={'Compression:'}
-              />
+              /> */}
 
 
   

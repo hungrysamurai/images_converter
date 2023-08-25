@@ -1,11 +1,21 @@
 import styled from 'styled-components';
-import { useState } from 'react';
 
-const CheckboxInput = () => {
-  const [checked, setChecked] = useState(true);
+import { useDispatch } from 'react-redux';
 
-  const handleChange = () => {
-    setChecked(!checked);
+import { updateActiveFormatSettings } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+
+const CheckboxInput = ({ currentValue }) => {
+
+  const dispatch = useDispatch();
+
+  const handleChange = (e) => {
+    console.log(e.target.name);
+    console.log(e.target.checked);
+    dispatch(updateActiveFormatSettings({
+      property: e.target.name,
+      value: e.target.checked
+      }
+    ))
   }
 
   return (
@@ -22,7 +32,7 @@ const CheckboxInput = () => {
         type="checkbox" 
         name="resize" 
         onChange={handleChange}
-        checked={checked}
+        checked={currentValue}
         />
 
        <StyledTogglerBall></StyledTogglerBall>
@@ -31,7 +41,7 @@ const CheckboxInput = () => {
      </StyledToggleWrapper>
 
      <StyledCheckboxDisplayValue>
-      {checked ? 'On' : 'Off'}
+      {currentValue ? 'On' : 'Off'}
       </StyledCheckboxDisplayValue>
 
     </StyledCheckboxContainer>
@@ -102,7 +112,7 @@ const StyledTogglerBall = styled.div`
 `
 
 const StyledCheckboxDisplayValue = styled.div`
-width:15%;
+width:10%;
 display: flex;
 align-items: center;
 justify-content: flex-start;

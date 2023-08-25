@@ -1,16 +1,30 @@
 import styled from 'styled-components';
 
-const SelectInput = ({options, label, defaultValue}) => {
+import { useDispatch } from 'react-redux';
+import { updateActiveFormatSettings } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+
+const SelectInput = ({options, label, name, currentValue, active}) => {
+
+  const dispatch = useDispatch();
+
  const handleChange = (e) => {
+  console.log(e.target.name);
+  console.log(e.target.value);
+    dispatch(updateActiveFormatSettings({
+      property: e.target.name,
+      value: e.target.value
+      }
+    ))
  }
 
   return (
-    <StyledInputContainer>
+    <StyledInputContainer className={!active && 'inactive'}>
        <StyledLabel>
         {label}
         <StyledSelect
           onChange={handleChange}
-          defaultValue={defaultValue ? defaultValue : null}
+          name={name}
+          value={currentValue}
         >
           {options.map((optionName, i) => (
             <option key={i} value={optionName}>
@@ -30,6 +44,11 @@ const StyledInputContainer = styled.div`
   align-items: center;
   justify-content: center;
   margin:1rem;
+
+  &.inactive{
+    opacity: 0.5;
+    pointer-events: none;
+  }
 `;
 
 const StyledLabel = styled.label`
