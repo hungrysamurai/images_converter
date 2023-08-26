@@ -13,7 +13,7 @@ const initialState = {
     settings: {
       jpeg: {
         resize: false,
-        units: 'percentages',
+        units: "percentages",
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
@@ -21,7 +21,7 @@ const initialState = {
       },
       png: {
         resize: false,
-        units: 'percentages',
+        units: "percentages",
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
@@ -29,7 +29,7 @@ const initialState = {
       },
       webp: {
         resize: false,
-        units: 'percentages',
+        units: "percentages",
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
@@ -37,30 +37,30 @@ const initialState = {
       },
       bmp: {
         resize: false,
-        units: 'percentages',
+        units: "percentages",
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
       },
       gif: {
         resize: false,
-        units: 'percentages',
+        units: "percentages",
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
-        quality: 20,
+        quality: 11,
         dither: "FloydSteinberg",
       },
       tiff: {
         resize: true,
-        units: 'pixels',
+        units: "pixels",
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
       },
       pdf: {
         resize: false,
-        units: 'pixels',
+        units: "pixels",
         targetWidth: null,
         targetHeight: null,
         smoothing: "medium",
@@ -94,28 +94,50 @@ export const conversionSettingsSlice = createSlice({
     updateActiveFormatSettings: (state, action) => {
       const { property, value } = action.payload;
 
-      const { outputSettings: { activeTargetFormatName } } = current(state);
+      const {
+        outputSettings: { activeTargetFormatName },
+      } = current(state);
+
+      if (property === "units") {
+        state.outputSettings.settings[activeTargetFormatName].targetHeight =
+          null;
+        state.outputSettings.settings[activeTargetFormatName].targetWidth =
+          null;
+      }
 
       state.outputSettings.settings[activeTargetFormatName][property] = value;
-    }
+    },
+    updateInputSettings: (state, action) => {
+      const { property, value } = action.payload;
+
+      state.inputSettings.pdf[property] = value;
+    },
   },
 });
 
-export const getActiveTargetFormat = (state) => state.conversionSettings.outputSettings.activeTargetFormatName;
+export const getActiveTargetFormat = (state) =>
+  state.conversionSettings.outputSettings.activeTargetFormatName;
 
 export const getAllTargetFormats = (state) =>
   state.conversionSettings.outputSettings.allFormats;
 
 export const getActiveFormatOutputSettings = (state) => {
-  const activeTargetFormatName = state.conversionSettings.outputSettings.activeTargetFormatName;
+  const activeTargetFormatName =
+    state.conversionSettings.outputSettings.activeTargetFormatName;
 
-  return state.conversionSettings.outputSettings.settings[activeTargetFormatName]
-}
+  return state.conversionSettings.outputSettings.settings[
+    activeTargetFormatName
+  ];
+};
+
+export const getPDFInputSettings = (state) =>
+  state.conversionSettings.inputSettings.pdf;
 
 export const {
   switchTargetFormat,
   selectTargetFormat,
-  updateActiveFormatSettings
+  updateActiveFormatSettings,
+  updateInputSettings,
 } = conversionSettingsSlice.actions;
 
 export default conversionSettingsSlice.reducer;

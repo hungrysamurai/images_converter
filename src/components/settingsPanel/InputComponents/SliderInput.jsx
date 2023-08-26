@@ -1,31 +1,48 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const SliderInput = () => {
-  const [sliderValue, setSliderValue] = useState(75);
+import { getConvertedValue } from "../../../utils/getConvertedValue";
+
+import { useDispatch } from "react-redux";
+import { updateActiveFormatSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+
+const SliderInput = ({ label, currentValue, min, max, name, mode }) => {
+  const dispatch = useDispatch();
+
+  const displayValuesConversionMode =
+    mode === "jpeg" || mode === "webp" ? "decimalsToPercentages" : "gifDisplay";
+  const stateValuesConversionMode =
+    mode === "jpeg" || mode === "webp" ? "percentagesTodecimals" : "gifState";
+
+  const convertedValue = getConvertedValue(
+    currentValue,
+    displayValuesConversionMode
+  );
 
   const handleChange = (e) => {
-    console.log(e.target.value);
-    setSliderValue(e.target.value);
+    dispatch(
+      updateActiveFormatSettings({
+        property: e.target.name,
+        value: getConvertedValue(e.target.value, stateValuesConversionMode),
+      })
+    );
   };
 
   return (
     <StyledSliderContainer>
       <StyledSliderLabel>
-        Quality:
+        {label}
         <StyledSliderInput
           type="range"
-          min="1"
-          max="100"
+          min={min}
+          max={max}
           onChange={handleChange}
-          value={sliderValue}
+          value={convertedValue}
+          name={name}
         />
       </StyledSliderLabel>
 
-      <StyledSliderDisplayValue>
-        {sliderValue}
-      </StyledSliderDisplayValue>
-
+      <StyledSliderDisplayValue>{convertedValue}</StyledSliderDisplayValue>
     </StyledSliderContainer>
   );
 };
@@ -58,7 +75,7 @@ const StyledSliderInput = styled.input`
   margin-top: 0.25rem;
   cursor: pointer;
 
-  &:focus{
+  &:focus {
     outline: none;
   }
 
@@ -67,14 +84,14 @@ const StyledSliderInput = styled.input`
     appearance: none;
     width: 100%;
     background: var(--element-light-gray);
-    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.33) inset;;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.33) inset;
     outline: none;
     height: 1rem;
     border-radius: 1rem;
     background-image: transparent;
   }
 
-  &::-moz-range-track{
+  &::-moz-range-track {
     width: 100%;
     height: 1rem;
     background: var(--element-light-gray);
@@ -95,13 +112,13 @@ const StyledSliderInput = styled.input`
     cursor: pointer;
     transition: 0.4s;
 
-    &:hover{
+    &:hover {
       background: var(--element-dark-gray);
       transform: scale(1.2);
     }
   }
 
-  &::-moz-range-thumb{
+  &::-moz-range-thumb {
     height: 1.25rem;
     width: 1.25rem;
     border-radius: 100%;
@@ -110,23 +127,23 @@ const StyledSliderInput = styled.input`
     background: var(--element-light-gray);
     transition: 0.4s;
 
-    &:hover{
-        background: var(--element-dark-gray);
-        transform: scale(1.2);
+    &:hover {
+      background: var(--element-dark-gray);
+      transform: scale(1.2);
     }
   }
 `;
 
 const StyledSliderDisplayValue = styled.div`
-width:15%;
-display: flex;
-align-items: center;
-justify-content: flex-start;
-font-size: 2rem;
+  width: 15%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 2rem;
 
- @media (max-width: 500px) {
+  @media (max-width: 500px) {
     font-size: 1.5rem;
     justify-content: center;
   }
-`
+`;
 export default SliderInput;

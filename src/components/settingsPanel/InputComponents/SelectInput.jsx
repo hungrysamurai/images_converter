@@ -1,31 +1,25 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { useDispatch } from 'react-redux';
-import { updateActiveFormatSettings } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import { useDispatch } from "react-redux";
+import { updateActiveFormatSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
-const SelectInput = ({options, label, name, currentValue, active}) => {
-
+const SelectInput = ({ options, label, name, currentValue, active }) => {
   const dispatch = useDispatch();
 
- const handleChange = (e) => {
-  console.log(e.target.name);
-  console.log(e.target.value);
-    dispatch(updateActiveFormatSettings({
-      property: e.target.name,
-      value: e.target.value
-      }
-    ))
- }
+  const handleChange = (e) => {
+    dispatch(
+      updateActiveFormatSettings({
+        property: e.target.name,
+        value: e.target.value !== "off" ? e.target.value : false,
+      })
+    );
+  };
 
   return (
-    <StyledInputContainer className={!active && 'inactive'}>
-       <StyledLabel>
+    <StyledInputContainer className={!active && "inactive"}>
+      <StyledLabel>
         {label}
-        <StyledSelect
-          onChange={handleChange}
-          name={name}
-          value={currentValue}
-        >
+        <StyledSelect onChange={handleChange} name={name} value={currentValue}>
           {options.map((optionName, i) => (
             <option key={i} value={optionName}>
               {optionName}
@@ -34,8 +28,8 @@ const SelectInput = ({options, label, name, currentValue, active}) => {
         </StyledSelect>
       </StyledLabel>
     </StyledInputContainer>
-  )
-}
+  );
+};
 
 const StyledInputContainer = styled.div`
   width: 100%;
@@ -43,9 +37,9 @@ const StyledInputContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin:1rem;
+  margin: 1rem;
 
-  &.inactive{
+  &.inactive {
     opacity: 0.5;
     pointer-events: none;
   }
@@ -78,4 +72,4 @@ const StyledSelect = styled.select`
   cursor: pointer;
 `;
 
-export default SelectInput
+export default SelectInput;

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeAnimation, settingsPanelAnimation } from "../../animations";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { checkPDFInSourceFiles } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
 import { getAllTargetFormats } from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
@@ -12,11 +12,8 @@ import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
 
 import FormatSelect from "./FormatSelect";
 
-import SliderInput from "./InputComponents/SliderInput";
-import CheckboxInput from "./InputComponents/CheckboxInput";
-import NumberInput from "./InputComponents/NumberInput";
-import SelectInput from "./InputComponents/SelectInput";
 import OutputSettings from "./OutputSettings";
+import InputSettings from "./InputSettings";
 
 const SettingsPanel = ({
   setSettingsPanelVisibility,
@@ -55,57 +52,8 @@ const SettingsPanel = ({
             </StyledCloseSettingsPanelHeader>
 
             <FormatSelect formats={formats} />
-            <OutputSettings/>
-            {/* <SliderInput />
-            <CheckboxInput/>
-
-             <SelectInput 
-            options={
-              ['pixels','percentages']
-              }
-              label={'Units:'}
-              />
-
-            <div className="temp">
-
-          <NumberInput caption='width' units='pixels'/>
-          <NumberInput caption='height' units='percentages' max={100}/>
-
-
-            </div>
-
-            <div className="temp">
-            <NumberInput caption='resolution' defaultValue='72' units='ppi'/>
-          <NumberInput caption='rotation' defaultValue='0' min={0} max={360} units='deg'/>
-            </div>
-
-           <SelectInput 
-            options={
-              ['off','low','medium','high']
-              }
-              label={'Resize smoothing:'}
-              defaultValue={'low'}
-              />
-
-            <SelectInput 
-            options={
-              ['off','FloydSteinberg','FloydSteinberg-serpentine',
-              'FalseFloydSteinberg', 'FalseFloydSteinberg-serpentine','Stucki', 'Stucki-serpentine','Atkinson','Atkinson--serpentine']
-              }
-              label={'Dither:'}
-              />
-
-
-            <SelectInput 
-            options={
-              ['PNG', 'JPEG']
-              }
-              label={'Compression:'}
-              /> */}
-
-
-  
-
+            <OutputSettings />
+            <InputSettings />
           </StyledSettingsPanel>
         </>
       )}
@@ -146,9 +94,9 @@ const StyledSettingsPanel = styled(motion.div)`
   }
 
   .temp {
-    margin:1rem;
-    height:3rem;
-    width:100%;
+    margin: 1rem;
+    height: 3rem;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;

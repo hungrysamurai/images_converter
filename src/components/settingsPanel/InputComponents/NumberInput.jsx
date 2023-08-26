@@ -1,96 +1,126 @@
-import styled from 'styled-components';
-import { useState } from 'react';
-const NumberInput = ({ caption, units, min, max, defaultValue, name, active}) => {
+import styled from "styled-components";
 
-  const [numValue, setNumValue] = useState(defaultValue ? defaultValue : '');
+import { useDispatch } from "react-redux";
+import { updateActiveFormatSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { updateInputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+
+const NumberInput = ({
+  caption,
+  units,
+  min,
+  max,
+  name,
+  active,
+  currentValue,
+  inputSetting,
+}) => {
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
-    console.log(e.target.value);
-    setNumValue(e.target.value);
-  }
+    let newValue = Number(e.target.value);
+
+    // if (units === "percentages" || units === "pixels") {
+    if (newValue < 0 || newValue > max) return;
+    // }
+
+    // if(units === 'ppi'){
+    //   if (newValue < 0 || newValue > max) return;
+    // }
+
+    if (inputSetting) {
+      dispatch(
+        updateInputSettings({
+          property: e.target.name,
+          value: newValue,
+        })
+      );
+    }
+
+    dispatch(
+      updateActiveFormatSettings({
+        property: e.target.name,
+        value: newValue,
+      })
+    );
+  };
   return (
-    <StyledNumberContainer className={!active && 'inactive'}>
-     <StyledNumberInput 
-     type='number'
-     placeholder={numValue ? numValue : 'auto'}
-     value={numValue}
-     onChange={handleChange}
-     max={max ? max : null}
-     min={min ? min : 1}
-     name={name}
-     />
+    <StyledNumberContainer className={!active && "inactive"}>
+      <StyledNumberInput
+        type="number"
+        placeholder={currentValue ? currentValue : "auto"}
+        value={currentValue ? currentValue : ""}
+        onChange={handleChange}
+        max={max ? max : null}
+        min={min ? min : 1}
+        name={name}
+      />
 
-    {caption && 
-      <StyledNumberInputCaption>
-        {caption}
-      </StyledNumberInputCaption>
-    }
-    
-    {units && 
-      <StyledInputUnitsLabel>
-        {units === 'pixels' ? 'px' : units==='percentages' ? '%' : units}
-      </StyledInputUnitsLabel>
-    }
+      {caption && (
+        <StyledNumberInputCaption>{caption}</StyledNumberInputCaption>
+      )}
 
-     </StyledNumberContainer>
-  )
-}
+      {units && (
+        <StyledInputUnitsLabel>
+          {units === "pixels" ? "px" : units === "percentages" ? "%" : units}
+        </StyledInputUnitsLabel>
+      )}
+    </StyledNumberContainer>
+  );
+};
 
 const StyledNumberContainer = styled.label`
- margin: 1rem;
- position: relative;
+  margin: 1rem;
+  position: relative;
 
-   &.inactive{
+  &.inactive {
     opacity: 0.5;
     pointer-events: none;
   }
 `;
 
 const StyledNumberInput = styled.input`
- width:6rem;
- height:3rem;
- display: flex;
- align-items: center;
- justify-content: center;
- text-align: center;
- font-size: 1.5rem;
- font-family: inherit;
- border: 0.25rem solid var(--element-medium-gray);
- border-radius: 0.5rem;
- 
+  width: 6rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 0.25rem solid var(--element-medium-gray);
+  border-radius: 0.5rem;
 
- -moz-appearance:textfield;
+  -moz-appearance: textfield;
 
- &::-webkit-inner-spin-button{
-  -webkit-appearance: none;
- }
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
 
- &:focus{
-  outline: none;
- }
+  &:focus {
+    outline: none;
+  }
 `;
 
 const StyledNumberInputCaption = styled.span`
-position: absolute;
-bottom:-1.25rem;
-left: 50%;
-transform: translateX(-50%);
-color:var(--text-dark-gray);
-font-size:1rem;
-`
+  position: absolute;
+  bottom: -1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-dark-gray);
+  font-size: 1rem;
+`;
 
 const StyledInputUnitsLabel = styled.div`
   position: absolute;
-  width:2rem;
+  width: 2rem;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  right:-2.25rem;
-  top:50%;
+  right: -2.25rem;
+  top: 50%;
   transform: translateY(-50%);
-  color:var(--text-dark-gray);
-  font-size:1rem;
-`
+  color: var(--text-dark-gray);
+  font-size: 1rem;
+`;
 
-
-export default NumberInput
+export default NumberInput;
