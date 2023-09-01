@@ -99,6 +99,12 @@ const StyledNumberInput = styled.input`
   &:focus {
     outline: none;
   }
+
+  @media (max-width: 768px) {
+    width: 5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
 `;
 
 const StyledNumberInputCaption = styled.span`

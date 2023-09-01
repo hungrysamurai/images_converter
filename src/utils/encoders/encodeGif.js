@@ -6,9 +6,16 @@ export const encodeGif = async (
   targetFormatSettings,
   activeTargetFormatName
 ) => {
-
   let resultingCanvas = canvas;
-  const { resize, units, smoothing, targetHeight, targetWidth, quality, dither } = targetFormatSettings;
+  const {
+    resize,
+    units,
+    smoothing,
+    targetHeight,
+    targetWidth,
+    quality,
+    dither,
+  } = targetFormatSettings;
 
   if (resize) {
     resultingCanvas = await getResizedCanvas(
@@ -24,8 +31,8 @@ export const encodeGif = async (
     const gif = new GIF({
       workers: 2,
       quality,
-      workerScript: "node_modules/gif.js.optimized/dist/gif.worker.js",
-      dither
+      workerScript: "assets/gif.worker.js",
+      dither,
     });
 
     gif.addFrame(resultingCanvas);

@@ -43,6 +43,10 @@ const StyledInputContainer = styled.div`
     opacity: 0.5;
     pointer-events: none;
   }
+
+  @media (max-width: 768px) {
+    margin: 0.5rem;
+  }
 `;
 
 const StyledLabel = styled.label`
@@ -54,6 +58,10 @@ const StyledLabel = styled.label`
   align-items: center;
   justify-content: center;
   width: 100%;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const StyledSelect = styled.select`
@@ -70,6 +78,11 @@ const StyledSelect = styled.select`
   color: var(--text-dark-gray);
   background: var(--bg-light-gray);
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    width: 80%;
+    font-size: 1rem;
+  }
 `;
 
 export default SelectInput;

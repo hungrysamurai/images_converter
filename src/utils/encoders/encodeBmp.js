@@ -1,9 +1,10 @@
-import { getCanvasToBMP } from "../../../public/canvas-to-bmp";
+import { getCanvasToBMP } from "../../../public/assets/canvas-to-bmp";
 import { getResizedCanvas } from "../getResizedCanvas";
 
 export const encodeBmp = async (canvas, targetFormatSettings) => {
   let resultingCanvas = canvas;
-  const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth } =
+    targetFormatSettings;
 
   if (resize) {
     resultingCanvas = await getResizedCanvas(

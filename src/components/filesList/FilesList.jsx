@@ -8,7 +8,7 @@ import { getFileSize } from "../../utils/helpers/getFileSize";
 import { AnimatePresence, motion } from "framer-motion";
 import { memo } from "react";
 
-const FilesList = memo(function FilesList({ files }){
+const FilesList = memo(function FilesList({ files }) {
   return (
     <StyledFilesList layout layoutRoot>
       <AnimatePresence>
@@ -42,8 +42,11 @@ const StyledFilesList = styled(motion.div)`
   gap: 1rem;
   z-index: 1;
 
-   @media (max-width: 500px) {
+  @media (max-width: 768px) {
     padding: 1rem;
+    grid-template-columns: repeat(auto-fit, 4rem);
+    grid-auto-rows: 4rem;
+    gap: 0.5rem;
   }
 `;
 

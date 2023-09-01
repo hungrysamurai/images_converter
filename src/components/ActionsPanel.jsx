@@ -6,51 +6,51 @@ import IconPlay from "./icons/IconPlay";
 import IconSettings from "./icons/IconSettings";
 import IconLoadingSpinner from "./icons/IconLoadingSpinner";
 
-import { convertFiles, isProcessingLoading } from "../store/slices/processFilesSlice/processFilesSlice";
+import {
+  convertFiles,
+  isProcessingLoading,
+} from "../store/slices/processFilesSlice/processFilesSlice";
 import { AnimatePresence, motion } from "framer-motion";
 
 const ActionsPanel = ({ setSettingsPanelVisibility }) => {
   const dispatch = useDispatch();
-  const isLoading = useSelector(isProcessingLoading)
+  const isLoading = useSelector(isProcessingLoading);
 
   return (
     <StyledActionPanel>
-      
-      <StyledActionButton 
-      className={isLoading ? 'disabled' : ''}
-      onClick={
-        isLoading ? 
-        null :
-        () => setSettingsPanelVisibility(true)}>
+      <StyledActionButton
+        className={isLoading ? "disabled" : ""}
+        onClick={isLoading ? null : () => setSettingsPanelVisibility(true)}
+      >
         <IconSettings />
       </StyledActionButton>
-      
-      <AnimatePresence>
-      {isLoading ? 
-        <StyledActionButton
-        disabled={true}
-        className="disabled"
-        >
-          <IconLoadingSpinner />
-        </StyledActionButton> :
-        <StyledActionButton onClick={() => dispatch(convertFiles())}>
-        <IconPlay />
-        </StyledActionButton>
-      }
-      </AnimatePresence>
 
+      <AnimatePresence>
+        {isLoading ? (
+          <StyledActionButton disabled={true} className="disabled">
+            <IconLoadingSpinner />
+          </StyledActionButton>
+        ) : (
+          <StyledActionButton onClick={() => dispatch(convertFiles())}>
+            <IconPlay />
+          </StyledActionButton>
+        )}
+      </AnimatePresence>
     </StyledActionPanel>
   );
 };
 
 const StyledActionPanel = styled.div`
   width: 95%;
-  height: 8vh;
-  min-height: 5rem;
+  height: 5rem;
   background-color: var(--bg-container-gray);
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    height: 3.5rem;
+  }
 `;
 
 const StyledActionButton = styled(motion.div)`
@@ -63,9 +63,9 @@ const StyledActionButton = styled(motion.div)`
     cursor: default;
     filter: brightness(1.2);
 
-      &:hover {
-         filter: brightness(1.2);
-      }
+    &:hover {
+      filter: brightness(1.2);
+    }
   }
 
   svg {
@@ -76,10 +76,10 @@ const StyledActionButton = styled(motion.div)`
     filter: brightness(0.9);
   }
 
-  @media (max-width: 500px) {
+  @media (max-width: 768px) {
     margin: 0 1rem;
     svg {
-      width: 2rem;
+      width: 1.75rem;
     }
   }
 `;

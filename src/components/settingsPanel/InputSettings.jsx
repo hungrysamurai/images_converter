@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 
 const InputSettings = () => {
   const PDFInputSettings = useSelector(getPDFInputSettings);
-  console.log(PDFInputSettings);
   const { resolution, rotation } = PDFInputSettings;
 
   return (
@@ -47,15 +46,24 @@ const StyledInputSettingsContainer = styled.div`
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
+
+  h2 {
+    text-align: center;
+  }
 `;
 
 const StyledPDFRasterizationSettingsContainer = styled.div`
   margin: 2rem 1rem 2rem 1rem;
   height: 3rem;
-  width: 40%;
+
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+
+  @media (max-width: 500px) {
+    width: 100%;
+    justify-content: space-around;
+  }
 `;
 
 export default InputSettings;

@@ -53,7 +53,7 @@ const SettingsPanel = ({
 
             <FormatSelect formats={formats} />
             <OutputSettings />
-            <InputSettings />
+            {isPDF && <InputSettings />}
           </StyledSettingsPanel>
         </>
       )}
@@ -63,8 +63,8 @@ const SettingsPanel = ({
 
 const StyledSettingsPanelBackground = styled(motion.div)`
   position: absolute;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
   backdrop-filter: blur(4px);
@@ -88,18 +88,15 @@ const StyledSettingsPanel = styled(motion.div)`
   padding: 2rem;
   z-index: 3;
   box-shadow: var(--container-shadow);
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
 
   @media (max-width: 500px) {
     width: 100vw;
-  }
-
-  .temp {
-    margin: 1rem;
-    height: 3rem;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow-y: scroll;
   }
 `;
 

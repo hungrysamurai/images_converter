@@ -24,7 +24,13 @@ const elementsColor = {
   heic: "light",
 };
 
-const FileElement = memo(function FileElement({ id, format, size, name, downloadLink }){
+const FileElement = memo(function FileElement({
+  id,
+  format,
+  size,
+  name,
+  downloadLink,
+}) {
   const dispatch = useDispatch();
 
   const removeElement = (id) => {
@@ -36,7 +42,7 @@ const FileElement = memo(function FileElement({ id, format, size, name, download
   };
 
   const trimName = name.length > 14 ? name.slice(0, 14) + "..." : name;
-console.log(format);
+
   return (
     <StyledFileElement
       variants={fileElementAnimation}
@@ -63,7 +69,7 @@ console.log(format);
       <div className="format-caption">{format.toUpperCase()}</div>
     </StyledFileElement>
   );
-})
+});
 
 const StyledFileElement = styled(motion.div).attrs((props) => ({
   $bg: props.$bg,
@@ -80,13 +86,12 @@ const StyledFileElement = styled(motion.div).attrs((props) => ({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: 'Ubuntu Condensed', sans-serif;
+  font-family: "Ubuntu Condensed", sans-serif;
   cursor: pointer;
 
   .file-name {
     color: var(--text-${(props) => props.$color}-gray);
     font-size: 0.75rem;
-
   }
 
   .file-size {
@@ -95,16 +100,32 @@ const StyledFileElement = styled(motion.div).attrs((props) => ({
     margin-top: 0.25rem;
   }
 
-  .format-caption{
+  .format-caption {
     position: absolute;
-    bottom:0.5rem;
+    bottom: 0.5rem;
     right: 50%;
     transform: translateX(50%);
-    font-family: 'Ubuntu Mono', monospace;
-    font-weight:700;
+    font-family: "Ubuntu Mono", monospace;
+    font-weight: 700;
     font-size: 0.75rem;
     color: var(--text-${(props) => props.$color}-gray);
-    
+  }
+
+  @media (max-width: 768px) {
+    width: 4rem;
+    height: 4rem;
+    padding: 0.1rem;
+    border-radius: 0.75rem;
+
+    .file-name {
+      font-size: 0.5rem;
+    }
+
+    .file-size {
+      color: var(--text-${(props) => props.$color}-gray);
+      font-size: 0.75rem;
+      margin-top: 0.1rem;
+    }
   }
 `;
 
@@ -120,6 +141,16 @@ const StyledRemoveElementButton = styled.button`
     width: 1.25rem;
     height: 1.25rem;
   }
+
+  @media (max-width: 768px) {
+    top: 0.25rem;
+    right: 0.25rem;
+
+    svg {
+      width: 0.9rem;
+      height: 0.9rem;
+    }
+  }
 `;
 
 const StyledDownloadElementLink = styled.a`
@@ -131,7 +162,16 @@ const StyledDownloadElementLink = styled.a`
     width: 1.25rem;
     height: 1.25rem;
   }
-  
+
+  @media (max-width: 768px) {
+    top: 0.2rem;
+    left: 0.35rem;
+
+    svg {
+      width: 0.9rem;
+      height: 0.9rem;
+    }
+  }
 `;
 
 export default FileElement;

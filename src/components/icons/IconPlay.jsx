@@ -1,7 +1,6 @@
-import {memo} from 'react';
+import { memo } from "react";
 
 const IconPlay = memo(function IconPlay() {
-  console.log('play Re Render!');
   return (
     <svg
       width="36"

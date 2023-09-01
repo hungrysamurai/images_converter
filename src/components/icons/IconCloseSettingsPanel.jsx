@@ -1,4 +1,6 @@
-const IconCloseSettingsPanel = () => {
+import { memo } from "react";
+
+const IconCloseSettingsPanel = memo(function IconCloseSettingsPanel() {
   return (
     <svg
       width="48"
@@ -54,6 +56,6 @@ const IconCloseSettingsPanel = () => {
       </defs>
     </svg>
   );
-};
+});
 
 export default IconCloseSettingsPanel;

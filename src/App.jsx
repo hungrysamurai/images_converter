@@ -12,7 +12,7 @@ import SettingsPanel from "./components/settingsPanel/SettingsPanel";
 
 function App() {
   const [settingsPanelVisibility, setSettingsPanelVisibility] = useState(false);
-
+  console.log(window.navigator.language);
   return (
     <>
       <GlobalStyles />
@@ -23,12 +23,10 @@ function App() {
       />
 
       <StyledMainContainer>
-
         <UploadContainer />
         <ActionsPanel setSettingsPanelVisibility={setSettingsPanelVisibility} />
         <DownloadContainer />
         <DownloadPanel />
-        
       </StyledMainContainer>
     </>
   );

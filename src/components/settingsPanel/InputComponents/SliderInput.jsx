@@ -50,10 +50,15 @@ const SliderInput = ({ label, currentValue, min, max, name, mode }) => {
 const StyledSliderContainer = styled.div`
   width: 100%;
   height: 3rem;
+  padding: 0.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 1rem;
+
+  @media (max-width: 768px) {
+    margin: 0.25rem;
+  }
 `;
 
 const StyledSliderLabel = styled.label`
@@ -62,6 +67,10 @@ const StyledSliderLabel = styled.label`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const StyledSliderInput = styled.input`

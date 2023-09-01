@@ -7,7 +7,6 @@ import {
 } from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 const FormatSelect = ({ formats }) => {
-
   const dispatch = useDispatch();
   const activeTargetFormatName = useSelector(getActiveTargetFormat);
 
@@ -39,6 +38,10 @@ const StyledFormatSelect = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 2rem;
+
+  @media (max-width: 768px) {
+    margin-top: 1rem;
+  }
 `;
 
 const StyledLabel = styled.label`
@@ -66,6 +69,13 @@ const StyledSelect = styled.select`
   color: var(--text-dark-gray);
   background: var(--bg-light-gray);
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    height: 2rem;
+    width: 6rem;
+    font-size: 1rem;
+    padding: 0.1rem;
+  }
 `;
 
 export default FormatSelect;

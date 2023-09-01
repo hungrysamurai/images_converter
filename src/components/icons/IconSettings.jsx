@@ -1,4 +1,6 @@
-const IconSettings = () => {
+import { memo } from "react";
+
+const IconSettings = memo(function IconSettings() {
   return (
     <svg
       width="45"
@@ -97,6 +99,6 @@ const IconSettings = () => {
       </defs>
     </svg>
   );
-};
+});
 
 export default IconSettings;

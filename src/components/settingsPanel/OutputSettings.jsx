@@ -12,6 +12,13 @@ import SelectInput from "./InputComponents/SelectInput";
 import NumberInput from "./InputComponents/NumberInput";
 import SliderInput from "./InputComponents/SliderInput";
 
+import {
+  GIFDitherOptions,
+  PDFCompressionOptions,
+  resizeUnits,
+  resizeSmoothingOptions,
+} from "../../store/slices/conversionSettingsSlice/settings";
+
 const OutputSettings = () => {
   const activeTargetFormatName = useSelector(getActiveTargetFormat);
   const activeTargetFromatOutputSettings = useSelector(
@@ -28,8 +35,7 @@ const OutputSettings = () => {
     dither,
     compression,
   } = activeTargetFromatOutputSettings;
-  // console.log(activeTargetFromatOutputSettings);
-  // console.log(activeTargetFormatName);
+
   return (
     <StyledOutputSettingsContainer>
       <StyledOptionalSettingsContainer>
@@ -56,17 +62,7 @@ const OutputSettings = () => {
               mode={activeTargetFormatName}
             />
             <SelectInput
-              options={[
-                "off",
-                "FloydSteinberg",
-                "FloydSteinberg-serpentine",
-                "FalseFloydSteinberg",
-                "FalseFloydSteinberg-serpentine",
-                "Stucki",
-                "Stucki-serpentine",
-                "Atkinson",
-                "Atkinson-serpentine",
-              ]}
+              options={GIFDitherOptions}
               label="Dither:"
               name="dither"
               currentValue={dither}
@@ -77,7 +73,7 @@ const OutputSettings = () => {
 
         {activeTargetFormatName === "pdf" && (
           <SelectInput
-            options={["PNG", "JPEG"]}
+            options={PDFCompressionOptions}
             label="Compression:"
             name="compression"
             currentValue={compression}
@@ -91,7 +87,7 @@ const OutputSettings = () => {
       <StyledResizeSettingsContainer>
         <CheckboxInput currentValue={resize} />
         <SelectInput
-          options={["pixels", "percentages"]}
+          options={resizeUnits}
           label="Units:"
           name="units"
           currentValue={units}
@@ -120,7 +116,7 @@ const OutputSettings = () => {
         </StyledResizeDimensionsContainer>
 
         <SelectInput
-          options={["off", "low", "medium", "high"]}
+          options={resizeSmoothingOptions}
           label={"Resize smoothing:"}
           name="smoothing"
           currentValue={smoothing}
@@ -140,6 +136,10 @@ const StyledOutputSettingsContainer = styled.div`
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    margin-top: 0.5rem;
+  }
 `;
 
 const StyledDivider = styled.div`
@@ -149,6 +149,10 @@ const StyledDivider = styled.div`
   background-color: var(--element-light-gray);
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.33) inset;
   margin: 1rem 0 1rem 0;
+
+  @media (max-width: 768px) {
+    margin: 0.25rem 0 0.25rem 0;
+  }
 `;
 
 const StyledResizeSettingsContainer = styled.div`
@@ -166,6 +170,11 @@ const StyledResizeDimensionsContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
+
+  @media (max-width: 500px) {
+    width: 100%;
+    justify-content: space-around;
+  }
 `;
 
 const StyledOptionalSettingsContainer = styled.div`

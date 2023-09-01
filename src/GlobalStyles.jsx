@@ -8,40 +8,17 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  body {
-    height: 100vh;
-    width:100vw;
-    font-family: 'Ubuntu Mono', monospace;
+  html{
+    height:100%;
+    width:100%;
     overflow: hidden;
   }
 
-  h1{
-    font-size: 3rem;
-    font-weight: 400;
-    color: var(--text-medium-gray);
-      
-    @media (max-width: 768px){
-        font-size: 2rem;
-      }
-  }
+  body {
+    height:100%;
+    width:100%;
+    font-family: 'Ubuntu Mono', monospace;
 
-  h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--text-dark-gray);
-  }
-
-  h3{
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-dark-gray);
-  }
-
-  p {
-    font-weight: 400;
-  }
-
-  #root {
     --bg-container-gray: #E3E3E3;
     --bg-light-gray: #F8F8F8;
     --icon-medium-gray: #9F9F9F;
@@ -67,6 +44,51 @@ const GlobalStyles = createGlobalStyle`
     --container-inner-shadow: 0px 24px 36px 0px rgba(0, 0, 0, 0.33) inset;
     --image-element-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.33); 
     --container-shadow: -12px 0px 24px 0px rgba(0, 0, 0, 0.25); 
+  }
+
+  #root {
+    position: relative;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--bg-container-gray);
+    padding-top: 1rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 400;
+    color: var(--text-medium-gray);
+      
+    @media (max-width: 768px){
+        font-size: 2rem;
+      }
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark-gray);
+
+      @media (max-width: 768px){
+        font-size: 1.25rem;
+      }
+  }
+
+  h3{
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark-gray);
+
+      @media (max-width: 768px){
+        font-size: 1rem;
+      }
+  }
+
+  p {
+    font-weight: 400;
   }
 `;
 

@@ -79,18 +79,18 @@ const UploadContainer = () => {
       onClick={handleContainerClick}
     >
       <AnimatePresence>
-      {sourceFiles.length !== 0 && (
-        <StyledUploadedFilesListWrapper
-          variants={fadeAnimation} 
-          initial="hidden"
-          animate="show"
-          exit="exit"
-          ref={filesListWrapperRef}
-          key='uploaded-files-list'
-        >
-          <FilesList files={sourceFiles} />
-        </StyledUploadedFilesListWrapper>
-      )}
+        {sourceFiles.length !== 0 && (
+          <StyledUploadedFilesListWrapper
+            variants={fadeAnimation}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+            ref={filesListWrapperRef}
+            key="uploaded-files-list"
+          >
+            <FilesList files={sourceFiles} />
+          </StyledUploadedFilesListWrapper>
+        )}
       </AnimatePresence>
 
       <StyledImagesUploadForm id="form-file-upload">
@@ -123,33 +123,29 @@ const UploadContainer = () => {
       </StyledImagesUploadForm>
 
       <AnimatePresence>
-
-     
-      {dragActive && (
-        <StyledDragPlaceholder
-          variants={fadeAnimation} 
-          initial="hidden"
-          animate="show"
-          exit="exit" 
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        >
-            <IconUpload/>
-        </StyledDragPlaceholder>
-      )}
-       
-       </AnimatePresence>
+        {dragActive && (
+          <StyledDragPlaceholder
+            variants={fadeAnimation}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+          >
+            <IconUpload />
+          </StyledDragPlaceholder>
+        )}
+      </AnimatePresence>
     </StyledUploadContainer>
   );
 };
 
 const StyledUploadContainer = styled.div`
   position: relative;
-  margin-top: 4vh;
   width: 95%;
-  height: 40vh;
+  height: calc((100% - 11rem) / 2);
   background-color: var(--bg-light-gray);
   border-radius: 2.5rem 2.5rem 0rem 0rem;
   box-shadow: var(--container-inner-shadow);
@@ -161,6 +157,10 @@ const StyledUploadContainer = styled.div`
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  @media (max-width: 768px) {
+    height: calc((100% - 8rem) / 2);
   }
 `;
 
@@ -181,6 +181,7 @@ const StyledImagesUploadForm = styled.form`
     }
 
     h3 {
+      padding: 1rem;
       text-align: center;
       line-height: 100%;
       .upload-click {
@@ -205,16 +206,16 @@ const StyledUploadedFilesListWrapper = styled(motion.div)`
 `;
 
 const StyledDragPlaceholder = styled(motion.div)`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    backdrop-filter: blur(24px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  backdrop-filter: blur(24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 export default UploadContainer;

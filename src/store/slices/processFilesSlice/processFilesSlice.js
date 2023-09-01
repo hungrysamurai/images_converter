@@ -66,19 +66,15 @@ const processFilesSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(convertFiles.pending, (state) => {
-        console.log("status change - loading");
         state.loading = true;
       })
       .addCase(convertFiles.fulfilled, (state) => {
-        console.log("status change - done");
         state.loading = false;
       })
       .addCase(downloadAllFiles.pending, (state) => {
-        console.log("status change - loading");
         state.loading = true;
       })
       .addCase(downloadAllFiles.fulfilled, (state) => {
-        console.log("status change - done");
         state.loading = false;
       });
   },

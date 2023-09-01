@@ -46,11 +46,20 @@ const StyledCheckboxContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 768px) {
+    margin: 0.5rem;
+  }
 `;
 
 const StyledCheckboxDescription = styled.p`
   font-size: 1.5rem;
   margin-right: 1rem;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    font-weight: 700;
+  }
 `;
 
 const StyledToggleWrapper = styled.div`
@@ -108,8 +117,10 @@ const StyledCheckboxDisplayValue = styled.div`
   font-size: 2rem;
   margin-left: 1rem;
 
-  @media (max-width: 500px) {
-    font-size: 1.5rem;
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-left: 0.5rem;
     justify-content: center;
   }
 `;
