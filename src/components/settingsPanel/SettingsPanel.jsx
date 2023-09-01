@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -59,6 +61,12 @@ const SettingsPanel = ({
       )}
     </AnimatePresence>
   );
+};
+
+SettingsPanel.propTypes = {
+  setSettingsPanelVisibility: PropTypes.func,
+  settingsPanelVisibility: PropTypes.bool,
+  lang: PropTypes.string,
 };
 
 const StyledSettingsPanelBackground = styled(motion.div)`

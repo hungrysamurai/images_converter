@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
 
 import NumberInput from "./InputComponents/NumberInput";
@@ -41,6 +43,10 @@ const InputSettings = ({ lang }) => {
       </StyledPDFRasterizationSettingsContainer>
     </StyledInputSettingsContainer>
   );
+};
+
+InputSettings.propTypes = {
+  lang: PropTypes.string,
 };
 
 const StyledInputSettingsContainer = styled.div`

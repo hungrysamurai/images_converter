@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
 
 import { useDispatch } from "react-redux";
@@ -29,6 +31,14 @@ const SelectInput = ({ options, label, name, currentValue, active }) => {
       </StyledLabel>
     </StyledInputContainer>
   );
+};
+
+SelectInput.propTypes = {
+  options: PropTypes.array,
+  label: PropTypes.string,
+  name: PropTypes.string,
+  currentValue: PropTypes.string,
+  active: PropTypes.bool,
 };
 
 const StyledInputContainer = styled.div`

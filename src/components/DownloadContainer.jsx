@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getActiveTargetFormat,
-  getAllTargetFormats,
   switchTargetFormat,
 } from "../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
@@ -13,6 +12,7 @@ import FilesList from "./filesList/FilesList";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { fadeAnimation } from "../animations";
+
 const DownloadContainer = () => {
   const activeTargetFormatName = useSelector(getActiveTargetFormat);
   const allProccecedFiles = useSelector(getAllProcessedFiles);
@@ -44,6 +44,7 @@ const DownloadContainer = () => {
     </StyledDownloadContainer>
   );
 };
+
 const StyledDownloadContainer = styled.div`
   width: 95%;
   height: calc((100% - 11rem) / 2);

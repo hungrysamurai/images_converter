@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import { memo } from "react";
 
 const IconDownloadElement = memo(function IconDownloadElement({ bg }) {
@@ -18,5 +20,9 @@ const IconDownloadElement = memo(function IconDownloadElement({ bg }) {
     </svg>
   );
 });
+
+IconDownloadElement.propTypes = {
+  bg: PropTypes.string,
+};
 
 export default IconDownloadElement;

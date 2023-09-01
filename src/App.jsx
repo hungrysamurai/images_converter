@@ -14,7 +14,7 @@ import { getNavigatorLang } from "./utils/getNavigatorLang";
 
 function App() {
   const [settingsPanelVisibility, setSettingsPanelVisibility] = useState(false);
-  const [lang, setLang] = useState(getNavigatorLang());
+  const [lang] = useState(() => getNavigatorLang());
 
   return (
     <>

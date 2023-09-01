@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
 
 import { motion } from "framer-motion";
@@ -70,6 +72,14 @@ const FileElement = memo(function FileElement({
     </StyledFileElement>
   );
 });
+
+FileElement.propTypes = {
+  id: PropTypes.string,
+  format: PropTypes.string,
+  size: PropTypes.string,
+  name: PropTypes.string,
+  downloadLink: PropTypes.string,
+};
 
 const StyledFileElement = styled(motion.div).attrs((props) => ({
   $bg: props.$bg,

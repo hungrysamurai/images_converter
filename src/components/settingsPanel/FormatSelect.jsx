@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -29,6 +31,11 @@ const FormatSelect = ({ formats, lang }) => {
       </StyledLabel>
     </StyledFormatSelect>
   );
+};
+
+FormatSelect.propTypes = {
+  formats: PropTypes.array,
+  lang: PropTypes.string,
 };
 
 const StyledFormatSelect = styled.div`

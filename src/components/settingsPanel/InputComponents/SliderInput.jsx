@@ -1,5 +1,6 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
-import { useEffect, useState } from "react";
 
 import { getConvertedValue } from "../../../utils/getConvertedValue";
 
@@ -45,6 +46,15 @@ const SliderInput = ({ label, currentValue, min, max, name, mode }) => {
       <StyledSliderDisplayValue>{convertedValue}</StyledSliderDisplayValue>
     </StyledSliderContainer>
   );
+};
+
+SliderInput.propTypes = {
+  label: PropTypes.string,
+  currentValue: PropTypes.string,
+  min: PropTypes.string,
+  max: PropTypes.string,
+  name: PropTypes.string,
+  mode: PropTypes.string,
 };
 
 const StyledSliderContainer = styled.div`

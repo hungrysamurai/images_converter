@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
 
 import FileElement from "./FileElement";
@@ -26,6 +28,10 @@ const FilesList = memo(function FilesList({ files }) {
     </StyledFilesList>
   );
 });
+
+FilesList.propTypes = {
+  files: PropTypes.array,
+};
 
 const StyledFilesList = styled(motion.div)`
   position: absolute;

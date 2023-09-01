@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
 
 import { useDispatch } from "react-redux";
@@ -19,13 +21,7 @@ const NumberInput = ({
   const handleChange = (e) => {
     let newValue = Number(e.target.value);
 
-    // if (units === "percentages" || units === "pixels") {
     if (newValue < 0 || newValue > max) return;
-    // }
-
-    // if(units === 'ppi'){
-    //   if (newValue < 0 || newValue > max) return;
-    // }
 
     if (inputSetting) {
       dispatch(
@@ -43,6 +39,7 @@ const NumberInput = ({
       })
     );
   };
+
   return (
     <StyledNumberContainer className={!active && "inactive"}>
       <StyledNumberInput
@@ -51,7 +48,7 @@ const NumberInput = ({
         value={currentValue ? currentValue : ""}
         onChange={handleChange}
         max={max ? max : null}
-        min={min ? min : 1}
+        min={min ? min : "1"}
         name={name}
       />
 
@@ -66,6 +63,17 @@ const NumberInput = ({
       )}
     </StyledNumberContainer>
   );
+};
+
+NumberInput.propTypes = {
+  caption: PropTypes.string,
+  units: PropTypes.string,
+  min: PropTypes.string,
+  max: PropTypes.string,
+  name: PropTypes.string,
+  active: PropTypes.bool,
+  currentValue: PropTypes.string,
+  inputSetting: PropTypes.bool,
 };
 
 const StyledNumberContainer = styled.label`

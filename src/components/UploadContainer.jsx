@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
 import { useState, useRef } from "react";
 
@@ -150,6 +152,10 @@ const UploadContainer = ({ lang }) => {
       </AnimatePresence>
     </StyledUploadContainer>
   );
+};
+
+UploadContainer.propTypes = {
+  lang: PropTypes.string,
 };
 
 const StyledUploadContainer = styled.div`

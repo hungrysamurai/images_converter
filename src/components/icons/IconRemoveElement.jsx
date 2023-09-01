@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import { memo } from "react";
 
 const IconRemoveElement = memo(function IconRemoveElement({ bg }) {
@@ -30,5 +32,9 @@ const IconRemoveElement = memo(function IconRemoveElement({ bg }) {
     </svg>
   );
 });
+
+IconRemoveElement.propTypes = {
+  bg: PropTypes.string,
+};
 
 export default IconRemoveElement;

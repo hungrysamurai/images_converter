@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +40,10 @@ const ActionsPanel = ({ setSettingsPanelVisibility }) => {
       </AnimatePresence>
     </StyledActionPanel>
   );
+};
+
+ActionsPanel.propTypes = {
+  setSettingsPanelVisibility: PropTypes.func,
 };
 
 const StyledActionPanel = styled.div`

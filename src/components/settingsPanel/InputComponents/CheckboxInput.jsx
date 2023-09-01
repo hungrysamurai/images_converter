@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
 
 import { useDispatch } from "react-redux";
@@ -43,6 +45,13 @@ const CheckboxInput = ({
       </StyledCheckboxDisplayValue>
     </StyledCheckboxContainer>
   );
+};
+
+CheckboxInput.propTypes = {
+  currentValue: PropTypes.bool,
+  displayValueOn: PropTypes.string,
+  displayValueOff: PropTypes.string,
+  label: PropTypes.string,
 };
 
 const StyledCheckboxContainer = styled.div`

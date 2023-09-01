@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import styled from "styled-components";
 
 import { useSelector } from "react-redux";
@@ -107,7 +109,7 @@ const OutputSettings = ({ lang }) => {
             name="targetWidth"
             currentValue={targetWidth}
             min="1"
-            max={units === "percentages" ? 1000 : 16384}
+            max={units === "percentages" ? "1000" : "16384"}
           />
           <NumberInput
             caption={lang === "en" ? "height" : "высота"}
@@ -116,7 +118,7 @@ const OutputSettings = ({ lang }) => {
             name="targetHeight"
             currentValue={targetHeight}
             min="1"
-            max={units === "percentages" ? 1000 : 16384}
+            max={units === "percentages" ? "1000" : "16384"}
           />
         </StyledResizeDimensionsContainer>
 
@@ -125,7 +127,7 @@ const OutputSettings = ({ lang }) => {
           label={
             lang === "en"
               ? "Resize smoothing:"
-              : "Сглаживание при масштабировании"
+              : "Сглаживание при масштабировании:"
           }
           name="smoothing"
           currentValue={smoothing}
@@ -136,6 +138,10 @@ const OutputSettings = ({ lang }) => {
       <StyledDivider></StyledDivider>
     </StyledOutputSettingsContainer>
   );
+};
+
+OutputSettings.propTypes = {
+  lang: PropTypes.string,
 };
 
 const StyledOutputSettingsContainer = styled.div`
