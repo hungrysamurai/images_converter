@@ -6,16 +6,20 @@ import { getPDFInputSettings } from "../../store/slices/conversionSettingsSlice/
 
 import { useSelector } from "react-redux";
 
-const InputSettings = () => {
+const InputSettings = ({ lang }) => {
   const PDFInputSettings = useSelector(getPDFInputSettings);
   const { resolution, rotation } = PDFInputSettings;
 
   return (
     <StyledInputSettingsContainer>
-      <h2>PDF rasterization settings</h2>
+      {lang === "en" ? (
+        <h2>PDF rasterization settings</h2>
+      ) : (
+        <h2>Настройки растрирования PDF</h2>
+      )}
       <StyledPDFRasterizationSettingsContainer>
         <NumberInput
-          caption="resolution"
+          caption={lang === "en" ? "resolution" : "разрешение"}
           units="ppi"
           active={true}
           name="resolution"
@@ -25,7 +29,7 @@ const InputSettings = () => {
           inputSetting={true}
         />
         <NumberInput
-          caption="rotation"
+          caption={lang === "en" ? "rotation" : "поворот"}
           units="deg"
           active={true}
           name="rotation"
@@ -55,10 +59,10 @@ const StyledInputSettingsContainer = styled.div`
 const StyledPDFRasterizationSettingsContainer = styled.div`
   margin: 2rem 1rem 2rem 1rem;
   height: 3rem;
-
+  width: 40%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
 
   @media (max-width: 500px) {
     width: 100%;

@@ -119,7 +119,7 @@ const UploadContainer = ({ lang }) => {
                 </>
               ) : (
                 <>
-                  Ператащите файл в эту область или{" "}
+                  Перетащите файл в эту область или{" "}
                   <span className="upload-click">нажмите</span>
                   <br />
                 </>

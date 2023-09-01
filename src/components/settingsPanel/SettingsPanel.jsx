@@ -53,7 +53,7 @@ const SettingsPanel = ({
 
             <FormatSelect formats={formats} lang={lang} />
             <OutputSettings lang={lang} />
-            {isPDF && <InputSettings />}
+            {isPDF && <InputSettings lang={lang} />}
           </StyledSettingsPanel>
         </>
       )}
