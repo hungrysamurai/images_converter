@@ -18,7 +18,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import IconUpload from "./icons/IconUpload";
 
-const UploadContainer = () => {
+const UploadContainer = ({ lang }) => {
   const sourceFiles = useSelector(getAllSourceFiles);
   const dispatch = useDispatch();
 
@@ -111,9 +111,19 @@ const UploadContainer = () => {
         >
           <div>
             <h3>
-              Drop your images here or{" "}
-              <span className="upload-click">click</span>
-              <br />
+              {lang === "en" ? (
+                <>
+                  Drop your images here or{" "}
+                  <span className="upload-click">click</span>
+                  <br />
+                </>
+              ) : (
+                <>
+                  Ператащите файл в эту область или{" "}
+                  <span className="upload-click">нажмите</span>
+                  <br />
+                </>
+              )}
               <span className="formats">
                 (JPEG, PNG, GIF, WEBP, BMP, TIFF, PDF, HEIC)
               </span>

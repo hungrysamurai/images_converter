@@ -18,6 +18,7 @@ import InputSettings from "./InputSettings";
 const SettingsPanel = ({
   setSettingsPanelVisibility,
   settingsPanelVisibility,
+  lang,
 }) => {
   const isPDF = useSelector(checkPDFInSourceFiles);
   const formats = useSelector(getAllTargetFormats);
@@ -47,12 +48,11 @@ const SettingsPanel = ({
               >
                 <IconCloseSettingsPanel />
               </StyledCloseSettingsPanelButton>
-
-              <h1>Output settings</h1>
+              {lang === "en" ? <h1>Output settings</h1> : <h1>Настройки</h1>}
             </StyledCloseSettingsPanelHeader>
 
-            <FormatSelect formats={formats} />
-            <OutputSettings />
+            <FormatSelect formats={formats} lang={lang} />
+            <OutputSettings lang={lang} />
             {isPDF && <InputSettings />}
           </StyledSettingsPanel>
         </>

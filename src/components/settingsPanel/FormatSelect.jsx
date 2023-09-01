@@ -6,14 +6,14 @@ import {
   getActiveTargetFormat,
 } from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
-const FormatSelect = ({ formats }) => {
+const FormatSelect = ({ formats, lang }) => {
   const dispatch = useDispatch();
   const activeTargetFormatName = useSelector(getActiveTargetFormat);
 
   return (
     <StyledFormatSelect>
       <StyledLabel>
-        Format:
+        {lang === "en" ? "Target format:" : "Конвертировать в:"}
         <StyledSelect
           onChange={(e) => {
             dispatch(selectTargetFormat(e.target.value));

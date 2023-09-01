@@ -19,7 +19,7 @@ import {
   resizeSmoothingOptions,
 } from "../../store/slices/conversionSettingsSlice/settings";
 
-const OutputSettings = () => {
+const OutputSettings = ({ lang }) => {
   const activeTargetFormatName = useSelector(getActiveTargetFormat);
   const activeTargetFromatOutputSettings = useSelector(
     getActiveFormatOutputSettings
@@ -42,7 +42,7 @@ const OutputSettings = () => {
         {activeTargetFormatName === "jpeg" ||
         activeTargetFormatName === "webp" ? (
           <SliderInput
-            label="Quality:"
+            label={lang === "en" ? "Quality:" : "Качество:"}
             currentValue={quality}
             min="1"
             max="100"
@@ -54,7 +54,7 @@ const OutputSettings = () => {
         {activeTargetFormatName === "gif" && (
           <>
             <SliderInput
-              label="Quality:"
+              label={lang === "en" ? "Quality:" : "Качество:"}
               currentValue={quality}
               min="1"
               max="20"
@@ -63,7 +63,7 @@ const OutputSettings = () => {
             />
             <SelectInput
               options={GIFDitherOptions}
-              label="Dither:"
+              label={lang === "en" ? "Dither:" : "Дизеринг:"}
               name="dither"
               currentValue={dither}
               active={true}
@@ -74,7 +74,7 @@ const OutputSettings = () => {
         {activeTargetFormatName === "pdf" && (
           <SelectInput
             options={PDFCompressionOptions}
-            label="Compression:"
+            label={lang === "en" ? "Compression:" : "Компрессия:"}
             name="compression"
             currentValue={compression}
             active={true}
@@ -85,10 +85,15 @@ const OutputSettings = () => {
       <StyledDivider></StyledDivider>
 
       <StyledResizeSettingsContainer>
-        <CheckboxInput currentValue={resize} />
+        <CheckboxInput
+          label={lang === "en" ? "Resize:" : "Изм. размер"}
+          currentValue={resize}
+          displayValueOn={lang === "en" ? "On" : "Вкл"}
+          displayValueOff={lang === "en" ? "Off" : "Выкл"}
+        />
         <SelectInput
           options={resizeUnits}
-          label="Units:"
+          label={lang === "en" ? "Units:" : "Ед. измерения:"}
           name="units"
           currentValue={units}
           active={resize}
@@ -96,7 +101,7 @@ const OutputSettings = () => {
 
         <StyledResizeDimensionsContainer>
           <NumberInput
-            caption="width"
+            caption={lang === "en" ? "width" : "ширина"}
             units={units}
             active={resize}
             name="targetWidth"
@@ -105,7 +110,7 @@ const OutputSettings = () => {
             max={units === "percentages" ? 1000 : 16384}
           />
           <NumberInput
-            caption="height"
+            caption={lang === "en" ? "height" : "высота"}
             units={units}
             active={resize}
             name="targetHeight"
@@ -117,7 +122,11 @@ const OutputSettings = () => {
 
         <SelectInput
           options={resizeSmoothingOptions}
-          label={"Resize smoothing:"}
+          label={
+            lang === "en"
+              ? "Resize smoothing:"
+              : "Сглаживание при масштабировании"
+          }
           name="smoothing"
           currentValue={smoothing}
           active={resize}

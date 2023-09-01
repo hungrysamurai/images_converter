@@ -4,7 +4,12 @@ import { useDispatch } from "react-redux";
 
 import { updateActiveFormatSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
-const CheckboxInput = ({ currentValue }) => {
+const CheckboxInput = ({
+  currentValue,
+  displayValueOn,
+  displayValueOff,
+  label,
+}) => {
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -18,7 +23,7 @@ const CheckboxInput = ({ currentValue }) => {
 
   return (
     <StyledCheckboxContainer>
-      <StyledCheckboxDescription>Resize:</StyledCheckboxDescription>
+      <StyledCheckboxDescription>{label}</StyledCheckboxDescription>
 
       <StyledToggleWrapper>
         <StyledToggler>
@@ -34,7 +39,7 @@ const CheckboxInput = ({ currentValue }) => {
       </StyledToggleWrapper>
 
       <StyledCheckboxDisplayValue>
-        {currentValue ? "On" : "Off"}
+        {currentValue ? displayValueOn : displayValueOff}
       </StyledCheckboxDisplayValue>
     </StyledCheckboxContainer>
   );

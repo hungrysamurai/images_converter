@@ -10,9 +10,12 @@ import DownloadContainer from "./components/DownloadContainer";
 import DownloadPanel from "./components/DownloadPanel";
 import SettingsPanel from "./components/settingsPanel/SettingsPanel";
 
+import { getNavigatorLang } from "./utils/getNavigatorLang";
+
 function App() {
   const [settingsPanelVisibility, setSettingsPanelVisibility] = useState(false);
-  console.log(window.navigator.language);
+  const [lang, setLang] = useState(getNavigatorLang());
+
   return (
     <>
       <GlobalStyles />
@@ -20,10 +23,11 @@ function App() {
       <SettingsPanel
         settingsPanelVisibility={settingsPanelVisibility}
         setSettingsPanelVisibility={setSettingsPanelVisibility}
+        lang={lang}
       />
 
       <StyledMainContainer>
-        <UploadContainer />
+        <UploadContainer lang={lang} />
         <ActionsPanel setSettingsPanelVisibility={setSettingsPanelVisibility} />
         <DownloadContainer />
         <DownloadPanel />
