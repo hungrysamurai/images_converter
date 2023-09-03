@@ -37,7 +37,7 @@ SelectInput.propTypes = {
   options: PropTypes.array,
   label: PropTypes.string,
   name: PropTypes.string,
-  currentValue: PropTypes.string,
+  currentValue: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   active: PropTypes.bool,
 };
 

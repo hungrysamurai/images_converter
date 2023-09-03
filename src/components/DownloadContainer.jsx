@@ -13,7 +13,7 @@ import FilesList from "./filesList/FilesList";
 import { AnimatePresence, motion } from "framer-motion";
 import { fadeAnimation } from "../animations";
 
-const DownloadContainer = () => {
+const DownloadContainer = ({ lang }) => {
   const activeTargetFormatName = useSelector(getActiveTargetFormat);
   const allProccecedFiles = useSelector(getAllProcessedFiles);
 
@@ -23,12 +23,19 @@ const DownloadContainer = () => {
     <StyledDownloadContainer>
       <AnimatePresence>
         {allProccecedFiles.length === 0 ? (
-          <span
-            className="placeholder"
-            onClick={() => dispatch(switchTargetFormat())}
-          >
-            {activeTargetFormatName.toUpperCase()}
-          </span>
+          <>
+            <div
+              className="placeholder"
+              onClick={() => dispatch(switchTargetFormat())}
+            >
+              <span className="output-caption">
+                {lang === "en" ? "Output format:" : "Конвертировать в:"}
+              </span>
+              <span className="output-format">
+                {activeTargetFormatName.toUpperCase()}
+              </span>
+            </div>
+          </>
         ) : (
           <StyledProcessedFilesListWrapper
             variants={fadeAnimation}
@@ -66,22 +73,37 @@ const StyledDownloadContainer = styled.div`
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 6rem;
-    font-weight: 700;
     color: var(--text-medium-gray);
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
     cursor: pointer;
+
+    .output-caption {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .output-format {
+      font-size: 6rem;
+      font-weight: 700;
+    }
   }
 
   @media (max-width: 768px) {
     height: calc((100% - 8rem) / 2);
 
     .placeholder {
-      font-size: 3.5rem;
+      .output-caption {
+        font-size: 1rem;
+      }
+      .output-format {
+        font-size: 3.5rem;
+        font-weight: 700;
+      }
     }
   }
 `;

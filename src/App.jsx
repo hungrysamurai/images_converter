@@ -8,7 +8,7 @@ import UploadContainer from "./components/UploadContainer";
 import ActionsPanel from "./components/ActionsPanel";
 import DownloadContainer from "./components/DownloadContainer";
 import DownloadPanel from "./components/DownloadPanel";
-import SettingsPanel from "./components/settingsPanel/SettingsPanel";
+import SettingsPanelWrapper from "./components/settingsPanel/SettingsPanelWrapper";
 
 import { getNavigatorLang } from "./utils/getNavigatorLang";
 
@@ -20,7 +20,7 @@ function App() {
     <>
       <GlobalStyles />
 
-      <SettingsPanel
+      <SettingsPanelWrapper
         settingsPanelVisibility={settingsPanelVisibility}
         setSettingsPanelVisibility={setSettingsPanelVisibility}
         lang={lang}
@@ -29,7 +29,7 @@ function App() {
       <StyledMainContainer>
         <UploadContainer lang={lang} />
         <ActionsPanel setSettingsPanelVisibility={setSettingsPanelVisibility} />
-        <DownloadContainer />
+        <DownloadContainer lang={lang} />
         <DownloadPanel />
       </StyledMainContainer>
     </>

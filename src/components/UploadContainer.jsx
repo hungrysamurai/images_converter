@@ -206,6 +206,8 @@ const StyledImagesUploadForm = styled.form`
       }
 
       .formats {
+        display: block;
+        margin-top: 0.5rem;
         color: var(--text-medium-gray);
         font-size: 1rem;
       }

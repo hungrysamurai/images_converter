@@ -83,10 +83,10 @@ const StyledDownloadButton = styled.button`
     filter: brightness(0.9);
   }
 
-  @media (max-width: 500px) {
+  @media (max-width: 768px) {
     margin: 0 1rem;
     svg {
-      width: 2rem;
+      width: 1.75rem;
     }
   }
 `;

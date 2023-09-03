@@ -57,8 +57,7 @@ export const processFile = async (source, settings, dispatch) => {
             activeTargetFormatName,
             inputSettings,
             dispatch
-          )
-            ;
+          );
         } catch (err) {
           console.log(err);
         }

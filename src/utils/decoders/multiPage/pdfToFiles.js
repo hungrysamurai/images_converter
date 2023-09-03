@@ -15,7 +15,9 @@ export const pdfToFiles = async (
 ) => {
   const { blobURL, id, name } = source;
 
-  const { pdf: { resolution, rotation } } = inputSettings;
+  const {
+    pdf: { resolution, rotation },
+  } = inputSettings;
 
   try {
     const PDFJS = await getPDFJS();
@@ -28,7 +30,7 @@ export const pdfToFiles = async (
       const page = await pdf.getPage(i);
 
       const scale = resolution / 72;
-      console.log(scale);
+
       const viewport = page.getViewport({
         scale,
         rotation,

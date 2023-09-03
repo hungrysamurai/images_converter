@@ -39,6 +39,29 @@ const processFilesSlice = createSlice({
   initialState,
   reducers: {
     addConvertedFile: (state, action) => {
+      // Check for name collisions
+      const nameCollisionsCount = current(state).files.filter((file) => {
+        const inStateFileName = file.name.split(".").toSpliced(-1).join("");
+        const processedFileName = action.payload.name
+          .split(".")
+          .toSpliced(-1)
+          .join("");
+
+        return (
+          inStateFileName.startsWith(processedFileName) &&
+          file.type === action.payload.type
+        );
+      }).length;
+
+      if (nameCollisionsCount > 0) {
+        const format = action.payload.name.split(".").slice(-1).join("");
+        const newName =
+          action.payload.name.split(".").toSpliced(-1).join("") +
+          `_${nameCollisionsCount}`;
+
+        action.payload.name = `${newName}.${format}`;
+      }
+
       state.files.push(action.payload);
     },
     removeConvertedFile: (state, action) => {

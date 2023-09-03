@@ -4,25 +4,26 @@ import styled from "styled-components";
 
 import { useSelector } from "react-redux";
 
-import {
-  getActiveTargetFormat,
-  getActiveFormatOutputSettings,
-} from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { getActiveFormatOutputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
-import CheckboxInput from "./InputComponents/CheckboxInput";
-import SelectInput from "./InputComponents/SelectInput";
-import NumberInput from "./InputComponents/NumberInput";
-import SliderInput from "./InputComponents/SliderInput";
+import CheckboxInput from "../InputComponents/CheckboxInput";
+import SelectInput from "../InputComponents/SelectInput";
+import NumberInput from "../InputComponents/NumberInput";
+import SliderInput from "../InputComponents/SliderInput";
 
 import {
   GIFDitherOptions,
   PDFCompressionOptions,
   resizeUnits,
   resizeSmoothingOptions,
-} from "../../store/slices/conversionSettingsSlice/settings";
+} from "../../../store/slices/conversionSettingsSlice/settings";
 
-const OutputSettings = ({ lang }) => {
-  const activeTargetFormatName = useSelector(getActiveTargetFormat);
+import { memo } from "react";
+
+const OutputSettings = memo(function OutputSettings({
+  lang,
+  activeTargetFormatName,
+}) {
   const activeTargetFromatOutputSettings = useSelector(
     getActiveFormatOutputSettings
   );
@@ -45,7 +46,7 @@ const OutputSettings = ({ lang }) => {
         activeTargetFormatName === "webp" ? (
           <SliderInput
             label={lang === "en" ? "Quality:" : "Качество:"}
-            currentValue={quality}
+            currentValue={`${quality}`}
             min="1"
             max="100"
             name="quality"
@@ -57,7 +58,7 @@ const OutputSettings = ({ lang }) => {
           <>
             <SliderInput
               label={lang === "en" ? "Quality:" : "Качество:"}
-              currentValue={quality}
+              currentValue={`${quality}`}
               min="1"
               max="20"
               name="quality"
@@ -138,10 +139,11 @@ const OutputSettings = ({ lang }) => {
       <StyledDivider></StyledDivider>
     </StyledOutputSettingsContainer>
   );
-};
+});
 
 OutputSettings.propTypes = {
   lang: PropTypes.string,
+  activeTargetFormatName: PropTypes.string,
 };
 
 const StyledOutputSettingsContainer = styled.div`

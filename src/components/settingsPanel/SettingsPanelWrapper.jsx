@@ -8,22 +8,23 @@ import { fadeAnimation, settingsPanelAnimation } from "../../animations";
 import { useSelector } from "react-redux";
 
 import { checkPDFInSourceFiles } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
-import { getAllTargetFormats } from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import {
+  getAllTargetFormats,
+  getActiveTargetFormat,
+} from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
 
-import FormatSelect from "./FormatSelect";
+import SettingsPanelBody from "./SettingsPanelBody";
 
-import OutputSettings from "./OutputSettings";
-import InputSettings from "./InputSettings";
-
-const SettingsPanel = ({
+const SettingsPanelWrapper = ({
   setSettingsPanelVisibility,
   settingsPanelVisibility,
   lang,
 }) => {
   const isPDF = useSelector(checkPDFInSourceFiles);
   const formats = useSelector(getAllTargetFormats);
+  const activeTargetFormatName = useSelector(getActiveTargetFormat);
 
   return (
     <AnimatePresence>
@@ -53,9 +54,12 @@ const SettingsPanel = ({
               {lang === "en" ? <h1>Output settings</h1> : <h1>Настройки</h1>}
             </StyledCloseSettingsPanelHeader>
 
-            <FormatSelect formats={formats} lang={lang} />
-            <OutputSettings lang={lang} />
-            {isPDF && <InputSettings lang={lang} />}
+            <SettingsPanelBody
+              lang={lang}
+              isPDF={isPDF}
+              formats={formats}
+              activeTargetFormatName={activeTargetFormatName}
+            />
           </StyledSettingsPanel>
         </>
       )}
@@ -63,7 +67,7 @@ const SettingsPanel = ({
   );
 };
 
-SettingsPanel.propTypes = {
+SettingsPanelWrapper.propTypes = {
   setSettingsPanelVisibility: PropTypes.func,
   settingsPanelVisibility: PropTypes.bool,
   lang: PropTypes.string,
@@ -139,4 +143,4 @@ const StyledCloseSettingsPanelButton = styled.button`
   }
 `;
 
-export default SettingsPanel;
+export default SettingsPanelWrapper;

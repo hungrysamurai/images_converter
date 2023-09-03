@@ -23,7 +23,6 @@ export const readSourceFileData = createAsyncThunk(
 
       const name = trimFileName(file.name);
 
-      console.log(type);
       const blobURL = window.URL.createObjectURL(file);
       dispatch(
         addSourceFile({
@@ -58,7 +57,8 @@ export const sourceFilesSlice = createSlice({
 
 export const getAllSourceFiles = (state) => state.sourceFiles;
 
-export const checkPDFInSourceFiles = (state) => state.sourceFiles.some(f => f.type === 'application/pdf')
+export const checkPDFInSourceFiles = (state) =>
+  state.sourceFiles.some((f) => f.type === "application/pdf");
 
 export const { addSourceFile, removeSourceFile } = sourceFilesSlice.actions;
 export default sourceFilesSlice.reducer;

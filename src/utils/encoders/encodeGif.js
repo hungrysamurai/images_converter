@@ -1,11 +1,7 @@
 import GIF from "gif.js.optimized";
 import { getResizedCanvas } from "../getResizedCanvas";
 
-export const encodeGif = async (
-  canvas,
-  targetFormatSettings,
-  activeTargetFormatName
-) => {
+export const encodeGif = async (canvas, targetFormatSettings) => {
   let resultingCanvas = canvas;
   const {
     resize,
@@ -31,7 +27,7 @@ export const encodeGif = async (
     const gif = new GIF({
       workers: 2,
       quality,
-      workerScript: "assets/gif.worker.js",
+      workerScript: "/assets/gif.worker.js",
       dither,
     });
 

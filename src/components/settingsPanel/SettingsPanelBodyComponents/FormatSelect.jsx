@@ -2,15 +2,17 @@ import PropTypes from "prop-types";
 
 import styled from "styled-components";
 
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectTargetFormat,
-  getActiveTargetFormat,
-} from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { useDispatch } from "react-redux";
+import { selectTargetFormat } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
-const FormatSelect = ({ formats, lang }) => {
+import { memo } from "react";
+
+const FormatSelect = memo(function FormatSelect({
+  formats,
+  lang,
+  activeTargetFormatName,
+}) {
   const dispatch = useDispatch();
-  const activeTargetFormatName = useSelector(getActiveTargetFormat);
 
   return (
     <StyledFormatSelect>
@@ -31,11 +33,12 @@ const FormatSelect = ({ formats, lang }) => {
       </StyledLabel>
     </StyledFormatSelect>
   );
-};
+});
 
 FormatSelect.propTypes = {
   formats: PropTypes.array,
   lang: PropTypes.string,
+  activeTargetFormatName: PropTypes.string,
 };
 
 const StyledFormatSelect = styled.div`

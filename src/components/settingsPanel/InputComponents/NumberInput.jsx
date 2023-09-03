@@ -72,7 +72,7 @@ NumberInput.propTypes = {
   max: PropTypes.string,
   name: PropTypes.string,
   active: PropTypes.bool,
-  currentValue: PropTypes.string,
+  currentValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   inputSetting: PropTypes.bool,
 };
 

@@ -2,13 +2,15 @@ import PropTypes from "prop-types";
 
 import styled from "styled-components";
 
-import NumberInput from "./InputComponents/NumberInput";
+import NumberInput from "../InputComponents/NumberInput";
 
-import { getPDFInputSettings } from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { getPDFInputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 import { useSelector } from "react-redux";
 
-const InputSettings = ({ lang }) => {
+import { memo } from "react";
+
+const InputSettings = memo(function InputSettings({ lang }) {
   const PDFInputSettings = useSelector(getPDFInputSettings);
   const { resolution, rotation } = PDFInputSettings;
 
@@ -25,7 +27,7 @@ const InputSettings = ({ lang }) => {
           units="ppi"
           active={true}
           name="resolution"
-          currentValue={resolution}
+          currentValue={`${resolution}`}
           min="8"
           max="1200"
           inputSetting={true}
@@ -35,7 +37,7 @@ const InputSettings = ({ lang }) => {
           units="deg"
           active={true}
           name="rotation"
-          currentValue={rotation}
+          currentValue={`${rotation}`}
           min="0"
           max="360"
           inputSetting={true}
@@ -43,7 +45,7 @@ const InputSettings = ({ lang }) => {
       </StyledPDFRasterizationSettingsContainer>
     </StyledInputSettingsContainer>
   );
-};
+});
 
 InputSettings.propTypes = {
   lang: PropTypes.string,
