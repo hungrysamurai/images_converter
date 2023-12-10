@@ -22,7 +22,7 @@ export const encodeGif = async (canvas, targetFormatSettings) => {
       units
     );
   }
-
+  console.log(quality);
   return new Promise((resolve, reject) => {
     const gif = new GIF({
       workers: 2,
