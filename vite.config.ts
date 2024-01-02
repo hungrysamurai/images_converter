@@ -6,7 +6,7 @@ export default defineConfig({
   base: "/projects/images_converter",
   plugins: [react()],
   build: {
-    outDir: "./build",
+    outDir: "./dist",
     emptyOutDir: true,
   },
 });

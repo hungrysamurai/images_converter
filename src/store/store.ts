@@ -11,3 +11,5 @@ export const store = configureStore({
     processFiles: processFilesReducer,
   },
 });
+
+export type RootState = ReturnType<typeof store.getState>;
