@@ -1,5 +1,3 @@
-import PropTypes from "prop-types";
-
 import styled from "styled-components";
 
 import FileElement from "./FileElement";
@@ -10,28 +8,39 @@ import { getFileSize } from "../../utils/helpers/getFileSize";
 import { AnimatePresence, motion } from "framer-motion";
 import { memo } from "react";
 
-const FilesList = memo(function FilesList({ files }) {
+// type guard
+function isProcessedFile(
+  toCheck: ProcessedFile | SourceFile
+): toCheck is ProcessedFile {
+  return (toCheck as ProcessedFile).downloadLink !== undefined;
+}
+
+type FilesListProps = {
+  files: ProcessedFile[] | SourceFile[];
+};
+
+const FilesList: React.FC<FilesListProps> = memo(function FilesList({ files }) {
   return (
     <StyledFilesList layout layoutRoot>
       <AnimatePresence>
-        {files.map(({ id, type, name, size, downloadLink }) => (
-          <FileElement
-            key={id}
-            id={id}
-            format={getFileFormat(type)}
-            name={name}
-            size={getFileSize(size)}
-            downloadLink={downloadLink ? downloadLink : null}
-          />
-        ))}
+        {files.map((file) => {
+          return (
+            <FileElement
+              key={file.id}
+              id={file.id}
+              format={getFileFormat(file.type)}
+              name={file.name}
+              size={getFileSize(file.size)}
+              downloadLink={
+                isProcessedFile(file) ? file.downloadLink : undefined
+              }
+            />
+          );
+        })}
       </AnimatePresence>
     </StyledFilesList>
   );
 });
-
-FilesList.propTypes = {
-  files: PropTypes.array,
-};
 
 const StyledFilesList = styled(motion.div)`
   position: absolute;

@@ -1,5 +1,3 @@
-import PropTypes from "prop-types";
-
 import styled from "styled-components";
 
 import { motion } from "framer-motion";
@@ -13,7 +11,13 @@ import { useDispatch } from "react-redux";
 import { removeSourceFile } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
 import { removeConvertedFile } from "../../store/slices/processFilesSlice/processFilesSlice";
 
-import { memo } from "react";
+type FileElementProps = {
+  id: string;
+  format: string;
+  size: string;
+  name: string;
+  downloadLink?: string;
+};
 
 const elementsColor = {
   pdf: "dark",
@@ -26,13 +30,13 @@ const elementsColor = {
   heic: "light",
 };
 
-const FileElement = memo(function FileElement({
+const FileElement: React.FC<FileElementProps> = ({
   id,
   format,
   size,
   name,
   downloadLink,
-}) {
+}) => {
   const dispatch = useDispatch();
 
   const removeElement = (id) => {
@@ -71,14 +75,6 @@ const FileElement = memo(function FileElement({
       <div className="format-caption">{format.toUpperCase()}</div>
     </StyledFileElement>
   );
-});
-
-FileElement.propTypes = {
-  id: PropTypes.string,
-  format: PropTypes.string,
-  size: PropTypes.string,
-  name: PropTypes.string,
-  downloadLink: PropTypes.string,
 };
 
 const StyledFileElement = styled(motion.div).attrs((props) => ({

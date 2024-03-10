@@ -1,4 +1,4 @@
-export const getFileSize = (bytes) => {
+export const getFileSize = (bytes: number): string => {
   if (!+bytes) return "0 Bytes";
 
   const k = 1024;

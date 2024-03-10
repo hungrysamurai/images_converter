@@ -3,7 +3,7 @@ import JSZipUtils from "jszip-utils";
 import { saveAs } from "file-saver";
 
 export const zipAndSave = async (files, activeTargetFormatName) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const zip = new JSZip();
     let count = 0;
     const zipFilename = `converted_to_${activeTargetFormatName}`;

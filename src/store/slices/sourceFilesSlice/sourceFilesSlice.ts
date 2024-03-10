@@ -1,0 +1,54 @@
+import { createSlice, PayloadAction, nanoid, current } from "@reduxjs/toolkit";
+import { RootState } from "../../store";
+
+import { SourceFilesFormats } from "../../../types";
+
+import { trimFileName } from "../../../utils/helpers/trimFileName";
+
+const initialState: SourceFile[] = [];
+
+export const sourceFilesSlice = createSlice({
+  name: "sourceFiles",
+  initialState,
+  reducers: {
+    addSourceFile: {
+      reducer: (state, action: PayloadAction<SourceFile>) => {
+        state.push(action.payload);
+      },
+      prepare(file: File) {
+        const name = trimFileName(file.name);
+        const blobURL = window.URL.createObjectURL(file);
+
+        return {
+          payload: {
+            blobURL,
+            name,
+            type: file.type as SourceFilesFormats,
+            size: file.size,
+            id: nanoid(),
+          },
+        };
+      },
+    },
+    removeSourceFile: (state, action: PayloadAction<string>) => {
+      const fileToRemove = current(state).find(
+        (el) => el.id === action.payload
+      );
+
+      if (fileToRemove) {
+        URL.revokeObjectURL(fileToRemove.blobURL);
+      }
+
+      return state.filter((el) => el.id !== action.payload);
+    },
+  },
+});
+
+export const { addSourceFile, removeSourceFile } = sourceFilesSlice.actions;
+
+export const getAllSourceFiles = (state: RootState): SourceFile[] =>
+  state.sourceFiles;
+export const checkPDFInSourceFiles = (state: RootState) =>
+  state.sourceFiles.some((f) => f.type === SourceFilesFormats.PDF);
+
+export default sourceFilesSlice.reducer;

@@ -1,13 +1,11 @@
-import PropTypes from "prop-types";
-
 import styled from "styled-components";
-import { useState, useRef } from "react";
+import { useState, useRef, DragEvent, ChangeEvent, MouseEvent } from "react";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 import {
+  addSourceFile,
   getAllSourceFiles,
-  readSourceFileData,
 } from "../store/slices/sourceFilesSlice/sourceFilesSlice";
 
 import { checkFileType } from "../utils/helpers/checkFileType";
@@ -19,19 +17,24 @@ import { fadeAnimation } from "../animations";
 import { AnimatePresence, motion } from "framer-motion";
 
 import IconUpload from "./icons/IconUpload";
+import { Lang, SourceFilesFormats } from "../types";
 
-const UploadContainer = ({ lang }) => {
-  const sourceFiles = useSelector(getAllSourceFiles);
-  const dispatch = useDispatch();
+type UploadContainerProps = {
+  lang: Lang;
+};
 
-  const inputLabelRef = useRef(null);
-  const filesListWrapperRef = useRef(null);
+const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
+  const sourceFiles = useAppSelector(getAllSourceFiles);
+  const dispatch = useAppDispatch();
+
+  const inputLabelRef = useRef<HTMLLabelElement>(null);
+  const filesListWrapperRef = useRef<HTMLDivElement>(null);
 
   // drag state
   const [dragActive, setDragActive] = useState(false);
 
   // handle drag events
-  const handleDrag = function (e) {
+  const handleDrag = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -43,7 +46,7 @@ const UploadContainer = ({ lang }) => {
   };
 
   // triggers when file is dropped
-  const handleDrop = function (e) {
+  const handleDrop = function (e: DragEvent<HTMLDivElement>) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -54,24 +57,34 @@ const UploadContainer = ({ lang }) => {
   };
 
   // triggers when file is selected with click
-  const handleClick = function (e) {
+  const handleClick = function (e: ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
-    if (e.target.files.length !== 0) {
+    if (e.target.files && e.target.files.length !== 0) {
       handleFiles([...e.target.files]);
     }
   };
 
-  const handleFiles = (files) => {
-    for (let i = 0; i < files.length; i++) {
-      if (checkFileType(files[i].type) || isHEIC(files[i])) {
-        dispatch(readSourceFileData(files[i]));
+  const handleFiles = (files: File[]) => {
+    files.forEach((file) => {
+      if (isHEIC(file)) {
+        const heicFile = new File([file], file.name, {
+          type: SourceFilesFormats.HEIC,
+        });
+        dispatch(addSourceFile(heicFile));
+      } else if (checkFileType(file.type)) {
+        dispatch(addSourceFile(file));
       }
-    }
+    });
   };
 
-  const handleContainerClick = (e) => {
-    if (filesListWrapperRef.current === e.target.parentElement) {
-      inputLabelRef.current.click();
+  const handleContainerClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (
+      filesListWrapperRef.current ===
+      (e.target as HTMLFormElement).parentElement
+    ) {
+      if (inputLabelRef.current) {
+        inputLabelRef.current.click();
+      }
     }
   };
 
@@ -113,7 +126,7 @@ const UploadContainer = ({ lang }) => {
         >
           <div>
             <h3>
-              {lang === "en" ? (
+              {lang === Lang.EN ? (
                 <>
                   Drop your images here or{" "}
                   <span className="upload-click">click</span>
@@ -152,10 +165,6 @@ const UploadContainer = ({ lang }) => {
       </AnimatePresence>
     </StyledUploadContainer>
   );
-};
-
-UploadContainer.propTypes = {
-  lang: PropTypes.string,
 };
 
 const StyledUploadContainer = styled.div`
