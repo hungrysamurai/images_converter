@@ -1,3 +1,4 @@
-import { SourceFilesFormats } from "../../types";
-export const getFileFormat = (type: SourceFilesFormats): string =>
-  type.split("/")[1];
+import { FileFormatsNames, MIMETypes } from "../../types";
+
+export const getFileFormat = (type: MIMETypes): FileFormatsNames =>
+  type.split("/")[1] as FileFormatsNames;

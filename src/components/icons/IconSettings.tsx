@@ -1,6 +1,6 @@
-import { memo } from "react";
+import React, { memo } from "react";
 
-const IconSettings = memo(function IconSettings() {
+const IconSettings: React.FC = memo(function IconSettings() {
   return (
     <svg
       width="45"

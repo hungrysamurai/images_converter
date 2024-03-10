@@ -9,6 +9,7 @@ const SelectInput = ({ options, label, name, currentValue, active }) => {
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
+    console.log(e.target.value);
     dispatch(
       updateActiveFormatSettings({
         property: e.target.name,

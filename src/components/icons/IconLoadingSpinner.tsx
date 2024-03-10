@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { memo } from "react";
 
-const IconLoadingSpinner = memo(function IconLoadingSpinner() {
+const IconLoadingSpinner: React.FC = memo(function IconLoadingSpinner() {
   return (
     <motion.svg
       width="48"
@@ -11,7 +11,7 @@ const IconLoadingSpinner = memo(function IconLoadingSpinner() {
       animate={{ rotate: 360 }}
       transition={{
         ease: "linear",
-        duration: 0.5,
+        duration: 1,
         repeat: Infinity,
       }}
       xmlns="http://www.w3.org/2000/svg"

@@ -6,7 +6,6 @@ import { getFileFormat } from "../../utils/helpers/getFileFormat";
 import { getFileSize } from "../../utils/helpers/getFileSize";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { memo } from "react";
 
 // type guard
 function isProcessedFile(
@@ -19,7 +18,7 @@ type FilesListProps = {
   files: ProcessedFile[] | SourceFile[];
 };
 
-const FilesList: React.FC<FilesListProps> = memo(function FilesList({ files }) {
+const FilesList: React.FC<FilesListProps> = ({ files }) => {
   return (
     <StyledFilesList layout layoutRoot>
       <AnimatePresence>
@@ -40,7 +39,7 @@ const FilesList: React.FC<FilesListProps> = memo(function FilesList({ files }) {
       </AnimatePresence>
     </StyledFilesList>
   );
-});
+};
 
 const StyledFilesList = styled(motion.div)`
   position: absolute;

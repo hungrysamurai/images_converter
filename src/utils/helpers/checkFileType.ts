@@ -1,5 +1,5 @@
-import { SourceFilesFormats } from "../../types";
+import { MIMETypes } from "../../types";
 
 export const checkFileType = (type: string): boolean => {
-  return Object.values<string>(SourceFilesFormats).includes(type);
+  return Object.values<string>(MIMETypes).includes(type);
 };

@@ -13,9 +13,9 @@ import SliderInput from "../InputComponents/SliderInput";
 
 import {
   GIFDitherOptions,
-  PDFCompressionOptions,
-  resizeUnits,
-  resizeSmoothingOptions,
+  PDFCompressionTypes,
+  ResizeUnits,
+  SmoothingPresets,
 } from "../../../store/slices/conversionSettingsSlice/settings";
 
 import { memo } from "react";
@@ -38,6 +38,8 @@ const OutputSettings = memo(function OutputSettings({
     dither,
     compression,
   } = activeTargetFromatOutputSettings;
+  console.log(Object.values(GIFDitherOptions));
+  console.log(dither);
 
   return (
     <StyledOutputSettingsContainer>
@@ -65,10 +67,10 @@ const OutputSettings = memo(function OutputSettings({
               mode={activeTargetFormatName}
             />
             <SelectInput
-              options={GIFDitherOptions}
+              options={Object.values(GIFDitherOptions)}
               label={lang === "en" ? "Dither:" : "Дизеринг:"}
               name="dither"
-              currentValue={dither}
+              currentValue={dither ? dither : "off"}
               active={true}
             />
           </>
@@ -76,7 +78,7 @@ const OutputSettings = memo(function OutputSettings({
 
         {activeTargetFormatName === "pdf" && (
           <SelectInput
-            options={PDFCompressionOptions}
+            options={Object.values(PDFCompressionTypes)}
             label={lang === "en" ? "Compression:" : "Компрессия:"}
             name="compression"
             currentValue={compression}
@@ -95,7 +97,7 @@ const OutputSettings = memo(function OutputSettings({
           displayValueOff={lang === "en" ? "Off" : "Выкл"}
         />
         <SelectInput
-          options={resizeUnits}
+          options={Object.values(ResizeUnits)}
           label={lang === "en" ? "Units:" : "Ед. измерения:"}
           name="units"
           currentValue={units}
@@ -124,14 +126,14 @@ const OutputSettings = memo(function OutputSettings({
         </StyledResizeDimensionsContainer>
 
         <SelectInput
-          options={resizeSmoothingOptions}
+          options={Object.values(SmoothingPresets)}
           label={
             lang === "en"
               ? "Resize smoothing:"
               : "Сглаживание при масштабировании:"
           }
           name="smoothing"
-          currentValue={smoothing}
+          currentValue={smoothing ? smoothing : "off"}
           active={resize}
         />
       </StyledResizeSettingsContainer>

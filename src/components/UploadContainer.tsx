@@ -17,7 +17,7 @@ import { fadeAnimation } from "../animations";
 import { AnimatePresence, motion } from "framer-motion";
 
 import IconUpload from "./icons/IconUpload";
-import { Lang, SourceFilesFormats } from "../types";
+import { Lang, MIMETypes } from "../types";
 
 type UploadContainerProps = {
   lang: Lang;
@@ -46,7 +46,7 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
   };
 
   // triggers when file is dropped
-  const handleDrop = function (e: DragEvent<HTMLDivElement>) {
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -57,7 +57,7 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
   };
 
   // triggers when file is selected with click
-  const handleClick = function (e: ChangeEvent<HTMLInputElement>) {
+  const handleClick = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (e.target.files && e.target.files.length !== 0) {
       handleFiles([...e.target.files]);
@@ -68,7 +68,7 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
     files.forEach((file) => {
       if (isHEIC(file)) {
         const heicFile = new File([file], file.name, {
-          type: SourceFilesFormats.HEIC,
+          type: MIMETypes.HEIC,
         });
         dispatch(addSourceFile(heicFile));
       } else if (checkFileType(file.type)) {

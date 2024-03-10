@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, nanoid, current } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 
-import { SourceFilesFormats } from "../../../types";
+import { MIMETypes } from "../../../types";
 
 import { trimFileName } from "../../../utils/helpers/trimFileName";
 
@@ -23,7 +23,7 @@ export const sourceFilesSlice = createSlice({
           payload: {
             blobURL,
             name,
-            type: file.type as SourceFilesFormats,
+            type: file.type as MIMETypes,
             size: file.size,
             id: nanoid(),
           },
@@ -49,6 +49,6 @@ export const { addSourceFile, removeSourceFile } = sourceFilesSlice.actions;
 export const getAllSourceFiles = (state: RootState): SourceFile[] =>
   state.sourceFiles;
 export const checkPDFInSourceFiles = (state: RootState) =>
-  state.sourceFiles.some((f) => f.type === SourceFilesFormats.PDF);
+  state.sourceFiles.some((f) => f.type === MIMETypes.PDF);
 
 export default sourceFilesSlice.reducer;

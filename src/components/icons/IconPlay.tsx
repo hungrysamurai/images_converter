@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-const IconPlay = memo(function IconPlay() {
+const IconPlay: React.FC = memo(function IconPlay() {
   return (
     <svg
       width="36"

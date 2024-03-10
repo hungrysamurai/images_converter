@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { memo } from "react";
 
-const IconUpload = memo(function IconUpload() {
+const IconUpload: React.FC = memo(function IconUpload() {
   return (
     <svg
       width="128"

@@ -1,4 +1,4 @@
-export enum SourceFilesFormats {
+export enum MIMETypes {
   JPG = "image/jpeg",
   PNG = "image/png",
   GIF = "image/gif",
@@ -7,6 +7,17 @@ export enum SourceFilesFormats {
   TIFF = "image/tiff",
   HEIC = "image/heic",
   PDF = "application/pdf",
+}
+
+export enum FileFormatsNames {
+  JPG = "jpeg",
+  PNG = "png",
+  GIF = "gif",
+  WEBP = "webp",
+  BMP = "bmp",
+  TIFF = "tiff",
+  HEIC = "heic",
+  PDF = "pdf",
 }
 
 export enum Lang {
@@ -18,7 +29,7 @@ declare global {
   type SourceFile = {
     blobURL: string;
     name: string;
-    type: SourceFilesFormats;
+    type: MIMETypes;
     size: number;
     id: string;
   };

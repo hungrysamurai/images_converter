@@ -59,7 +59,6 @@ export const fileElementAnimation = {
   },
 };
 
-
 export const fadeAnimation = {
   hidden: {
     opacity: 0,
@@ -78,4 +77,4 @@ export const fadeAnimation = {
       duration: 0.2,
     },
   },
-}
+};

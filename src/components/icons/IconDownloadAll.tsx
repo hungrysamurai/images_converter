@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-const IconDownloadAll = memo(function IconDownloadAll() {
+const IconDownloadAll: React.FC = memo(function IconDownloadAll() {
   return (
     <svg
       width="38"

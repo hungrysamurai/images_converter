@@ -10,76 +10,84 @@ import { useDispatch } from "react-redux";
 
 import { removeSourceFile } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
 import { removeConvertedFile } from "../../store/slices/processFilesSlice/processFilesSlice";
+import { memo } from "react";
+import { FileFormatsNames } from "../../types";
 
 type FileElementProps = {
   id: string;
-  format: string;
+  format: FileFormatsNames;
   size: string;
   name: string;
   downloadLink?: string;
 };
 
+export enum ElementColorMode {
+  Light = "light",
+  Dark = "dark",
+}
+
 const elementsColor = {
-  pdf: "dark",
-  bmp: "dark",
-  jpeg: "light",
-  png: "light",
-  gif: "light",
-  webp: "light",
-  tiff: "light",
-  heic: "light",
+  pdf: ElementColorMode.Dark,
+  bmp: ElementColorMode.Dark,
+  jpeg: ElementColorMode.Light,
+  png: ElementColorMode.Light,
+  gif: ElementColorMode.Light,
+  webp: ElementColorMode.Light,
+  tiff: ElementColorMode.Light,
+  heic: ElementColorMode.Light,
 };
 
-const FileElement: React.FC<FileElementProps> = ({
-  id,
-  format,
-  size,
-  name,
-  downloadLink,
-}) => {
-  const dispatch = useDispatch();
+const FileElement: React.FC<FileElementProps> = memo(
+  ({ id, format, size, name, downloadLink }) => {
+    console.log(format);
 
-  const removeElement = (id) => {
-    if (downloadLink) {
-      dispatch(removeConvertedFile(id));
-    } else {
-      dispatch(removeSourceFile(id));
-    }
-  };
+    const dispatch = useDispatch();
 
-  const trimName = name.length > 14 ? name.slice(0, 14) + "..." : name;
+    const removeElement = (id: string) => {
+      if (downloadLink) {
+        dispatch(removeConvertedFile(id));
+      } else {
+        dispatch(removeSourceFile(id));
+      }
+    };
 
-  return (
-    <StyledFileElement
-      variants={fileElementAnimation}
-      initial="hidden"
-      animate="show"
-      exit="exit"
-      layout
-      $bg={format}
-      $color={elementsColor[format]}
-    >
-      <StyledRemoveElementButton onClick={() => removeElement(id)}>
-        <IconRemoveElement bg={elementsColor[format]} />
-      </StyledRemoveElementButton>
+    const trimName = name.length > 14 ? name.slice(0, 14) + "..." : name;
 
-      {downloadLink && (
-        <StyledDownloadElementLink href={downloadLink} download={name}>
-          <IconDownloadElement bg={elementsColor[format]} />
-        </StyledDownloadElementLink>
-      )}
+    return (
+      <StyledFileElement
+        variants={fileElementAnimation}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+        layout
+        $bg={format}
+        $color={elementsColor[format]}
+      >
+        <StyledRemoveElementButton onClick={() => removeElement(id)}>
+          <IconRemoveElement bg={elementsColor[format]} />
+        </StyledRemoveElementButton>
 
-      <div className="file-name">{`${trimName}`}</div>
-      <div className="file-size">{size}</div>
+        {downloadLink && (
+          <StyledDownloadElementLink href={downloadLink} download={name}>
+            <IconDownloadElement bg={elementsColor[format]} />
+          </StyledDownloadElementLink>
+        )}
 
-      <div className="format-caption">{format.toUpperCase()}</div>
-    </StyledFileElement>
-  );
-};
+        <div className="file-name">{`${trimName}`}</div>
+        <div className="file-size">{size}</div>
 
-const StyledFileElement = styled(motion.div).attrs((props) => ({
-  $bg: props.$bg,
-  $color: props.$color,
+        <div className="format-caption">{format.toUpperCase()}</div>
+      </StyledFileElement>
+    );
+  }
+);
+
+const StyledFileElement = styled(motion.div).attrs<{
+  $bg: FileFormatsNames;
+  $color: ElementColorMode;
+}>(({ $bg, $color }) => ({
+  $bg: $bg,
+  $color: $color,
 }))`
   width: 6rem;
   height: 6rem;
