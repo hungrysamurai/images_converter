@@ -2,6 +2,8 @@ import { PayloadAction, createSlice, current } from "@reduxjs/toolkit";
 import { initialState } from "./settings";
 import { RootState } from "../../store";
 
+import { OutputFileFormatsNames } from "../../../types";
+
 export const conversionSettingsSlice = createSlice({
   name: "conversionSettings",
   initialState,
@@ -26,31 +28,33 @@ export const conversionSettingsSlice = createSlice({
     ) => {
       state.outputSettings.activeTargetFormatName = action.payload;
     },
-    updateActiveFormatSettings: (
-      state,
-      action: PayloadAction<SingleOutputSetting>
-    ) => {
-      const { property, value } = action.payload;
-      console.log(property, value);
-
+    updateActiveFormatQualitySettings: (state, action: PayloadAction<QualityOption>) => {
+      const { quality } = action.payload;
       const {
         outputSettings: { activeTargetFormatName },
       } = current(state);
 
-      if (property === "units") {
+      if (activeTargetFormatName === OutputFileFormatsNames.JPG || activeTargetFormatName === OutputFileFormatsNames.WEBP || activeTargetFormatName === OutputFileFormatsNames.GIF) {
+        state.outputSettings.settings[activeTargetFormatName].quality = quality
+      }
+    },
+    updateActiveFormatSettings: (
+      state,
+      action
+    ) => {
+      // const { property, value } = action.payload;
+      const {
+        outputSettings: { activeTargetFormatName },
+      } = current(state);
+
+      if (action.payload?.property === "units") {
         state.outputSettings.settings[activeTargetFormatName].targetHeight =
           null;
         state.outputSettings.settings[activeTargetFormatName].targetWidth =
           null;
       }
 
-      // const target = state.outputSettings.settings[activeTargetFormatName];
-
-      // if(property in target){
-      //   target[action.payload.property as keyof  PDFOutputConversionSettings] = action.payload.value
-      // }
-
-      state.outputSettings.settings[activeTargetFormatName][property] = value;
+      state.outputSettings.settings[activeTargetFormatName][action.payload.property] = action.payload.value;
     },
     updateInputSettings: (state, action) => {
       const { property, value } = action.payload;
@@ -81,6 +85,7 @@ export const getPDFInputSettings = (state: RootState) =>
 export const {
   switchTargetFormat,
   selectTargetFormat,
+  updateActiveFormatQualitySettings,
   updateActiveFormatSettings,
   updateInputSettings,
 } = conversionSettingsSlice.actions;

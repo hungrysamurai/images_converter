@@ -12,11 +12,11 @@ import { removeSourceFile } from "../../store/slices/sourceFilesSlice/sourceFile
 import { removeConvertedFile } from "../../store/slices/processFilesSlice/processFilesSlice";
 
 import { memo } from "react";
-import { FileFormatsNames } from "../../types";
+import { InputFileFormatsNames } from "../../types";
 
 type FileElementProps = {
   id: string;
-  format: FileFormatsNames;
+  format: InputFileFormatsNames;
   size: string;
   name: string;
   downloadLink?: string;
@@ -84,7 +84,7 @@ const FileElement: React.FC<FileElementProps> = memo(
 );
 
 const StyledFileElement = styled(motion.div).attrs<{
-  $bg: FileFormatsNames;
+  $bg: InputFileFormatsNames;
   $color: ElementColorMode;
 }>(({ $bg, $color }) => ({
   $bg: $bg,

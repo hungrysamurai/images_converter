@@ -11,6 +11,7 @@ import SliderInput from "../InputComponents/SliderInput";
 
 import {
   GIFDitherOptions,
+  OutputFileFormatsNames,
   PDFCompressionTypes,
   ResizeUnits,
   SmoothingPresets,
@@ -44,11 +45,11 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
     return (
       <StyledOutputSettingsContainer>
         <StyledOptionalSettingsContainer>
-          {activeTargetFormatName === "jpeg" ||
-          activeTargetFormatName === "webp" ? (
+          {activeTargetFormatName === OutputFileFormatsNames.JPG ||
+          activeTargetFormatName === OutputFileFormatsNames.WEBP ? (
             <SliderInput
               label={lang === Lang.EN ? "Quality:" : "Качество:"}
-              currentValue={`${quality}`}
+              currentValue={quality}
               min="1"
               max="100"
               name="quality"
@@ -56,11 +57,11 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
             />
           ) : null}
 
-          {activeTargetFormatName === "gif" && (
+          {activeTargetFormatName === OutputFileFormatsNames.GIF && (
             <>
               <SliderInput
                 label={lang === Lang.EN ? "Quality:" : "Качество:"}
-                currentValue={`${quality}`}
+                currentValue={quality}
                 min="1"
                 max="20"
                 name="quality"
@@ -81,7 +82,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
               options={Object.values(PDFCompressionTypes)}
               label={lang === Lang.EN ? "Compression:" : "Компрессия:"}
               name="compression"
-              currentValue={compression}
+              currentValue={compression as PDFCompressionTypes}
               active={true}
             />
           )}
@@ -95,6 +96,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
             currentValue={resize}
             displayValueOn={lang === Lang.EN ? "On" : "Вкл"}
             displayValueOff={lang === Lang.EN ? "Off" : "Выкл"}
+            name="resize"
           />
           <SelectInput
             options={Object.values(ResizeUnits)}

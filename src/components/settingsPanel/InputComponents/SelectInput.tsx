@@ -8,7 +8,7 @@ import { updateActiveFormatSettings } from "../../../store/slices/conversionSett
 type SelectInputProps = {
   options: string[];
   label: string;
-  name: keyof GeneralOutputConversionSettings;
+  name: keyof OutputConversionSettings;
   currentValue: string;
   active: boolean;
 };
@@ -23,10 +23,9 @@ const SelectInput: React.FC<SelectInputProps> = ({
   const dispatch = useAppDispatch();
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
     dispatch(
       updateActiveFormatSettings({
-        property: e.target.name as keyof GeneralOutputConversionSettings,
+        property: e.target.name as keyof OutputConversionSettings,
         value: e.target.value !== "off" ? e.target.value : false,
       })
     );

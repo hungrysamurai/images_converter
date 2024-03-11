@@ -11,6 +11,7 @@ const CheckboxInput = ({
   displayValueOn,
   displayValueOff,
   label,
+  name,
 }) => {
   const dispatch = useDispatch();
 
@@ -31,7 +32,7 @@ const CheckboxInput = ({
         <StyledToggler>
           <StyledInputCheckbox
             type="checkbox"
-            name="resize"
+            name={name}
             onChange={handleChange}
             checked={currentValue}
           />

@@ -1,11 +1,10 @@
 import {
-  FileFormatsNames,
+  InputFileFormatsNames,
+  OutputFileFormatsNames,
   ResizeUnits,
   SmoothingPresets,
   PDFCompressionTypes,
 } from "../../../types";
-
-
 
 export const initialState: ConversionSettings = {
   inputSettings: {
@@ -16,17 +15,17 @@ export const initialState: ConversionSettings = {
   },
   outputSettings: {
     allFormats: [
-      FileFormatsNames.JPG,
-      FileFormatsNames.PDF,
-      FileFormatsNames.WEBP,
-      FileFormatsNames.PDF,
-      FileFormatsNames.BMP,
-      FileFormatsNames.GIF,
-      FileFormatsNames.TIFF,
+      OutputFileFormatsNames.JPG,
+      OutputFileFormatsNames.PNG,
+      OutputFileFormatsNames.WEBP,
+      OutputFileFormatsNames.PDF,
+      OutputFileFormatsNames.BMP,
+      OutputFileFormatsNames.GIF,
+      OutputFileFormatsNames.TIFF,
     ],
-    activeTargetFormatName: FileFormatsNames.JPG,
+    activeTargetFormatName: OutputFileFormatsNames.JPG,
     settings: {
-      [FileFormatsNames.JPG]: {
+      [InputFileFormatsNames.JPG]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
@@ -34,15 +33,14 @@ export const initialState: ConversionSettings = {
         smoothing: SmoothingPresets.MEDIUM,
         quality: 0.75,
       },
-      [FileFormatsNames.PNG]: {
+      [InputFileFormatsNames.PNG]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
-        quality: 1,
       },
-      [FileFormatsNames.WEBP]: {
+      [InputFileFormatsNames.WEBP]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
@@ -50,14 +48,14 @@ export const initialState: ConversionSettings = {
         smoothing: SmoothingPresets.MEDIUM,
         quality: 0.75,
       },
-      [FileFormatsNames.BMP]: {
+      [InputFileFormatsNames.BMP]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
       },
-      [FileFormatsNames.GIF]: {
+      [InputFileFormatsNames.GIF]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
@@ -66,14 +64,14 @@ export const initialState: ConversionSettings = {
         quality: 11,
         dither: false,
       },
-      [FileFormatsNames.TIFF]: {
+      [InputFileFormatsNames.TIFF]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
       },
-      [FileFormatsNames.PDF]: {
+      [InputFileFormatsNames.PDF]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
@@ -84,3 +82,4 @@ export const initialState: ConversionSettings = {
     },
   },
 };
+

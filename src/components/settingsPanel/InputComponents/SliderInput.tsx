@@ -1,30 +1,57 @@
-import PropTypes from "prop-types";
-
 import styled from "styled-components";
 
 import { getConvertedValue } from "../../../utils/getConvertedValue";
 
-import { useDispatch } from "react-redux";
-import { updateActiveFormatSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { useAppDispatch } from "../../../store/hooks";
 
-const SliderInput = ({ label, currentValue, min, max, name, mode }) => {
-  const dispatch = useDispatch();
+import { updateActiveFormatQualitySettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { OutputFileFormatsNames, SliderConvertModes } from "../../../types";
+import React, { ChangeEvent } from "react";
+
+type SliderInputProps = {
+  label: string;
+  currentValue: number;
+  min: string;
+  max: string;
+  name: keyof QualityOption;
+  mode:
+    | OutputFileFormatsNames.JPG
+    | OutputFileFormatsNames.WEBP
+    | OutputFileFormatsNames.GIF;
+};
+
+const SliderInput: React.FC<SliderInputProps> = ({
+  label,
+  currentValue,
+  min,
+  max,
+  name,
+  mode,
+}) => {
+  const dispatch = useAppDispatch();
 
   const displayValuesConversionMode =
-    mode === "jpeg" || mode === "webp" ? "decimalsToPercentages" : "gifDisplay";
+    mode === OutputFileFormatsNames.JPG || mode === OutputFileFormatsNames.WEBP
+      ? SliderConvertModes.DecimalsToPercentages
+      : SliderConvertModes.GifDisplay;
+
   const stateValuesConversionMode =
-    mode === "jpeg" || mode === "webp" ? "percentagesTodecimals" : "gifState";
+    mode === OutputFileFormatsNames.JPG || OutputFileFormatsNames.WEBP
+      ? SliderConvertModes.PercentagesToDecimals
+      : SliderConvertModes.GifState;
 
   const convertedValue = getConvertedValue(
     currentValue,
     displayValuesConversionMode
   );
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(
-      updateActiveFormatSettings({
-        property: e.target.name,
-        value: getConvertedValue(e.target.value, stateValuesConversionMode),
+      updateActiveFormatQualitySettings({
+        [e.target.name as keyof QualityOption]: getConvertedValue(
+          Number(e.target.value),
+          stateValuesConversionMode
+        ),
       })
     );
   };
@@ -46,15 +73,6 @@ const SliderInput = ({ label, currentValue, min, max, name, mode }) => {
       <StyledSliderDisplayValue>{convertedValue}</StyledSliderDisplayValue>
     </StyledSliderContainer>
   );
-};
-
-SliderInput.propTypes = {
-  label: PropTypes.string,
-  currentValue: PropTypes.string,
-  min: PropTypes.string,
-  max: PropTypes.string,
-  name: PropTypes.string,
-  mode: PropTypes.string,
 };
 
 const StyledSliderContainer = styled.div`

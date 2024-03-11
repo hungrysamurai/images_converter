@@ -9,7 +9,7 @@ export enum MIMETypes {
   PDF = "application/pdf",
 }
 
-export enum FileFormatsNames {
+export enum InputFileFormatsNames {
   JPG = "jpeg",
   PNG = "png",
   GIF = "gif",
@@ -17,6 +17,16 @@ export enum FileFormatsNames {
   BMP = "bmp",
   TIFF = "tiff",
   HEIC = "heic",
+  PDF = "pdf",
+}
+
+export enum OutputFileFormatsNames {
+  JPG = "jpeg",
+  PNG = "png",
+  GIF = "gif",
+  WEBP = "webp",
+  BMP = "bmp",
+  TIFF = "tiff",
   PDF = "pdf",
 }
 
@@ -54,6 +64,13 @@ export enum PDFCompressionTypes {
   PDF = "PDF",
 }
 
+export enum SliderConvertModes {
+  DecimalsToPercentages = 'decimalsToPercentages',
+  PercentagesToDecimals = 'percentagesToDecimals',
+  GifDisplay = "gifDisplay",
+  GifState = "gifState"
+}
+
 declare global {
   type SourceFile = {
     blobURL: string;
@@ -68,46 +85,86 @@ declare global {
     sourceId: string;
   };
 
+  // type OutputFileFormatsNames = Exclude<
+  //   InputFileFormatsNames,
+  //   InputFileFormatsNames.HEIC
+  // >;
 
-  type OutputFileFormatsNames = Exclude<
-    FileFormatsNames,
-    FileFormatsNames.HEIC
-  >;
-
-  interface OutputConversionSettings {
+  type ResizeOption = {
     resize: boolean;
-    units: ResizeUnits;
+  }
+
+  type ResizeUnitsOption = {
+    units: ResizeUnits
+  }
+
+  type TargetWidthOption = {
     targetWidth: number | null;
+  }
+
+  type TargetHeightOption = {
     targetHeight: number | null;
+  }
+
+  type SmoothingOption = {
     smoothing: SmoothingPresets | false;
   }
 
-  interface JPEG_PNG_WEBPOutputConversionSettings
-    extends OutputConversionSettings {
+  type QualityOption = {
     quality: number;
   }
 
-  interface GIFOutputConversionSettings
-    extends JPEG_PNG_WEBPOutputConversionSettings {
+  type DitherOption = {
     dither: GIFDitherOptions | false;
   }
 
-  interface PDFOutputConversionSettings extends OutputConversionSettings {
+  type CompressionOption = {
     compression: PDFCompressionTypes;
   }
 
-  type GeneralOutputConversionSettings = OutputConversionSettings &
-    GIFOutputConversionSettings &
-    PDFOutputConversionSettings;
+  type BasicOutputConversionSettings = ResizeOption & ResizeUnitsOption & TargetWidthOption & TargetHeightOption & SmoothingOption
 
-  type PropertyValue<T> = {
-    [P in keyof T]: {
-      property: P;
-      value: T[P];
-    };
-  }[keyof T];
+  type JPEG_WEBPOutputConversionSettings = BasicOutputConversionSettings & QualityOption
 
-  type SingleOutputSetting = PropertyValue<GeneralOutputConversionSettings>;
+  type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings & DitherOption;
+
+  type PDFOutputConversionSettings = BasicOutputConversionSettings & CompressionOption
+
+
+  // interface BasicOutputConversionSettings {
+  //   resize: boolean
+  //   units: ResizeUnits;
+  //   targetWidth: number | null;
+  //   targetHeight: number | null;
+  //   smoothing: SmoothingPresets | false;
+  // }
+
+  // interface JPEG_WEBPOutputConversionSettings
+  //   extends BasicOutputConversionSettings {
+  //   quality: number;
+  // }
+
+  // interface GIFOutputConversionSettings
+  //   extends JPEG_WEBPOutputConversionSettings {
+  //   dither: GIFDitherOptions | false;
+  // }
+
+  // interface PDFOutputConversionSettings extends BasicOutputConversionSettings {
+  //   compression: PDFCompressionTypes;
+  // }
+
+  // type AllOutputConversionSettings = BasicOutputConversionSettings &
+  //   GIFOutputConversionSettings &
+  //   PDFOutputConversionSettings;
+
+  // type PropertyValue<T> = {
+  //   [P in keyof T]: {
+  //     property: P;
+  //     value: T[P];
+  //   };
+  // }[keyof T];
+
+  // type UpdateOutputSettingsActionPayload = PropertyValue<AllOutputConversionSettings>
 
   interface PDFInputSettings {
     resolution: number;
@@ -116,16 +173,22 @@ declare global {
 
   interface ConversionSettings {
     inputSettings: {
-      [FileFormatsNames.PDF]: PDFInputSettings;
+      [InputFileFormatsNames.PDF]: PDFInputSettings;
     };
     outputSettings: {
       allFormats: OutputFileFormatsNames[];
       activeTargetFormatName: OutputFileFormatsNames;
       settings: {
-        [key in OutputFileFormatsNames]:
-        | OutputConversionSettings
-        | GIFOutputConversionSettings
-        | PDFOutputConversionSettings;
+        // [key in OutputFileFormatsNames]: BasicOutputConversionSettings
+        // | GIFOutputConversionSettings
+        // | PDFOutputConversionSettings;
+        [InputFileFormatsNames.JPG]: JPEG_WEBPOutputConversionSettings,
+        [InputFileFormatsNames.WEBP]: JPEG_WEBPOutputConversionSettings,
+        [InputFileFormatsNames.PNG]: BasicOutputConversionSettings,
+        [InputFileFormatsNames.TIFF]: BasicOutputConversionSettings,
+        [InputFileFormatsNames.GIF]: GIFOutputConversionSettings,
+        [InputFileFormatsNames.BMP]: BasicOutputConversionSettings,
+        [InputFileFormatsNames.PDF]: PDFOutputConversionSettings,
       };
     };
   }
