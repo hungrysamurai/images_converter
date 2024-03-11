@@ -6,10 +6,11 @@ import { fileElementAnimation } from "../../animations";
 import IconRemoveElement from "../icons/IconRemoveElement";
 import IconDownloadElement from "../icons/IconDownloadElement";
 
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../store/hooks";
 
 import { removeSourceFile } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
 import { removeConvertedFile } from "../../store/slices/processFilesSlice/processFilesSlice";
+
 import { memo } from "react";
 import { FileFormatsNames } from "../../types";
 
@@ -41,7 +42,7 @@ const FileElement: React.FC<FileElementProps> = memo(
   ({ id, format, size, name, downloadLink }) => {
     console.log(format);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const removeElement = (id: string) => {
       if (downloadLink) {

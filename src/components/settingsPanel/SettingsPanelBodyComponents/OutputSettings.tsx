@@ -1,8 +1,6 @@
-import PropTypes from "prop-types";
-
 import styled from "styled-components";
 
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../store/hooks";
 
 import { getActiveFormatOutputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
@@ -16,137 +14,135 @@ import {
   PDFCompressionTypes,
   ResizeUnits,
   SmoothingPresets,
-} from "../../../store/slices/conversionSettingsSlice/settings";
+} from "../../../types";
 
-import { memo } from "react";
+import React, { memo } from "react";
+import { Lang } from "../../../types";
 
-const OutputSettings = memo(function OutputSettings({
-  lang,
-  activeTargetFormatName,
-}) {
-  const activeTargetFromatOutputSettings = useSelector(
-    getActiveFormatOutputSettings
-  );
+type OutputSettingsType = {
+  lang: Lang;
+  activeTargetFormatName: OutputFileFormatsNames;
+};
 
-  const {
-    resize,
-    units,
-    targetHeight,
-    targetWidth,
-    smoothing,
-    quality,
-    dither,
-    compression,
-  } = activeTargetFromatOutputSettings;
-  console.log(Object.values(GIFDitherOptions));
-  console.log(dither);
+const OutputSettings: React.FC<OutputSettingsType> = memo(
+  function OutputSettings({ lang, activeTargetFormatName }) {
+    const activeTargetFromatOutputSettings = useAppSelector(
+      getActiveFormatOutputSettings
+    );
 
-  return (
-    <StyledOutputSettingsContainer>
-      <StyledOptionalSettingsContainer>
-        {activeTargetFormatName === "jpeg" ||
-        activeTargetFormatName === "webp" ? (
-          <SliderInput
-            label={lang === "en" ? "Quality:" : "Качество:"}
-            currentValue={`${quality}`}
-            min="1"
-            max="100"
-            name="quality"
-            mode={activeTargetFormatName}
-          />
-        ) : null}
+    const {
+      resize,
+      units,
+      targetHeight,
+      targetWidth,
+      smoothing,
+      quality,
+      dither,
+      compression,
+    } = activeTargetFromatOutputSettings;
 
-        {activeTargetFormatName === "gif" && (
-          <>
+    return (
+      <StyledOutputSettingsContainer>
+        <StyledOptionalSettingsContainer>
+          {activeTargetFormatName === "jpeg" ||
+          activeTargetFormatName === "webp" ? (
             <SliderInput
-              label={lang === "en" ? "Quality:" : "Качество:"}
+              label={lang === Lang.EN ? "Quality:" : "Качество:"}
               currentValue={`${quality}`}
               min="1"
-              max="20"
+              max="100"
               name="quality"
               mode={activeTargetFormatName}
             />
+          ) : null}
+
+          {activeTargetFormatName === "gif" && (
+            <>
+              <SliderInput
+                label={lang === Lang.EN ? "Quality:" : "Качество:"}
+                currentValue={`${quality}`}
+                min="1"
+                max="20"
+                name="quality"
+                mode={activeTargetFormatName}
+              />
+              <SelectInput
+                options={Object.values(GIFDitherOptions)}
+                label={lang === Lang.EN ? "Dither:" : "Дизеринг:"}
+                name="dither"
+                currentValue={dither ? dither : "off"}
+                active={true}
+              />
+            </>
+          )}
+
+          {activeTargetFormatName === "pdf" && (
             <SelectInput
-              options={Object.values(GIFDitherOptions)}
-              label={lang === "en" ? "Dither:" : "Дизеринг:"}
-              name="dither"
-              currentValue={dither ? dither : "off"}
+              options={Object.values(PDFCompressionTypes)}
+              label={lang === Lang.EN ? "Compression:" : "Компрессия:"}
+              name="compression"
+              currentValue={compression}
               active={true}
             />
-          </>
-        )}
+          )}
+        </StyledOptionalSettingsContainer>
 
-        {activeTargetFormatName === "pdf" && (
+        <StyledDivider></StyledDivider>
+
+        <StyledResizeSettingsContainer>
+          <CheckboxInput
+            label={lang === Lang.EN ? "Resize:" : "Изм. размер"}
+            currentValue={resize}
+            displayValueOn={lang === Lang.EN ? "On" : "Вкл"}
+            displayValueOff={lang === Lang.EN ? "Off" : "Выкл"}
+          />
           <SelectInput
-            options={Object.values(PDFCompressionTypes)}
-            label={lang === "en" ? "Compression:" : "Компрессия:"}
-            name="compression"
-            currentValue={compression}
-            active={true}
-          />
-        )}
-      </StyledOptionalSettingsContainer>
-
-      <StyledDivider></StyledDivider>
-
-      <StyledResizeSettingsContainer>
-        <CheckboxInput
-          label={lang === "en" ? "Resize:" : "Изм. размер"}
-          currentValue={resize}
-          displayValueOn={lang === "en" ? "On" : "Вкл"}
-          displayValueOff={lang === "en" ? "Off" : "Выкл"}
-        />
-        <SelectInput
-          options={Object.values(ResizeUnits)}
-          label={lang === "en" ? "Units:" : "Ед. измерения:"}
-          name="units"
-          currentValue={units}
-          active={resize}
-        />
-
-        <StyledResizeDimensionsContainer>
-          <NumberInput
-            caption={lang === "en" ? "width" : "ширина"}
-            units={units}
+            options={Object.values(ResizeUnits)}
+            label={lang === Lang.EN ? "Units:" : "Ед. измерения:"}
+            name="units"
+            currentValue={units}
             active={resize}
-            name="targetWidth"
-            currentValue={targetWidth}
-            min="1"
-            max={units === "percentages" ? "1000" : "16384"}
           />
-          <NumberInput
-            caption={lang === "en" ? "height" : "высота"}
-            units={units}
+
+          <StyledResizeDimensionsContainer>
+            <NumberInput
+              caption={lang === Lang.EN ? "width" : "ширина"}
+              units={units}
+              active={resize}
+              name="targetWidth"
+              currentValue={targetWidth}
+              min="1"
+              max={units === "percentages" ? "1000" : "16384"}
+            />
+            <NumberInput
+              caption={lang === Lang.EN ? "height" : "высота"}
+              units={units}
+              active={resize}
+              name="targetHeight"
+              currentValue={targetHeight}
+              min="1"
+              max={units === "percentages" ? "1000" : "16384"}
+            />
+          </StyledResizeDimensionsContainer>
+
+          <SelectInput
+            options={Object.values(SmoothingPresets)}
+            label={
+              lang === Lang.EN
+                ? "Resize smoothing:"
+                : "Сглаживание при масштабировании:"
+            }
+            name="smoothing"
+            currentValue={smoothing ? smoothing : "off"}
             active={resize}
-            name="targetHeight"
-            currentValue={targetHeight}
-            min="1"
-            max={units === "percentages" ? "1000" : "16384"}
           />
-        </StyledResizeDimensionsContainer>
+        </StyledResizeSettingsContainer>
 
-        <SelectInput
-          options={Object.values(SmoothingPresets)}
-          label={
-            lang === "en"
-              ? "Resize smoothing:"
-              : "Сглаживание при масштабировании:"
-          }
-          name="smoothing"
-          currentValue={smoothing ? smoothing : "off"}
-          active={resize}
-        />
-      </StyledResizeSettingsContainer>
-
-      <StyledDivider></StyledDivider>
-    </StyledOutputSettingsContainer>
-  );
-});
-
-OutputSettings.propTypes = {
-  lang: PropTypes.string,
-  activeTargetFormatName: PropTypes.string,
-};
+        <StyledDivider></StyledDivider>
+      </StyledOutputSettingsContainer>
+    );
+  }
+);
 
 const StyledOutputSettingsContainer = styled.div`
   width: 100%;

@@ -1,76 +1,11 @@
-import { FileFormatsNames } from "../../../types";
+import {
+  FileFormatsNames,
+  ResizeUnits,
+  SmoothingPresets,
+  PDFCompressionTypes,
+} from "../../../types";
 
-export enum ResizeUnits {
-  PIXELS = "pixels",
-  PERCENTAGES = "percentages",
-}
 
-export enum SmoothingPresets {
-  LOW = "low",
-  MEDIUM = "medium",
-  HIGH = "high",
-  OFF = "off",
-}
-
-export enum GIFDitherOptions {
-  FloydSteinberg = "FloydSteinberg",
-  FloydSteinbergSerpentine = "FloydSteinberg-serpentine",
-  FalseFloydSteinberg = "FalseFloydSteinberg",
-  FalseFloydSteinbergSerpentine = "FalseFloydSteinberg-serpentine",
-  Stucki = "Stucki",
-  StuckiSerpentine = "Stucki-serpentine",
-  Atkinson = "Atkinson",
-  AtkinsonSerpentine = "Atkinson-serpentine",
-  OFF = "off",
-}
-
-export enum PDFCompressionTypes {
-  JPG = "JPG",
-  PDF = "PDF",
-}
-
-interface OutputConversionSettings {
-  resize: boolean;
-  units: ResizeUnits;
-  targetWidth: number | null;
-  targetHeight: number | null;
-  smoothing: SmoothingPresets | false;
-}
-
-interface JPEG_PNG_WEBPOutputConversionSettings
-  extends OutputConversionSettings {
-  quality: number;
-}
-
-interface GIFOutputConversionSettings extends OutputConversionSettings {
-  dither: GIFDitherOptions | false;
-}
-
-interface PDFOutputConversionSettings extends OutputConversionSettings {
-  compression: PDFCompressionTypes;
-}
-
-interface PDFInputSettings {
-  resolution: number;
-  rotation: number;
-}
-
-interface ConversionSettings {
-  inputSettings: {
-    [key in FileFormatsNames]?: PDFInputSettings;
-  };
-  outputSettings: {
-    allFormats: FileFormatsNames[];
-    activeTargetFormatName: FileFormatsNames;
-    settings: {
-      [key in FileFormatsNames]?:
-        | OutputConversionSettings
-        | JPEG_PNG_WEBPOutputConversionSettings
-        | GIFOutputConversionSettings
-        | PDFOutputConversionSettings;
-    };
-  };
-}
 
 export const initialState: ConversionSettings = {
   inputSettings: {
@@ -91,7 +26,7 @@ export const initialState: ConversionSettings = {
     ],
     activeTargetFormatName: FileFormatsNames.JPG,
     settings: {
-      jpeg: {
+      [FileFormatsNames.JPG]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
@@ -99,7 +34,7 @@ export const initialState: ConversionSettings = {
         smoothing: SmoothingPresets.MEDIUM,
         quality: 0.75,
       },
-      png: {
+      [FileFormatsNames.PNG]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
@@ -107,7 +42,7 @@ export const initialState: ConversionSettings = {
         smoothing: SmoothingPresets.MEDIUM,
         quality: 1,
       },
-      webp: {
+      [FileFormatsNames.WEBP]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
@@ -115,14 +50,14 @@ export const initialState: ConversionSettings = {
         smoothing: SmoothingPresets.MEDIUM,
         quality: 0.75,
       },
-      bmp: {
+      [FileFormatsNames.BMP]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
       },
-      gif: {
+      [FileFormatsNames.GIF]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
@@ -131,14 +66,14 @@ export const initialState: ConversionSettings = {
         quality: 11,
         dither: false,
       },
-      tiff: {
+      [FileFormatsNames.TIFF]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
       },
-      pdf: {
+      [FileFormatsNames.PDF]: {
         resize: false,
         units: ResizeUnits.PIXELS,
         targetWidth: null,

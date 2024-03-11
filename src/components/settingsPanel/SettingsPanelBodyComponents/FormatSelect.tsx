@@ -1,18 +1,23 @@
-import PropTypes from "prop-types";
-
 import styled from "styled-components";
 
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../../store/hooks";
 import { selectTargetFormat } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 import { memo } from "react";
+import { Lang } from "../../../types";
 
-const FormatSelect = memo(function FormatSelect({
+type FormatSelectProps = {
+  formats: OutputFileFormatsNames[];
+  lang: Lang;
+  activeTargetFormatName: OutputFileFormatsNames;
+};
+
+const FormatSelect: React.FC<FormatSelectProps> = memo(function FormatSelect({
   formats,
   lang,
   activeTargetFormatName,
 }) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <StyledFormatSelect>
@@ -20,7 +25,9 @@ const FormatSelect = memo(function FormatSelect({
         {lang === "en" ? "Target format:" : "Конвертировать в:"}
         <StyledSelect
           onChange={(e) => {
-            dispatch(selectTargetFormat(e.target.value));
+            dispatch(
+              selectTargetFormat(e.target.value as OutputFileFormatsNames)
+            );
           }}
           defaultValue={activeTargetFormatName}
         >
@@ -34,12 +41,6 @@ const FormatSelect = memo(function FormatSelect({
     </StyledFormatSelect>
   );
 });
-
-FormatSelect.propTypes = {
-  formats: PropTypes.array,
-  lang: PropTypes.string,
-  activeTargetFormatName: PropTypes.string,
-};
 
 const StyledFormatSelect = styled.div`
   width: 100%;

@@ -1,5 +1,6 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice, current } from "@reduxjs/toolkit";
 import { initialState } from "./settings";
+import { RootState } from "../../store";
 
 export const conversionSettingsSlice = createSlice({
   name: "conversionSettings",
@@ -19,11 +20,18 @@ export const conversionSettingsSlice = createSlice({
 
       state.outputSettings.activeTargetFormatName = allFormats[newFormatIndex];
     },
-    selectTargetFormat: (state, action) => {
+    selectTargetFormat: (
+      state,
+      action: PayloadAction<OutputFileFormatsNames>
+    ) => {
       state.outputSettings.activeTargetFormatName = action.payload;
     },
-    updateActiveFormatSettings: (state, action) => {
+    updateActiveFormatSettings: (
+      state,
+      action: PayloadAction<SingleOutputSetting>
+    ) => {
       const { property, value } = action.payload;
+      console.log(property, value);
 
       const {
         outputSettings: { activeTargetFormatName },
@@ -36,6 +44,12 @@ export const conversionSettingsSlice = createSlice({
           null;
       }
 
+      // const target = state.outputSettings.settings[activeTargetFormatName];
+
+      // if(property in target){
+      //   target[action.payload.property as keyof  PDFOutputConversionSettings] = action.payload.value
+      // }
+
       state.outputSettings.settings[activeTargetFormatName][property] = value;
     },
     updateInputSettings: (state, action) => {
@@ -46,13 +60,13 @@ export const conversionSettingsSlice = createSlice({
   },
 });
 
-export const getActiveTargetFormat = (state) =>
+export const getActiveTargetFormat = (state: RootState) =>
   state.conversionSettings.outputSettings.activeTargetFormatName;
 
-export const getAllTargetFormats = (state) =>
+export const getAllTargetFormats = (state: RootState) =>
   state.conversionSettings.outputSettings.allFormats;
 
-export const getActiveFormatOutputSettings = (state) => {
+export const getActiveFormatOutputSettings = (state: RootState) => {
   const activeTargetFormatName =
     state.conversionSettings.outputSettings.activeTargetFormatName;
 
@@ -61,7 +75,7 @@ export const getActiveFormatOutputSettings = (state) => {
   ];
 };
 
-export const getPDFInputSettings = (state) =>
+export const getPDFInputSettings = (state: RootState) =>
   state.conversionSettings.inputSettings.pdf;
 
 export const {

@@ -1,11 +1,9 @@
-import PropTypes from "prop-types";
-
 import styled from "styled-components";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeAnimation, settingsPanelAnimation } from "../../animations";
 
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../store/hooks";
 
 import { checkPDFInSourceFiles } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
 import {
@@ -16,15 +14,22 @@ import {
 import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
 
 import SettingsPanelBody from "./SettingsPanelBody";
+import { Lang } from "../../types";
 
-const SettingsPanelWrapper = ({
+type SettingsPanelWrapperType = {
+  setSettingsPanelVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+  settingsPanelVisibility: boolean;
+  lang: Lang;
+};
+
+const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
   setSettingsPanelVisibility,
   settingsPanelVisibility,
   lang,
 }) => {
-  const isPDF = useSelector(checkPDFInSourceFiles);
-  const formats = useSelector(getAllTargetFormats);
-  const activeTargetFormatName = useSelector(getActiveTargetFormat);
+  const isPDF = useAppSelector(checkPDFInSourceFiles);
+  const formats = useAppSelector(getAllTargetFormats);
+  const activeTargetFormatName = useAppSelector(getActiveTargetFormat);
 
   return (
     <AnimatePresence>
@@ -51,7 +56,7 @@ const SettingsPanelWrapper = ({
               >
                 <IconCloseSettingsPanel />
               </StyledCloseSettingsPanelButton>
-              {lang === "en" ? <h1>Output settings</h1> : <h1>Настройки</h1>}
+              {lang === Lang.EN ? <h1>Output settings</h1> : <h1>Настройки</h1>}
             </StyledCloseSettingsPanelHeader>
 
             <SettingsPanelBody
@@ -65,12 +70,6 @@ const SettingsPanelWrapper = ({
       )}
     </AnimatePresence>
   );
-};
-
-SettingsPanelWrapper.propTypes = {
-  setSettingsPanelVisibility: PropTypes.func,
-  settingsPanelVisibility: PropTypes.bool,
-  lang: PropTypes.string,
 };
 
 const StyledSettingsPanelBackground = styled(motion.div)`

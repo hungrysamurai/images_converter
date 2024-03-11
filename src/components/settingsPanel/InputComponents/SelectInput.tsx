@@ -1,25 +1,39 @@
-import PropTypes from "prop-types";
+import { ChangeEvent } from "react";
 
 import styled from "styled-components";
 
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../../store/hooks";
 import { updateActiveFormatSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
-const SelectInput = ({ options, label, name, currentValue, active }) => {
-  const dispatch = useDispatch();
+type SelectInputProps = {
+  options: string[];
+  label: string;
+  name: keyof GeneralOutputConversionSettings;
+  currentValue: string;
+  active: boolean;
+};
 
-  const handleChange = (e) => {
+const SelectInput: React.FC<SelectInputProps> = ({
+  options,
+  label,
+  name,
+  currentValue,
+  active,
+}) => {
+  const dispatch = useAppDispatch();
+
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value);
     dispatch(
       updateActiveFormatSettings({
-        property: e.target.name,
+        property: e.target.name as keyof GeneralOutputConversionSettings,
         value: e.target.value !== "off" ? e.target.value : false,
       })
     );
   };
 
   return (
-    <StyledInputContainer className={!active && "inactive"}>
+    <StyledInputContainer className={!active ? "inactive" : ""}>
       <StyledLabel>
         {label}
         <StyledSelect onChange={handleChange} name={name} value={currentValue}>
@@ -32,14 +46,6 @@ const SelectInput = ({ options, label, name, currentValue, active }) => {
       </StyledLabel>
     </StyledInputContainer>
   );
-};
-
-SelectInput.propTypes = {
-  options: PropTypes.array,
-  label: PropTypes.string,
-  name: PropTypes.string,
-  currentValue: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  active: PropTypes.bool,
 };
 
 const StyledInputContainer = styled.div`
