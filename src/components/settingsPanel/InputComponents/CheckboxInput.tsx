@@ -1,25 +1,31 @@
-import PropTypes from "prop-types";
-
 import styled from "styled-components";
 
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../../store/hooks";
 
-import { updateActiveFormatSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { updateActiveFormatToggleSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import React, { ChangeEvent } from "react";
 
-const CheckboxInput = ({
+type CheckboxInputProps = {
+  currentValue: boolean;
+  displayValueOn: string;
+  displayValueOff: string;
+  label: string;
+  name: keyof ResizeOption;
+};
+
+const CheckboxInput: React.FC<CheckboxInputProps> = ({
   currentValue,
   displayValueOn,
   displayValueOff,
   label,
   name,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(
-      updateActiveFormatSettings({
-        property: e.target.name,
-        value: e.target.checked,
+      updateActiveFormatToggleSettings({
+        [e.target.name as keyof ResizeOption]: e.target.checked,
       })
     );
   };
@@ -46,13 +52,6 @@ const CheckboxInput = ({
       </StyledCheckboxDisplayValue>
     </StyledCheckboxContainer>
   );
-};
-
-CheckboxInput.propTypes = {
-  currentValue: PropTypes.bool,
-  displayValueOn: PropTypes.string,
-  displayValueOff: PropTypes.string,
-  label: PropTypes.string,
 };
 
 const StyledCheckboxContainer = styled.div`

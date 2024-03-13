@@ -44,9 +44,10 @@ export const conversionSettingsSlice = createSlice({
         outputSettings: { activeTargetFormatName },
       } = current(state);
 
-      const value = Object.values(action.payload)[0]
+      const key = Object.keys(action.payload)[0] as SelectOptionsKeys
+      const value = Object.values(action.payload)[0] as SelectOptionsValues
 
-      if (isUnits(value)) {
+      if (isUnits(value) && key === 'units') {
         state.outputSettings.settings[activeTargetFormatName].targetHeight =
           null;
         state.outputSettings.settings[activeTargetFormatName].targetWidth =
@@ -55,34 +56,37 @@ export const conversionSettingsSlice = createSlice({
         state.outputSettings.settings[activeTargetFormatName].units = value
       }
 
-      if (isSmoothingOption(value)) {
+      if (isSmoothingOption(value) && key === 'smoothing') {
         state.outputSettings.settings[activeTargetFormatName].smoothing = value !== SmoothingPresets.OFF ? value : false
       }
 
-      if (activeTargetFormatName === OutputFileFormatsNames.GIF && isDitherOption(value)) {
+      if (activeTargetFormatName === OutputFileFormatsNames.GIF && isDitherOption(value) && key === 'dither') {
         state.outputSettings.settings[activeTargetFormatName].dither = value !== GIFDitherOptions.OFF ? value : false
       }
 
-      if (activeTargetFormatName === OutputFileFormatsNames.PDF && isCompressionOption(value)) {
+      if (activeTargetFormatName === OutputFileFormatsNames.PDF && isCompressionOption(value) && key === 'compression') {
         state.outputSettings.settings[activeTargetFormatName].compression = value
       }
     },
-    updateActiveFormatSettings: (
-      state,
-      action
-    ) => {
+    updateActiveFormatNumericSettings: (state, action: PayloadAction<NumericOptions>) => {
       const {
         outputSettings: { activeTargetFormatName },
       } = current(state);
 
-      if (action.payload?.property === "units") {
-        state.outputSettings.settings[activeTargetFormatName].targetHeight =
-          null;
-        state.outputSettings.settings[activeTargetFormatName].targetWidth =
-          null;
-      }
+      const key = Object.keys(action.payload)[0] as NumericOptionsKeys
+      const value = Object.values(action.payload)[0] as number | null
 
-      state.outputSettings.settings[activeTargetFormatName][action.payload.property] = action.payload.value;
+      if (key === 'targetHeight' || key === 'targetWidth') {
+        state.outputSettings.settings[activeTargetFormatName][key] = value
+      }
+    },
+    updateActiveFormatToggleSettings: (state, action: PayloadAction<ResizeOption>) => {
+      const {
+        outputSettings: { activeTargetFormatName },
+      } = current(state);
+
+      const { resize } = action.payload
+      state.outputSettings.settings[activeTargetFormatName].resize = resize
     },
     updateInputSettings: (state, action) => {
       const { property, value } = action.payload;
@@ -115,7 +119,8 @@ export const {
   selectTargetFormat,
   updateActiveFormatSliderSettings,
   updateActiveFormatSelectSettings,
-  updateActiveFormatSettings,
+  updateActiveFormatNumericSettings,
+  updateActiveFormatToggleSettings,
   updateInputSettings,
 } = conversionSettingsSlice.actions;
 

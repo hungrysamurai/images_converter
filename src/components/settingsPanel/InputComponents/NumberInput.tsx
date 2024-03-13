@@ -1,12 +1,23 @@
-import PropTypes from "prop-types";
-
 import styled from "styled-components";
 
-import { useDispatch } from "react-redux";
-import { updateActiveFormatSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { updateActiveFormatNumericSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 import { updateInputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { useAppDispatch } from "../../../store/hooks";
+import { ResizeUnits } from "../../../types";
+import React, { ChangeEvent } from "react";
 
-const NumberInput = ({
+type NumberInputProps = {
+  caption: string;
+  units: ResizeUnits;
+  min: string | null;
+  max: string | null;
+  name: NumericOptionsKeys;
+  currentValue: number | null;
+  active: boolean;
+  inputSetting?: boolean;
+};
+
+const NumberInput: React.FC<NumberInputProps> = ({
   caption,
   units,
   min,
@@ -16,12 +27,12 @@ const NumberInput = ({
   currentValue,
   inputSetting,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let newValue = Number(e.target.value);
 
-    if (newValue < 0 || newValue > max) return;
+    if (newValue < 0 || newValue > Number(max)) return;
 
     if (inputSetting) {
       dispatch(
@@ -33,21 +44,20 @@ const NumberInput = ({
     }
 
     dispatch(
-      updateActiveFormatSettings({
-        property: e.target.name,
-        value: newValue,
-      })
+      updateActiveFormatNumericSettings({
+        [e.target.name]: Number(e.target.value),
+      } as NumericOptions)
     );
   };
 
   return (
-    <StyledNumberContainer className={!active && "inactive"}>
+    <StyledNumberContainer className={!active ? "inactive" : ""}>
       <StyledNumberInput
         type="number"
-        placeholder={currentValue ? currentValue : "auto"}
+        placeholder={currentValue ? currentValue.toString() : "auto"}
         value={currentValue ? currentValue : ""}
         onChange={handleChange}
-        max={max ? max : null}
+        max={max ? max : ""}
         min={min ? min : "1"}
         name={name}
       />
@@ -58,22 +68,11 @@ const NumberInput = ({
 
       {units && (
         <StyledInputUnitsLabel>
-          {units === "pixels" ? "px" : units === "percentages" ? "%" : units}
+          {units === ResizeUnits.PIXELS ? "px" : "%"}
         </StyledInputUnitsLabel>
       )}
     </StyledNumberContainer>
   );
-};
-
-NumberInput.propTypes = {
-  caption: PropTypes.string,
-  units: PropTypes.string,
-  min: PropTypes.string,
-  max: PropTypes.string,
-  name: PropTypes.string,
-  active: PropTypes.bool,
-  currentValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  inputSetting: PropTypes.bool,
 };
 
 const StyledNumberContainer = styled.label`

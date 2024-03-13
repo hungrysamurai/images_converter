@@ -89,14 +89,6 @@ declare global {
     resize: boolean;
   }
 
-  type TargetWidthOption = {
-    targetWidth: number | null;
-  }
-
-  type TargetHeightOption = {
-    targetHeight: number | null;
-  }
-
   // Slider
   type QualityOption = {
     quality: number;
@@ -123,6 +115,19 @@ declare global {
 
   type SelectOptionsValues = ResizeUnits | SmoothingPresets | GIFDitherOptions | PDFCompressionTypes
   type SelectOptionsKeys = keyof ResizeUnitsOption | keyof SmoothingOption | keyof DitherOption | keyof CompressionOption
+
+  // Numeric
+  type TargetWidthOption = {
+    targetWidth: number | null;
+  }
+
+  type TargetHeightOption = {
+    targetHeight: number | null;
+  }
+
+  type NumericOptions = TargetHeightOption | TargetWidthOption
+
+  type NumericOptionsKeys = keyof TargetHeightOption | keyof TargetWidthOption
 
   // Comp
   type BasicOutputConversionSettings = ResizeOption & ResizeUnitsOption & TargetWidthOption & TargetHeightOption & SmoothingOption

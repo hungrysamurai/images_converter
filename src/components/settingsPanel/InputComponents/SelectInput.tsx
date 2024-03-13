@@ -23,9 +23,11 @@ const SelectInput: React.FC<SelectInputProps> = ({
   const dispatch = useAppDispatch();
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const payload = { [e.target.name]: e.target.value } as SelectOptions;
-
-    dispatch(updateActiveFormatSelectSettings(payload));
+    dispatch(
+      updateActiveFormatSelectSettings({
+        [e.target.name]: e.target.value,
+      } as SelectOptions)
+    );
   };
 
   return (
