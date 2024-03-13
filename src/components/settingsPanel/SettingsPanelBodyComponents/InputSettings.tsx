@@ -7,7 +7,7 @@ import { getPDFInputSettings } from "../../../store/slices/conversionSettingsSli
 import { useAppSelector } from "../../../store/hooks";
 
 import { memo } from "react";
-import { Lang } from "../../../types";
+import { Lang, ResizeUnits } from "../../../types";
 
 type InputSettingsProps = {
   lang: Lang;
@@ -21,28 +21,28 @@ const InputSettings: React.FC<InputSettingsProps> = memo(
 
     return (
       <StyledInputSettingsContainer>
-        {lang === "en" ? (
+        {lang === Lang.EN ? (
           <h2>PDF rasterization settings</h2>
         ) : (
           <h2>Настройки растрирования PDF</h2>
         )}
         <StyledPDFRasterizationSettingsContainer>
           <NumberInput
-            caption={lang === "en" ? "resolution" : "разрешение"}
-            units="ppi"
+            caption={lang === Lang.EN ? "resolution" : "разрешение"}
+            units={ResizeUnits.PPI}
             active={true}
             name="resolution"
-            currentValue={`${resolution}`}
+            currentValue={resolution}
             min="8"
             max="1200"
             inputSetting={true}
           />
           <NumberInput
-            caption={lang === "en" ? "rotation" : "поворот"}
-            units="deg"
+            caption={lang === Lang.EN ? "rotation" : "поворот"}
+            units={ResizeUnits.DEG}
             active={true}
             name="rotation"
-            currentValue={`${rotation}`}
+            currentValue={rotation}
             min="0"
             max="360"
             inputSetting={true}

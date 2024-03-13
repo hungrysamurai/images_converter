@@ -38,6 +38,8 @@ export enum Lang {
 export enum ResizeUnits {
   PIXELS = "pixels",
   PERCENTAGES = "percentages",
+  PPI = "ppi",
+  DEG = "deg"
 }
 
 export enum SmoothingPresets {
@@ -125,58 +127,21 @@ declare global {
     targetHeight: number | null;
   }
 
-  type NumericOptions = TargetHeightOption | TargetWidthOption
-
-  type NumericOptionsKeys = keyof TargetHeightOption | keyof TargetWidthOption
-
-  // Comp
-  type BasicOutputConversionSettings = ResizeOption & ResizeUnitsOption & TargetWidthOption & TargetHeightOption & SmoothingOption
-
-  type JPEG_WEBPOutputConversionSettings = BasicOutputConversionSettings & QualityOption
-
-  type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings & DitherOption;
-
-  type PDFOutputConversionSettings = BasicOutputConversionSettings & CompressionOption
-
-  // interface BasicOutputConversionSettings {
-  //   resize: boolean
-  //   units: ResizeUnits;
-  //   targetWidth: number | null;
-  //   targetHeight: number | null;
-  //   smoothing: SmoothingPresets | false;
-  // }
-
-  // interface JPEG_WEBPOutputConversionSettings
-  //   extends BasicOutputConversionSettings {
-  //   quality: number;
-  // }
-
-  // interface GIFOutputConversionSettings
-  //   extends JPEG_WEBPOutputConversionSettings {
-  //   dither: GIFDitherOptions | false;
-  // }
-
-  // interface PDFOutputConversionSettings extends BasicOutputConversionSettings {
-  //   compression: PDFCompressionTypes;
-  // }
-
-  // type AllOutputConversionSettings = BasicOutputConversionSettings &
-  //   GIFOutputConversionSettings &
-  //   PDFOutputConversionSettings;
-
-  // type PropertyValue<T> = {
-  //   [P in keyof T]: {
-  //     property: P;
-  //     value: T[P];
-  //   };
-  // }[keyof T];
-
-  // type UpdateOutputSettingsActionPayload = PropertyValue<AllOutputConversionSettings>
-
-  interface PDFInputSettings {
+  // Input
+  type PDFInputSettings = {
     resolution: number;
     rotation: number;
   }
+
+  type NumericOptions = TargetHeightOption | TargetWidthOption | PDFInputSettings
+
+  type NumericOptionsKeys = keyof TargetHeightOption | keyof TargetWidthOption | keyof PDFInputSettings
+
+  // Comp
+  type BasicOutputConversionSettings = ResizeOption & ResizeUnitsOption & TargetWidthOption & TargetHeightOption & SmoothingOption
+  type JPEG_WEBPOutputConversionSettings = BasicOutputConversionSettings & QualityOption
+  type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings & DitherOption;
+  type PDFOutputConversionSettings = BasicOutputConversionSettings & CompressionOption
 
   interface ConversionSettings {
     inputSettings: {

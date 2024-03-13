@@ -2,6 +2,8 @@ import FormatSelect from "./SettingsPanelBodyComponents/FormatSelect";
 import OutputSettings from "./SettingsPanelBodyComponents/OutputSettings";
 import InputSettings from "./SettingsPanelBodyComponents/InputSettings";
 
+import { OutputFileFormatsNames } from "../../types";
+
 import { memo } from "react";
 import { Lang } from "../../types";
 

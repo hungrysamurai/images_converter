@@ -131,7 +131,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
             name="resize"
           />
           <SelectInput
-            options={Object.values(ResizeUnits)}
+            options={[ResizeUnits.PERCENTAGES, ResizeUnits.PIXELS]}
             label={lang === Lang.EN ? "Units:" : "Ед. измерения:"}
             name="units"
             currentValue={units}

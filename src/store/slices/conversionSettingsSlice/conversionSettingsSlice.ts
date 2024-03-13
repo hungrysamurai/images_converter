@@ -88,10 +88,14 @@ export const conversionSettingsSlice = createSlice({
       const { resize } = action.payload
       state.outputSettings.settings[activeTargetFormatName].resize = resize
     },
-    updateInputSettings: (state, action) => {
-      const { property, value } = action.payload;
+    updateInputSettings: (state, action: PayloadAction<NumericOptions>) => {
 
-      state.inputSettings.pdf[property] = value;
+      const key = Object.keys(action.payload)[0] as NumericOptionsKeys
+      const value = Object.values(action.payload)[0] as number
+
+      if (key === 'resolution' || key === 'rotation') {
+        state.inputSettings.pdf[key] = value
+      }
     },
   },
 });

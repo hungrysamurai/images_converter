@@ -37,9 +37,8 @@ const NumberInput: React.FC<NumberInputProps> = ({
     if (inputSetting) {
       dispatch(
         updateInputSettings({
-          property: e.target.name,
-          value: newValue,
-        })
+          [e.target.name]: Number(e.target.value),
+        } as NumericOptions)
       );
     }
 
@@ -68,7 +67,11 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
       {units && (
         <StyledInputUnitsLabel>
-          {units === ResizeUnits.PIXELS ? "px" : "%"}
+          {units === ResizeUnits.PIXELS
+            ? "px"
+            : units === ResizeUnits.PERCENTAGES
+            ? "%"
+            : units}
         </StyledInputUnitsLabel>
       )}
     </StyledNumberContainer>
