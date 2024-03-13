@@ -3,13 +3,13 @@ import { ChangeEvent } from "react";
 import styled from "styled-components";
 
 import { useAppDispatch } from "../../../store/hooks";
-import { updateActiveFormatSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { updateActiveFormatSelectSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 type SelectInputProps = {
-  options: string[];
+  options: SelectOptionsValues[];
   label: string;
-  name: keyof OutputConversionSettings;
-  currentValue: string;
+  name: SelectOptionsKeys;
+  currentValue: SelectOptionsValues;
   active: boolean;
 };
 
@@ -23,12 +23,9 @@ const SelectInput: React.FC<SelectInputProps> = ({
   const dispatch = useAppDispatch();
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    dispatch(
-      updateActiveFormatSettings({
-        property: e.target.name as keyof OutputConversionSettings,
-        value: e.target.value !== "off" ? e.target.value : false,
-      })
-    );
+    const payload = { [e.target.name]: e.target.value } as SelectOptions;
+
+    dispatch(updateActiveFormatSelectSettings(payload));
   };
 
   return (

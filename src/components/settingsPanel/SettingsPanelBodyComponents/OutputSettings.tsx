@@ -25,67 +25,99 @@ type OutputSettingsType = {
   activeTargetFormatName: OutputFileFormatsNames;
 };
 
+function isQualityOption(
+  toCheck: BasicOutputConversionSettings | JPEG_WEBPOutputConversionSettings
+): toCheck is JPEG_WEBPOutputConversionSettings {
+  return (toCheck as JPEG_WEBPOutputConversionSettings).quality !== undefined;
+}
+
+function isDitherOption(
+  toCheck: BasicOutputConversionSettings | GIFOutputConversionSettings
+): toCheck is GIFOutputConversionSettings {
+  return (toCheck as GIFOutputConversionSettings).dither !== undefined;
+}
+
+function isCompressionOption(
+  toCheck: BasicOutputConversionSettings | PDFOutputConversionSettings
+): toCheck is PDFOutputConversionSettings {
+  return (toCheck as PDFOutputConversionSettings).compression !== undefined;
+}
+
 const OutputSettings: React.FC<OutputSettingsType> = memo(
   function OutputSettings({ lang, activeTargetFormatName }) {
     const activeTargetFromatOutputSettings = useAppSelector(
       getActiveFormatOutputSettings
     );
 
-    const {
-      resize,
-      units,
-      targetHeight,
-      targetWidth,
-      smoothing,
-      quality,
-      dither,
-      compression,
-    } = activeTargetFromatOutputSettings;
+    // Basic Options
+    const { resize, units, targetHeight, targetWidth, smoothing } =
+      activeTargetFromatOutputSettings;
+
+    // Display quality slider
+    const qualitySliderContent = isQualityOption(
+      activeTargetFromatOutputSettings
+    ) ? (
+      <>
+        {/* JPEG / WEBP  quality slider */}
+        {activeTargetFormatName === OutputFileFormatsNames.JPG ||
+        activeTargetFormatName === OutputFileFormatsNames.WEBP ? (
+          <SliderInput
+            label={lang === Lang.EN ? "Quality:" : "Качество:"}
+            currentValue={activeTargetFromatOutputSettings.quality}
+            min="1"
+            max="100"
+            name="quality"
+            mode={activeTargetFormatName}
+          />
+        ) : null}
+
+        {/* GIF quality slider & dither options */}
+        {isDitherOption(activeTargetFromatOutputSettings) &&
+        activeTargetFormatName === OutputFileFormatsNames.GIF ? (
+          <>
+            <SliderInput
+              label={lang === Lang.EN ? "Quality:" : "Качество:"}
+              currentValue={activeTargetFromatOutputSettings.quality}
+              min="1"
+              max="20"
+              name="quality"
+              mode={activeTargetFormatName}
+            />
+            <SelectInput
+              options={Object.values(GIFDitherOptions)}
+              label={lang === Lang.EN ? "Dither:" : "Дизеринг:"}
+              name="dither"
+              currentValue={
+                activeTargetFromatOutputSettings.dither
+                  ? activeTargetFromatOutputSettings.dither
+                  : GIFDitherOptions.OFF
+              }
+              active={true}
+            />
+          </>
+        ) : null}
+      </>
+    ) : null;
+
+    const pdfCompressionSettingContent =
+      isCompressionOption(activeTargetFromatOutputSettings) &&
+      activeTargetFormatName === OutputFileFormatsNames.PDF ? (
+        <SelectInput
+          options={Object.values(PDFCompressionTypes)}
+          label={lang === Lang.EN ? "Compression:" : "Компрессия:"}
+          name="compression"
+          currentValue={
+            activeTargetFromatOutputSettings.compression as PDFCompressionTypes
+          }
+          active={true}
+        />
+      ) : null;
 
     return (
       <StyledOutputSettingsContainer>
         <StyledOptionalSettingsContainer>
-          {activeTargetFormatName === OutputFileFormatsNames.JPG ||
-          activeTargetFormatName === OutputFileFormatsNames.WEBP ? (
-            <SliderInput
-              label={lang === Lang.EN ? "Quality:" : "Качество:"}
-              currentValue={quality}
-              min="1"
-              max="100"
-              name="quality"
-              mode={activeTargetFormatName}
-            />
-          ) : null}
-
-          {activeTargetFormatName === OutputFileFormatsNames.GIF && (
-            <>
-              <SliderInput
-                label={lang === Lang.EN ? "Quality:" : "Качество:"}
-                currentValue={quality}
-                min="1"
-                max="20"
-                name="quality"
-                mode={activeTargetFormatName}
-              />
-              <SelectInput
-                options={Object.values(GIFDitherOptions)}
-                label={lang === Lang.EN ? "Dither:" : "Дизеринг:"}
-                name="dither"
-                currentValue={dither ? dither : "off"}
-                active={true}
-              />
-            </>
-          )}
-
-          {activeTargetFormatName === "pdf" && (
-            <SelectInput
-              options={Object.values(PDFCompressionTypes)}
-              label={lang === Lang.EN ? "Compression:" : "Компрессия:"}
-              name="compression"
-              currentValue={compression as PDFCompressionTypes}
-              active={true}
-            />
-          )}
+          {qualitySliderContent}
+          {pdfCompressionSettingContent}
         </StyledOptionalSettingsContainer>
 
         <StyledDivider></StyledDivider>
@@ -135,7 +167,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
                 : "Сглаживание при масштабировании:"
             }
             name="smoothing"
-            currentValue={smoothing ? smoothing : "off"}
+            currentValue={smoothing ? smoothing : SmoothingPresets.OFF}
             active={resize}
           />
         </StyledResizeSettingsContainer>

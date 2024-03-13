@@ -2,7 +2,8 @@ import { PayloadAction, createSlice, current } from "@reduxjs/toolkit";
 import { initialState } from "./settings";
 import { RootState } from "../../store";
 
-import { OutputFileFormatsNames } from "../../../types";
+import { GIFDitherOptions, OutputFileFormatsNames, SmoothingPresets } from "../../../types";
+import { isUnits, isSmoothingOption, isDitherOption, isCompressionOption } from "../../../utils/typeGuards";
 
 export const conversionSettingsSlice = createSlice({
   name: "conversionSettings",
@@ -28,7 +29,7 @@ export const conversionSettingsSlice = createSlice({
     ) => {
       state.outputSettings.activeTargetFormatName = action.payload;
     },
-    updateActiveFormatQualitySettings: (state, action: PayloadAction<QualityOption>) => {
+    updateActiveFormatSliderSettings: (state, action: PayloadAction<QualityOption>) => {
       const { quality } = action.payload;
       const {
         outputSettings: { activeTargetFormatName },
@@ -38,11 +39,38 @@ export const conversionSettingsSlice = createSlice({
         state.outputSettings.settings[activeTargetFormatName].quality = quality
       }
     },
+    updateActiveFormatSelectSettings: (state, action: PayloadAction<SelectOptions>) => {
+      const {
+        outputSettings: { activeTargetFormatName },
+      } = current(state);
+
+      const value = Object.values(action.payload)[0]
+
+      if (isUnits(value)) {
+        state.outputSettings.settings[activeTargetFormatName].targetHeight =
+          null;
+        state.outputSettings.settings[activeTargetFormatName].targetWidth =
+          null;
+
+        state.outputSettings.settings[activeTargetFormatName].units = value
+      }
+
+      if (isSmoothingOption(value)) {
+        state.outputSettings.settings[activeTargetFormatName].smoothing = value !== SmoothingPresets.OFF ? value : false
+      }
+
+      if (activeTargetFormatName === OutputFileFormatsNames.GIF && isDitherOption(value)) {
+        state.outputSettings.settings[activeTargetFormatName].dither = value !== GIFDitherOptions.OFF ? value : false
+      }
+
+      if (activeTargetFormatName === OutputFileFormatsNames.PDF && isCompressionOption(value)) {
+        state.outputSettings.settings[activeTargetFormatName].compression = value
+      }
+    },
     updateActiveFormatSettings: (
       state,
       action
     ) => {
-      // const { property, value } = action.payload;
       const {
         outputSettings: { activeTargetFormatName },
       } = current(state);
@@ -85,7 +113,8 @@ export const getPDFInputSettings = (state: RootState) =>
 export const {
   switchTargetFormat,
   selectTargetFormat,
-  updateActiveFormatQualitySettings,
+  updateActiveFormatSliderSettings,
+  updateActiveFormatSelectSettings,
   updateActiveFormatSettings,
   updateInputSettings,
 } = conversionSettingsSlice.actions;

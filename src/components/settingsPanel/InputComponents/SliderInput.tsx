@@ -4,7 +4,7 @@ import { getConvertedValue } from "../../../utils/getConvertedValue";
 
 import { useAppDispatch } from "../../../store/hooks";
 
-import { updateActiveFormatQualitySettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { updateActiveFormatSliderSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 import { OutputFileFormatsNames, SliderConvertModes } from "../../../types";
 import React, { ChangeEvent } from "react";
 
@@ -34,9 +34,8 @@ const SliderInput: React.FC<SliderInputProps> = ({
     mode === OutputFileFormatsNames.JPG || mode === OutputFileFormatsNames.WEBP
       ? SliderConvertModes.DecimalsToPercentages
       : SliderConvertModes.GifDisplay;
-
   const stateValuesConversionMode =
-    mode === OutputFileFormatsNames.JPG || OutputFileFormatsNames.WEBP
+    mode === OutputFileFormatsNames.JPG || mode === OutputFileFormatsNames.WEBP
       ? SliderConvertModes.PercentagesToDecimals
       : SliderConvertModes.GifState;
 
@@ -47,7 +46,7 @@ const SliderInput: React.FC<SliderInputProps> = ({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(
-      updateActiveFormatQualitySettings({
+      updateActiveFormatSliderSettings({
         [e.target.name as keyof QualityOption]: getConvertedValue(
           Number(e.target.value),
           stateValuesConversionMode

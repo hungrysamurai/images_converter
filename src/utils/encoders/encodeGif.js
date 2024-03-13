@@ -22,20 +22,19 @@ export const encodeGif = async (canvas, targetFormatSettings) => {
       units
     );
   }
-  console.log(quality);
   return new Promise((resolve, reject) => {
     const gif = new GIF({
       workers: 2,
       quality,
-      workerScript: "/assets/gif.worker.js",
+      workerScript: "/projects/images_converter/assets/gif.worker.js",
       dither,
     });
-
+    console.log(gif);
     gif.addFrame(resultingCanvas);
 
     gif.on("finished", function (blob) {
       resolve(blob);
-    });
+    })
 
     gif.render();
   });

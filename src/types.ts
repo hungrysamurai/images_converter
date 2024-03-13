@@ -61,7 +61,7 @@ export enum GIFDitherOptions {
 
 export enum PDFCompressionTypes {
   JPG = "JPG",
-  PDF = "PDF",
+  PNG = "PNG",
 }
 
 export enum SliderConvertModes {
@@ -85,17 +85,8 @@ declare global {
     sourceId: string;
   };
 
-  // type OutputFileFormatsNames = Exclude<
-  //   InputFileFormatsNames,
-  //   InputFileFormatsNames.HEIC
-  // >;
-
   type ResizeOption = {
     resize: boolean;
-  }
-
-  type ResizeUnitsOption = {
-    units: ResizeUnits
   }
 
   type TargetWidthOption = {
@@ -106,12 +97,18 @@ declare global {
     targetHeight: number | null;
   }
 
-  type SmoothingOption = {
-    smoothing: SmoothingPresets | false;
-  }
-
+  // Slider
   type QualityOption = {
     quality: number;
+  }
+
+  // Select 
+  type ResizeUnitsOption = {
+    units: ResizeUnits
+  }
+
+  type SmoothingOption = {
+    smoothing: SmoothingPresets | false;
   }
 
   type DitherOption = {
@@ -122,6 +119,12 @@ declare global {
     compression: PDFCompressionTypes;
   }
 
+  type SelectOptions = ResizeUnitsOption | SmoothingOption | DitherOption | CompressionOption
+
+  type SelectOptionsValues = ResizeUnits | SmoothingPresets | GIFDitherOptions | PDFCompressionTypes
+  type SelectOptionsKeys = keyof ResizeUnitsOption | keyof SmoothingOption | keyof DitherOption | keyof CompressionOption
+
+  // Comp
   type BasicOutputConversionSettings = ResizeOption & ResizeUnitsOption & TargetWidthOption & TargetHeightOption & SmoothingOption
 
   type JPEG_WEBPOutputConversionSettings = BasicOutputConversionSettings & QualityOption
@@ -129,7 +132,6 @@ declare global {
   type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings & DitherOption;
 
   type PDFOutputConversionSettings = BasicOutputConversionSettings & CompressionOption
-
 
   // interface BasicOutputConversionSettings {
   //   resize: boolean
@@ -179,9 +181,6 @@ declare global {
       allFormats: OutputFileFormatsNames[];
       activeTargetFormatName: OutputFileFormatsNames;
       settings: {
-        // [key in OutputFileFormatsNames]: BasicOutputConversionSettings
-        // | GIFOutputConversionSettings
-        // | PDFOutputConversionSettings;
         [InputFileFormatsNames.JPG]: JPEG_WEBPOutputConversionSettings,
         [InputFileFormatsNames.WEBP]: JPEG_WEBPOutputConversionSettings,
         [InputFileFormatsNames.PNG]: BasicOutputConversionSettings,
