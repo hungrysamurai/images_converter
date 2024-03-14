@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getActiveTargetFormat,
+  getActiveTargetFormatName,
   switchTargetFormat,
 } from "../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
@@ -14,7 +14,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { fadeAnimation } from "../animations";
 
 const DownloadContainer = ({ lang }) => {
-  const activeTargetFormatName = useSelector(getActiveTargetFormat);
+  const activeTargetFormatName = useSelector(getActiveTargetFormatName);
   const allProccecedFiles = useSelector(getAllProcessedFiles);
 
   const dispatch = useDispatch();

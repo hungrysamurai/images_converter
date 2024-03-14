@@ -15,7 +15,7 @@ export const sourceFilesSlice = createSlice({
       reducer: (state, action: PayloadAction<SourceFile>) => {
         state.push(action.payload);
       },
-      prepare(file: File) {
+      prepare(file: File): { payload: SourceFile } {
         const name = trimFileName(file.name);
         const blobURL = window.URL.createObjectURL(file);
 

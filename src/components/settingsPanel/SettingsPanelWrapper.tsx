@@ -1,20 +1,19 @@
 import styled from "styled-components";
-
 import { motion, AnimatePresence } from "framer-motion";
+
+import { Lang } from "../../types";
+
 import { fadeAnimation, settingsPanelAnimation } from "../../animations";
 
 import { useAppSelector } from "../../store/hooks";
-
 import { checkPDFInSourceFiles } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
 import {
   getAllTargetFormats,
-  getActiveTargetFormat,
+  getActiveTargetFormatName,
 } from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
-
 import SettingsPanelBody from "./SettingsPanelBody";
-import { Lang } from "../../types";
 
 type SettingsPanelWrapperType = {
   setSettingsPanelVisibility: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,7 +28,7 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
 }) => {
   const isPDF = useAppSelector(checkPDFInSourceFiles);
   const formats = useAppSelector(getAllTargetFormats);
-  const activeTargetFormatName = useAppSelector(getActiveTargetFormat);
+  const activeTargetFormatName = useAppSelector(getActiveTargetFormatName);
 
   return (
     <AnimatePresence>

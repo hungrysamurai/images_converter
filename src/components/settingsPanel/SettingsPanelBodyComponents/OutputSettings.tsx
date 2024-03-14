@@ -1,7 +1,16 @@
 import styled from "styled-components";
+import React, { memo } from "react";
+
+import {
+  Lang,
+  GIFDitherOptions,
+  OutputFileFormatsNames,
+  PDFCompressionTypes,
+  ResizeUnits,
+  SmoothingPresets,
+} from "../../../types";
 
 import { useAppSelector } from "../../../store/hooks";
-
 import { getActiveFormatOutputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 import CheckboxInput from "../InputComponents/CheckboxInput";
@@ -10,38 +19,15 @@ import NumberInput from "../InputComponents/NumberInput";
 import SliderInput from "../InputComponents/SliderInput";
 
 import {
-  GIFDitherOptions,
-  OutputFileFormatsNames,
-  PDFCompressionTypes,
-  ResizeUnits,
-  SmoothingPresets,
-} from "../../../types";
-
-import React, { memo } from "react";
-import { Lang } from "../../../types";
+  isDitherSetting,
+  isCompressionSetting,
+  isQualitySetting,
+} from "../../../utils/typeGuards";
 
 type OutputSettingsType = {
   lang: Lang;
   activeTargetFormatName: OutputFileFormatsNames;
 };
-
-function isQualityOption(
-  toCheck: BasicOutputConversionSettings | JPEG_WEBPOutputConversionSettings
-): toCheck is JPEG_WEBPOutputConversionSettings {
-  return (toCheck as JPEG_WEBPOutputConversionSettings).quality !== undefined;
-}
-
-function isDitherOption(
-  toCheck: BasicOutputConversionSettings | GIFOutputConversionSettings
-): toCheck is GIFOutputConversionSettings {
-  return (toCheck as GIFOutputConversionSettings).dither !== undefined;
-}
-
-function isCompressionOption(
-  toCheck: BasicOutputConversionSettings | PDFOutputConversionSettings
-): toCheck is PDFOutputConversionSettings {
-  return (toCheck as PDFOutputConversionSettings).compression !== undefined;
-}
 
 const OutputSettings: React.FC<OutputSettingsType> = memo(
   function OutputSettings({ lang, activeTargetFormatName }) {
@@ -54,7 +40,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
       activeTargetFromatOutputSettings;
 
     // Display quality slider
-    const qualitySliderContent = isQualityOption(
+    const qualitySliderContent = isQualitySetting(
       activeTargetFromatOutputSettings
     ) ? (
       <>
@@ -72,7 +58,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
         ) : null}
 
         {/* GIF quality slider & dither options */}
-        {isDitherOption(activeTargetFromatOutputSettings) &&
+        {isDitherSetting(activeTargetFromatOutputSettings) &&
         activeTargetFormatName === OutputFileFormatsNames.GIF ? (
           <>
             <SliderInput
@@ -100,7 +86,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
     ) : null;
 
     const pdfCompressionSettingContent =
-      isCompressionOption(activeTargetFromatOutputSettings) &&
+      isCompressionSetting(activeTargetFromatOutputSettings) &&
       activeTargetFormatName === OutputFileFormatsNames.PDF ? (
         <SelectInput
           options={Object.values(PDFCompressionTypes)}

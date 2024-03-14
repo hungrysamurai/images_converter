@@ -1,23 +1,23 @@
-import styled from "styled-components";
 import { useState, useRef, DragEvent, ChangeEvent, MouseEvent } from "react";
 
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import styled from "styled-components";
+import { AnimatePresence, motion } from "framer-motion";
 
+import { Lang, MIMETypes } from "../types";
+
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   addSourceFile,
   getAllSourceFiles,
 } from "../store/slices/sourceFilesSlice/sourceFilesSlice";
 
-import { checkFileType } from "../utils/helpers/checkFileType";
-
+import IconUpload from "./icons/IconUpload";
 import FilesList from "./filesList/FilesList";
-import { isHEIC } from "../utils/helpers/isHEIC";
 
 import { fadeAnimation } from "../animations";
-import { AnimatePresence, motion } from "framer-motion";
 
-import IconUpload from "./icons/IconUpload";
-import { Lang, MIMETypes } from "../types";
+import { isHEIC } from "../utils/helpers/isHEIC";
+import { checkFileType } from "../utils/helpers/checkFileType";
 
 type UploadContainerProps = {
   lang: Lang;
@@ -77,6 +77,7 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
     });
   };
 
+  // handle click on upload container when some files already uploaded
   const handleContainerClick = (e: MouseEvent<HTMLDivElement>) => {
     if (
       filesListWrapperRef.current ===

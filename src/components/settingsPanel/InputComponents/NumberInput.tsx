@@ -1,10 +1,11 @@
 import styled from "styled-components";
-
-import { updateActiveFormatNumericSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-import { updateInputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-import { useAppDispatch } from "../../../store/hooks";
-import { ResizeUnits } from "../../../types";
 import React, { ChangeEvent } from "react";
+
+import { ResizeUnits } from "../../../types";
+
+import { useAppDispatch } from "../../../store/hooks";
+import { updateActiveTargetFormatNumericSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { updateInputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 type NumberInputProps = {
   caption: string;
@@ -43,7 +44,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
     }
 
     dispatch(
-      updateActiveFormatNumericSettings({
+      updateActiveTargetFormatNumericSetting({
         [e.target.name]: Number(e.target.value),
       } as NumericOptions)
     );

@@ -1,10 +1,10 @@
 import styled from "styled-components";
+import { memo } from "react";
+
+import { Lang, OutputFileFormatsNames } from "../../../types";
 
 import { useAppDispatch } from "../../../store/hooks";
 import { selectTargetFormat } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-
-import { memo } from "react";
-import { Lang } from "../../../types";
 
 type FormatSelectProps = {
   formats: OutputFileFormatsNames[];

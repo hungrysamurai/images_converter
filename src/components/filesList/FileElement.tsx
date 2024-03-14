@@ -1,18 +1,18 @@
 import styled from "styled-components";
-
 import { motion } from "framer-motion";
+
+import { memo } from "react";
+
+import { InputFileFormatsNames } from "../../types";
+
 import { fileElementAnimation } from "../../animations";
 
-import IconRemoveElement from "../icons/IconRemoveElement";
-import IconDownloadElement from "../icons/IconDownloadElement";
-
 import { useAppDispatch } from "../../store/hooks";
-
 import { removeSourceFile } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
 import { removeConvertedFile } from "../../store/slices/processFilesSlice/processFilesSlice";
 
-import { memo } from "react";
-import { InputFileFormatsNames } from "../../types";
+import IconRemoveElement from "../icons/IconRemoveElement";
+import IconDownloadElement from "../icons/IconDownloadElement";
 
 type FileElementProps = {
   id: string;

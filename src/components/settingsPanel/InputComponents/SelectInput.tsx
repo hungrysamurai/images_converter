@@ -1,9 +1,8 @@
 import { ChangeEvent } from "react";
-
 import styled from "styled-components";
 
 import { useAppDispatch } from "../../../store/hooks";
-import { updateActiveFormatSelectSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { updateActiveTargetFormatSelectSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 type SelectInputProps = {
   options: SelectOptionsValues[];
@@ -24,7 +23,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     dispatch(
-      updateActiveFormatSelectSettings({
+      updateActiveTargetFormatSelectSetting({
         [e.target.name]: e.target.value,
       } as SelectOptions)
     );

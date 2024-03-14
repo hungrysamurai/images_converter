@@ -4,7 +4,7 @@ import { getConvertedValue } from "../../../utils/getConvertedValue";
 
 import { useAppDispatch } from "../../../store/hooks";
 
-import { updateActiveFormatSliderSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { updateActiveTargetFormatSliderSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 import { OutputFileFormatsNames, SliderConvertModes } from "../../../types";
 import React, { ChangeEvent } from "react";
 
@@ -46,7 +46,7 @@ const SliderInput: React.FC<SliderInputProps> = ({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(
-      updateActiveFormatSliderSettings({
+      updateActiveTargetFormatSliderSetting({
         [e.target.name as keyof QualityOption]: getConvertedValue(
           Number(e.target.value),
           stateValuesConversionMode

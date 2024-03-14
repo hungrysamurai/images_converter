@@ -1,9 +1,8 @@
 import styled from "styled-components";
+import React, { ChangeEvent } from "react";
 
 import { useAppDispatch } from "../../../store/hooks";
-
-import { updateActiveFormatToggleSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-import React, { ChangeEvent } from "react";
+import { updateActiveTargetFormatToggleSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 type CheckboxInputProps = {
   currentValue: boolean;
@@ -24,7 +23,7 @@ const CheckboxInput: React.FC<CheckboxInputProps> = ({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(
-      updateActiveFormatToggleSettings({
+      updateActiveTargetFormatToggleSetting({
         [e.target.name as keyof ResizeOption]: e.target.checked,
       })
     );

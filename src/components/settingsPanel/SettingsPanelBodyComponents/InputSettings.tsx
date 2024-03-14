@@ -1,13 +1,12 @@
 import styled from "styled-components";
+import { memo } from "react";
 
-import NumberInput from "../InputComponents/NumberInput";
+import { Lang, ResizeUnits } from "../../../types";
 
 import { getPDFInputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-
 import { useAppSelector } from "../../../store/hooks";
 
-import { memo } from "react";
-import { Lang, ResizeUnits } from "../../../types";
+import NumberInput from "../InputComponents/NumberInput";
 
 type InputSettingsProps = {
   lang: Lang;

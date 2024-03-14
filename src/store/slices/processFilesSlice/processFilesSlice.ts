@@ -2,8 +2,9 @@ import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 
 import { processFile } from "../../../utils/converter";
 import { zipAndSave } from "../../../utils/zipAndSave";
+import { RootState } from "../../store";
 
-const initialState = {
+const initialState: ProcessFilesState = {
   loading: false,
   files: [],
 };
@@ -11,7 +12,7 @@ const initialState = {
 export const convertFiles = createAsyncThunk(
   "processFiles/convertFiles",
   async (_, { getState, dispatch }) => {
-    const state = getState();
+    const state = getState() as RootState;
     const { sourceFiles, conversionSettings } = state;
 
     for (const source of sourceFiles) {
@@ -23,7 +24,7 @@ export const convertFiles = createAsyncThunk(
 export const downloadAllFiles = createAsyncThunk(
   "processFiles/downloadAllFiles",
   async (_, { getState }) => {
-    const state = getState();
+    const state = getState() as RootState;
     const {
       processFiles: { files },
       conversionSettings: {

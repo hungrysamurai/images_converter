@@ -1,8 +1,6 @@
-import PropTypes from "prop-types";
-
 import styled from "styled-components";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 import IconPlay from "./icons/IconPlay";
 import IconSettings from "./icons/IconSettings";
@@ -13,23 +11,32 @@ import {
   isProcessingLoading,
 } from "../store/slices/processFilesSlice/processFilesSlice";
 import { AnimatePresence, motion } from "framer-motion";
+import React from "react";
 
-const ActionsPanel = ({ setSettingsPanelVisibility }) => {
-  const dispatch = useDispatch();
-  const isLoading = useSelector(isProcessingLoading);
+type ActionsPanelProps = {
+  setSettingsPanelVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const ActionsPanel: React.FC<ActionsPanelProps> = ({
+  setSettingsPanelVisibility,
+}) => {
+  const dispatch = useAppDispatch();
+  const isLoading = useAppSelector(isProcessingLoading);
 
   return (
     <StyledActionPanel>
       <StyledActionButton
         className={isLoading ? "disabled" : ""}
-        onClick={isLoading ? null : () => setSettingsPanelVisibility(true)}
+        onClick={
+          isLoading ? () => null : () => setSettingsPanelVisibility(true)
+        }
       >
         <IconSettings />
       </StyledActionButton>
 
       <AnimatePresence>
         {isLoading ? (
-          <StyledActionButton disabled={true} className="disabled">
+          <StyledActionButton className="disabled">
             <IconLoadingSpinner />
           </StyledActionButton>
         ) : (
@@ -40,10 +47,6 @@ const ActionsPanel = ({ setSettingsPanelVisibility }) => {
       </AnimatePresence>
     </StyledActionPanel>
   );
-};
-
-ActionsPanel.propTypes = {
-  setSettingsPanelVisibility: PropTypes.func,
 };
 
 const StyledActionPanel = styled.div`

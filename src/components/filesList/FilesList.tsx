@@ -1,11 +1,10 @@
 import styled from "styled-components";
+import { AnimatePresence, motion } from "framer-motion";
 
 import FileElement from "./FileElement";
 
 import { getFileFormat } from "../../utils/helpers/getFileFormat";
 import { getFileSize } from "../../utils/helpers/getFileSize";
-
-import { AnimatePresence, motion } from "framer-motion";
 
 // type guard
 function isProcessedFile(
