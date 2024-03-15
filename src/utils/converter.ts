@@ -1,22 +1,30 @@
+import { MIMETypes, OutputFileFormatsNames } from "../types";
+
 import { processSinglePageFile } from "./decoders/singlePage/processSinglePageFile";
 import { processMultiPagesFile } from "./decoders/multiPage/processMultiPageFile";
 
 import { addConvertedFile } from "../store/slices/processFilesSlice/processFilesSlice";
 
 import { nanoid } from "@reduxjs/toolkit";
+import { AppDispatch } from "../store/store";
 
-export const processFile = async (source, settings, dispatch) => {
+const processFile = async (
+  source: SourceFile,
+  settings: ConversionSettings,
+  dispatch: AppDispatch
+): Promise<void> => {
+
   const { inputSettings, outputSettings } = settings;
   const { activeTargetFormatName } = outputSettings;
 
   const targetFormatSettings = outputSettings.settings[activeTargetFormatName];
 
   switch (source.type) {
-    case "image/jpeg":
-    case "image/png":
-    case "image/webp":
-    case "image/bmp":
-    case "image/heic":
+    case MIMETypes.JPG:
+    case MIMETypes.PNG:
+    case MIMETypes.WEBP:
+    case MIMETypes.BMP:
+    case MIMETypes.HEIC:
       {
         try {
           const processed = await processSinglePageFile(
@@ -25,7 +33,7 @@ export const processFile = async (source, settings, dispatch) => {
             activeTargetFormatName
           );
           const { name, id } = source;
-
+          // throw Error('Error from processFile')
           const size = processed.size;
           const URL = window.URL.createObjectURL(processed);
 
@@ -35,20 +43,21 @@ export const processFile = async (source, settings, dispatch) => {
               downloadLink: URL,
               name: `${name}.${activeTargetFormatName}`,
               size,
-              type: `image/${activeTargetFormatName}`,
+              type: `image/${activeTargetFormatName}` as MIMETypes,
               id: nanoid(),
               sourceId: id,
             })
           );
         } catch (err) {
-          console.log(err);
+          console.log(1);
+          throw err
         }
       }
       break;
 
-    case "image/tiff":
-    case "image/gif":
-    case "application/pdf":
+    case MIMETypes.TIFF:
+    case MIMETypes.GIF:
+    case MIMETypes.PDF:
       {
         try {
           await processMultiPagesFile(
@@ -65,3 +74,5 @@ export const processFile = async (source, settings, dispatch) => {
       break;
   }
 };
+
+export default processFile;

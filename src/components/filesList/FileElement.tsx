@@ -40,8 +40,6 @@ const elementsColor = {
 
 const FileElement: React.FC<FileElementProps> = memo(
   ({ id, format, size, name, downloadLink }) => {
-    console.log(format);
-
     const dispatch = useAppDispatch();
 
     const removeElement = (id: string) => {

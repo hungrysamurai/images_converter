@@ -1,5 +1,5 @@
 export const getResizedCanvas = async (
-  canvas,
+  canvas: HTMLCanvasElement,
   targetWidth,
   targetHeight,
   smoothing,
@@ -11,7 +11,7 @@ export const getResizedCanvas = async (
   const srcAspectRatio = srcWidth / srcHeight;
 
   const resultingCanvas = document.createElement("canvas");
-  const resultingCanvasContext = resultingCanvas.getContext("2d");
+  const resultingCanvasContext = resultingCanvas.getContext("2d") as CanvasRenderingContext2D;
 
   let resultWidth, resultHeight;
 

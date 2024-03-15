@@ -31,7 +31,7 @@ export function isCompressionOption(
   );
 }
 
-// Type checkers for UI
+// Type checkers for Output Conversion settings object
 
 export function isQualitySetting(
   toCheck: BasicOutputConversionSettings | JPEG_WEBPOutputConversionSettings

@@ -1,18 +1,20 @@
+import { MIMETypes, OutputFileFormatsNames } from "../../../types";
 import { bmpToFile } from "./bmpToFile";
 import { heicToFile } from "./heicToFile";
 import { jpegPngWebpToFile } from "./jpegPngWebpToFile";
 
 export const processSinglePageFile = async (
-  source,
-  targetFormatSettings,
-  activeTargetFormatName
-) => {
+  source: SourceFile,
+  targetFormatSettings: OutputConversionSettings,
+  activeTargetFormatName: OutputFileFormatsNames
+): Promise<Blob> => {
   return new Promise((resolve, reject) => {
     const { blobURL, type: srcType } = source;
+
     switch (srcType) {
-      case "image/jpeg":
-      case "image/png":
-      case "image/webp":
+      case MIMETypes.JPG:
+      case MIMETypes.PNG:
+      case MIMETypes.WEBP:
         {
           jpegPngWebpToFile(
             blobURL,
@@ -21,10 +23,12 @@ export const processSinglePageFile = async (
             activeTargetFormatName,
           )
             .then((blob) => {
+              // throw Error('error from processSinglePageFile')
               resolve(blob);
             })
             .catch((err) => {
-              reject(new Error("Failed to process image:", err));
+              console.log(2);
+              reject(err);
             });
         }
         break;

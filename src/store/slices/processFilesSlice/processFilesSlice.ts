@@ -1,22 +1,36 @@
-import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, current, PayloadAction } from "@reduxjs/toolkit";
 
-import { processFile } from "../../../utils/converter";
+import { AppDispatch, RootState } from "../../store";
+
+import processFile from "../../../utils/converter";
 import { zipAndSave } from "../../../utils/zipAndSave";
-import { RootState } from "../../store";
+import { removeSourceFile } from "../sourceFilesSlice/sourceFilesSlice";
 
 const initialState: ProcessFilesState = {
   loading: false,
   files: [],
 };
 
-export const convertFiles = createAsyncThunk(
+export const convertFiles = createAsyncThunk<
+  void,
+  void,
+  {
+    dispatch: AppDispatch,
+    state: RootState
+  }
+>(
   "processFiles/convertFiles",
-  async (_, { getState, dispatch }) => {
-    const state = getState() as RootState;
+  async (_: void, { getState, dispatch }) => {
+    const state = getState();
     const { sourceFiles, conversionSettings } = state;
 
     for (const source of sourceFiles) {
-      await processFile(source, conversionSettings, dispatch);
+      try {
+        await processFile(source, conversionSettings, dispatch);
+      } catch (err) {
+        console.log('Main error handler:', err);
+        dispatch(removeSourceFile(source.id));
+      }
     }
   }
 );
@@ -39,7 +53,7 @@ const processFilesSlice = createSlice({
   name: "processFiles",
   initialState,
   reducers: {
-    addConvertedFile: (state, action) => {
+    addConvertedFile: (state, action: PayloadAction<ProcessedFile>) => {
       // Check for name collisions
       const nameCollisionsCount = current(state).files.filter((file) => {
         const inStateFileName = file.name.split(".").toSpliced(-1).join("");
@@ -65,11 +79,14 @@ const processFilesSlice = createSlice({
 
       state.files.push(action.payload);
     },
-    removeConvertedFile: (state, action) => {
+    removeConvertedFile: (state, action: PayloadAction<string>) => {
       const fileToRemove = current(state).files.find(
         (el) => el.id === action.payload
       );
-      URL.revokeObjectURL(fileToRemove.blobURL);
+
+      if (fileToRemove) {
+        URL.revokeObjectURL(fileToRemove.blobURL);
+      }
 
       return {
         ...state,
@@ -110,7 +127,7 @@ export const {
   removeAllConvertedFiles,
 } = processFilesSlice.actions;
 
-export const getAllProcessedFiles = (state) => state.processFiles.files;
-export const isProcessingLoading = (state) => state.processFiles.loading;
+export const getAllProcessedFiles = (state: RootState) => state.processFiles.files;
+export const isProcessingLoading = (state: RootState) => state.processFiles.loading;
 
 export default processFilesSlice.reducer;

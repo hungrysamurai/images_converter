@@ -169,6 +169,8 @@ declare global {
   type PDFOutputConversionSettings = BasicOutputConversionSettings &
     CompressionOption;
 
+  type OutputConversionSettings = BasicOutputConversionSettings | JPEG_WEBPOutputConversionSettings | GIFOutputConversionSettings | PDFOutputConversionSettings
+
   interface ConversionSettings {
     inputSettings: {
       [InputFileFormatsNames.PDF]: PDFInputSettings;
