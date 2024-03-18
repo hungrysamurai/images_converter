@@ -69,7 +69,6 @@ const processFile = async (
             dispatch
           );
         } catch (err) {
-          console.log(1);
           throw err;
         }
       }

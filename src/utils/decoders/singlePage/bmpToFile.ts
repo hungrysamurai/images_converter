@@ -119,7 +119,6 @@ export const bmpToFile = async (
       targetFormatSettings,
       activeTargetFormatName
     );
-
     if (encoded) {
       resolve(encoded);
     } else {

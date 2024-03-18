@@ -16,7 +16,7 @@ export const jpegPngWebpToFile = async (
         const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
         canvas.width = img.width;
         canvas.height = img.height;
-        // throw new Error("Some JPEG problem!");
+
         ctx.drawImage(img, 0, 0);
 
         const encoded = await encode(
