@@ -13,7 +13,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "file-saver": "^2.0.5",
     "framer-motion": "^10.15.1",
-    "gif.js.optimized": "^1.0.1",
+    "gif.js": "^0.2.0",
     "gifuct-js": "^2.1.2",
     "heic2any": "^0.0.4",
     "jspdf": "^2.5.1",

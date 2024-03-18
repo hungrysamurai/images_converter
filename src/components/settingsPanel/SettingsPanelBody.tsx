@@ -1,7 +1,7 @@
 import { memo } from "react";
 
-import { Lang } from "../../types";
-import { OutputFileFormatsNames } from "../../types";
+import { Lang } from "../../types/types";
+import { OutputFileFormatsNames } from "../../types/types";
 
 import FormatSelect from "./SettingsPanelBodyComponents/FormatSelect";
 import OutputSettings from "./SettingsPanelBodyComponents/OutputSettings";

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React, { ChangeEvent } from "react";
 
-import { ResizeUnits } from "../../../types";
+import { ResizeUnits } from "../../../types/types";
 
 import { useAppDispatch } from "../../../store/hooks";
 import { updateActiveTargetFormatNumericSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";

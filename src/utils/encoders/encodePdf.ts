@@ -1,27 +1,30 @@
 import { jsPDF } from "jspdf";
 import { getResizedCanvas } from "../getResizedCanvas";
+import { isCompressionSetting } from "../typeGuards";
 
 export const encodePdf = async (
-  canvas,
-  targetFormatSettings,
-  activeTargetFormatName
-) => {
+  canvas: HTMLCanvasElement,
+  targetFormatSettings: OutputConversionSettings
+): Promise<Blob | void> => {
+
   let resultingCanvas = canvas;
-  const { resize, units, smoothing, targetHeight, targetWidth, compression } =
-    targetFormatSettings;
 
-  if (resize) {
-    resultingCanvas = await getResizedCanvas(
-      canvas,
-      targetWidth,
-      targetHeight,
-      smoothing,
-      units
-    );
-  }
+  if (isCompressionSetting(targetFormatSettings)) {
 
-  return new Promise((resolve, reject) => {
-    let pdf;
+    const { resize, units, smoothing, targetHeight, targetWidth, compression } =
+      targetFormatSettings;
+
+    if (resize) {
+      resultingCanvas = await getResizedCanvas(
+        canvas,
+        targetWidth,
+        targetHeight,
+        smoothing,
+        units
+      );
+    }
+
+    let pdf: jsPDF;
     const canvasWidth = resultingCanvas.width;
     const canvasHeight = resultingCanvas.height;
 
@@ -36,6 +39,6 @@ export const encodePdf = async (
 
     pdf.addImage(resultingCanvas, compression, 0, 0, width, height);
 
-    resolve(pdf.output("blob"));
-  });
+    return pdf.output("blob")
+  }
 };

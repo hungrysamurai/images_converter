@@ -6,7 +6,7 @@ import {
   GIFDitherOptions,
   OutputFileFormatsNames,
   SmoothingPresets,
-} from "../../../types";
+} from "../../../types/types";
 import {
   isUnits,
   isSmoothingOption,

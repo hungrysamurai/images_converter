@@ -1,4 +1,4 @@
-import { MIMETypes, OutputFileFormatsNames } from "../../../types";
+import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
 
 import { bmpToFile } from "./bmpToFile";
 import { heicToFile } from "./heicToFile";

@@ -20,14 +20,9 @@ export const encodeBmp = async (
     );
   }
 
-  return new Promise((resolve, reject) => {
-    try {
-      canvasToBlob(resultingCanvas, (blob: Blob) => {
-        resolve(blob);
-      });
-    } catch (err) {
-      console.log(4);
-      reject(err)
-    }
+  return new Promise((resolve) => {
+    canvasToBlob(resultingCanvas, (blob: Blob) => {
+      resolve(blob);
+    });
   });
 };

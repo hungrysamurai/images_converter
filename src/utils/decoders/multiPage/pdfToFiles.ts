@@ -1,6 +1,6 @@
 import * as PDFJS from "pdfjs-dist";
 
-import { MIMETypes, OutputFileFormatsNames } from "../../../types";
+import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
 
 import { nanoid } from "@reduxjs/toolkit";
 

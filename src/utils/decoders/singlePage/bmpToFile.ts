@@ -1,4 +1,4 @@
-import { OutputFileFormatsNames } from "../../../types";
+import { OutputFileFormatsNames } from "../../../types/types";
 import { encode } from "../../encode";
 
 interface Bitmap {
@@ -30,7 +30,7 @@ export const bmpToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames
-): Promise<Blob> => {
+): Promise<Blob | void> => {
   const blob = await fetch(blobURL);
   const arrayBuffer = await blob.arrayBuffer();
 

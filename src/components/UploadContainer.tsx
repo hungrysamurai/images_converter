@@ -3,7 +3,7 @@ import { useState, useRef, DragEvent, ChangeEvent, MouseEvent } from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { Lang, MIMETypes } from "../types";
+import { Lang, MIMETypes } from "../types/types";
 
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {

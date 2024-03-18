@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { Lang } from "../../types";
+import { Lang } from "../../types/types";
 
 import { fadeAnimation, settingsPanelAnimation } from "../../animations";
 

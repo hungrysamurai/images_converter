@@ -1,5 +1,5 @@
 const toArrayBuffer = (canvas: HTMLCanvasElement, callback: Function) => {
-  var w = canvas.width,
+  let w = canvas.width,
     h = canvas.height,
     w4 = w << 2,
     idata = (canvas.getContext("2d") as CanvasRenderingContext2D).getImageData(

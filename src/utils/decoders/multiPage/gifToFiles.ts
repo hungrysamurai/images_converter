@@ -1,7 +1,7 @@
 import { parseGIF, decompressFrames } from "gifuct-js";
 import { nanoid } from "@reduxjs/toolkit";
 
-import { MIMETypes, OutputFileFormatsNames } from "../../../types";
+import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
 
 import { AppDispatch } from "../../../store/store";
 import { addConvertedFile } from "../../../store/slices/processFilesSlice/processFilesSlice";

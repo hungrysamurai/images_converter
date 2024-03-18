@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 import { memo } from "react";
 
-import { InputFileFormatsNames } from "../../types";
+import { InputFileFormatsNames } from "../../types/types";
 
 import { fileElementAnimation } from "../../animations";
 

@@ -1,4 +1,4 @@
-import { MIMETypes } from "../types";
+import { MIMETypes } from "../types/types";
 
 import { processSinglePageFile } from "./decoders/singlePage/processSinglePageFile";
 import { processMultiPagesFile } from "./decoders/multiPage/processMultiPageFile";

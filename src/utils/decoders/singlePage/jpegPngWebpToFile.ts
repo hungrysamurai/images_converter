@@ -1,4 +1,4 @@
-import { OutputFileFormatsNames } from "../../../types";
+import { OutputFileFormatsNames } from "../../../types/types";
 import { encode } from "../../encode";
 
 export const jpegPngWebpToFile = async (

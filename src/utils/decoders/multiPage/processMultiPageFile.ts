@@ -1,4 +1,4 @@
-import { MIMETypes, OutputFileFormatsNames } from "../../../types";
+import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
 import { AppDispatch } from "../../../store/store";
 
 import { tiffToFiles } from "./tiffToFiles";

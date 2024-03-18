@@ -1,6 +1,6 @@
 import UTIF from "utif";
 
-import { MIMETypes, OutputFileFormatsNames } from "../../../types";
+import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
 
 import { nanoid } from "@reduxjs/toolkit";
 import { AppDispatch } from "../../../store/store";

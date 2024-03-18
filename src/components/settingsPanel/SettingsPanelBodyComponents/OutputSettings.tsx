@@ -8,7 +8,7 @@ import {
   PDFCompressionTypes,
   ResizeUnits,
   SmoothingPresets,
-} from "../../../types";
+} from "../../../types/types";
 
 import { useAppSelector } from "../../../store/hooks";
 import { getActiveFormatOutputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";

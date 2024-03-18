@@ -8,8 +8,8 @@ import {
 import { AppDispatch, RootState } from "../../store";
 
 import processFile from "../../../utils/converter";
+
 import { zipAndSave } from "../../../utils/zipAndSave";
-import { removeSourceFile } from "../sourceFilesSlice/sourceFilesSlice";
 import { getFileFormat } from "../../../utils/helpers/getFileFormat";
 
 const initialState: ProcessFilesState = {
@@ -36,7 +36,7 @@ export const convertFiles = createAsyncThunk<
         `Error processing file ${source.name}.${getFileFormat(source.type)}:`,
         (err as Error).message
       );
-      dispatch(removeSourceFile(source.id));
+      // dispatch(removeSourceFile(source.id));
     }
   }
 });

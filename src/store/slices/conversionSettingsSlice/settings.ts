@@ -4,7 +4,7 @@ import {
   ResizeUnits,
   SmoothingPresets,
   PDFCompressionTypes,
-} from "../../../types";
+} from "../../../types/types";
 
 export const initialState: ConversionSettings = {
   inputSettings: {

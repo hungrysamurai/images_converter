@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { memo } from "react";
 
-import { Lang, ResizeUnits } from "../../../types";
+import { Lang, ResizeUnits } from "../../../types/types";
 
 import { getPDFInputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 import { useAppSelector } from "../../../store/hooks";

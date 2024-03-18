@@ -5,7 +5,10 @@ import { getConvertedValue } from "../../../utils/getConvertedValue";
 import { useAppDispatch } from "../../../store/hooks";
 
 import { updateActiveTargetFormatSliderSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-import { OutputFileFormatsNames, SliderConvertModes } from "../../../types";
+import {
+  OutputFileFormatsNames,
+  SliderConvertModes,
+} from "../../../types/types";
 import React, { ChangeEvent } from "react";
 
 type SliderInputProps = {

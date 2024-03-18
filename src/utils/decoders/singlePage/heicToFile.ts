@@ -1,6 +1,6 @@
 import heic2any from "heic2any";
 
-import { OutputFileFormatsNames } from "../../../types";
+import { OutputFileFormatsNames } from "../../../types/types";
 
 import { encode } from "../../encode";
 
@@ -8,7 +8,7 @@ export const heicToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames
-): Promise<Blob> => {
+): Promise<Blob | void> => {
   const file = await fetch(blobURL);
   const blob = await file.blob();
 

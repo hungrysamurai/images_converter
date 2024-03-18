@@ -3,7 +3,7 @@ import {
   PDFCompressionTypes,
   ResizeUnits,
   SmoothingPresets,
-} from "../types";
+} from "../types/types";
 
 // Type checkers for conversion setting store slice
 

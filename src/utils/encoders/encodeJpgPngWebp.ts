@@ -1,4 +1,4 @@
-import { OutputFileFormatsNames } from "../../types";
+import { OutputFileFormatsNames } from "../../types/types";
 import { getResizedCanvas } from "../getResizedCanvas";
 import { isQualitySetting } from "../typeGuards";
 
@@ -30,15 +30,13 @@ export const encodeJpgPngWebp = async (
     if (isQualitySetting(targetFormatSettings)) {
       quality = targetFormatSettings.quality
     }
-
     resultingCanvas.toBlob(
       (blob: Blob | null) => {
         // blob = null
         if (blob) {
           resolve(blob);
         } else {
-          console.log(4);
-          reject('some error')
+          reject()
         }
       },
       `image/${activeTargetFormatName}`,
