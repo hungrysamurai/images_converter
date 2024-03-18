@@ -1,50 +1,39 @@
-import { MIMETypes, OutputFileFormatsNames } from "../../../types";
+import { OutputFileFormatsNames } from "../../../types";
 import { encode } from "../../encode";
 
 export const jpegPngWebpToFile = async (
   blobURL: string,
-  srcType: MIMETypes.JPG | MIMETypes.PNG | MIMETypes.WEBP,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames
 ): Promise<Blob> => {
   return new Promise((resolve, reject) => {
-    try {
-      const img = new Image();
-      img.src = blobURL;
+    const img = new Image();
+    img.src = blobURL;
 
-      img.onload = async () => {
-        try {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-          // throw Error('error from img.onload')
-          canvas.width = img.width;
-          canvas.height = img.height;
+    img.onload = async () => {
+      try {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+        canvas.width = img.width;
+        canvas.height = img.height;
+        // throw new Error("Some JPEG problem!");
+        ctx.drawImage(img, 0, 0);
 
-          ctx.drawImage(img, 0, 0);
-
-          const encoded = await encode(
-            canvas,
-            targetFormatSettings,
-            activeTargetFormatName
-          );
-
-          if (encoded) {
-            resolve(encoded);
-          }
-        } catch (err) {
-          console.log(3);
-          reject(err);
+        const encoded = await encode(
+          canvas,
+          targetFormatSettings,
+          activeTargetFormatName
+        );
+        if (encoded) {
+          resolve(encoded);
         }
-      };
-      // If image not valid
-      img.onerror = () => {
-        console.log(3);
-        reject('Error while parsing image');
+      } catch (err) {
+        reject(err);
       }
-
-    } catch (err) {
-      console.log(3);
-      reject(err);
-    }
+    };
+    // If image not valid
+    img.onerror = () => {
+      reject(new Error("Error while parsing image"));
+    };
   });
 };

@@ -6,9 +6,9 @@ export const encodePdf = async (
   targetFormatSettings,
   activeTargetFormatName
 ) => {
-
   let resultingCanvas = canvas;
-  const { resize, units, smoothing, targetHeight, targetWidth, compression } = targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth, compression } =
+    targetFormatSettings;
 
   if (resize) {
     resultingCanvas = await getResizedCanvas(

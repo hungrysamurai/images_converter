@@ -1,4 +1,4 @@
-import { MIMETypes, OutputFileFormatsNames } from "../types";
+import { MIMETypes } from "../types";
 
 import { processSinglePageFile } from "./decoders/singlePage/processSinglePageFile";
 import { processMultiPagesFile } from "./decoders/multiPage/processMultiPageFile";
@@ -13,7 +13,6 @@ const processFile = async (
   settings: ConversionSettings,
   dispatch: AppDispatch
 ): Promise<void> => {
-
   const { inputSettings, outputSettings } = settings;
   const { activeTargetFormatName } = outputSettings;
 
@@ -32,25 +31,27 @@ const processFile = async (
             targetFormatSettings,
             activeTargetFormatName
           );
-          const { name, id } = source;
-          // throw Error('Error from processFile')
-          const size = processed.size;
-          const URL = window.URL.createObjectURL(processed);
 
-          dispatch(
-            addConvertedFile({
-              blobURL: URL,
-              downloadLink: URL,
-              name: `${name}.${activeTargetFormatName}`,
-              size,
-              type: `image/${activeTargetFormatName}` as MIMETypes,
-              id: nanoid(),
-              sourceId: id,
-            })
-          );
+          if (processed) {
+            const { name, id } = source;
+
+            const size = processed.size;
+            const URL = window.URL.createObjectURL(processed);
+
+            dispatch(
+              addConvertedFile({
+                blobURL: URL,
+                downloadLink: URL,
+                name: `${name}.${activeTargetFormatName}`,
+                size,
+                type: `image/${activeTargetFormatName}` as MIMETypes,
+                id: nanoid(),
+                sourceId: id,
+              })
+            );
+          }
         } catch (err) {
-          console.log(1);
-          throw err
+          throw err;
         }
       }
       break;
@@ -68,7 +69,8 @@ const processFile = async (
             dispatch
           );
         } catch (err) {
-          console.log(err);
+          console.log(1);
+          throw err;
         }
       }
       break;

@@ -37,8 +37,8 @@ export const pdfToFiles = async (
         dontFlip: false,
       });
 
-      const canvas = document.createElement("canvas"),
-        ctx = canvas.getContext("2d");
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
 
       canvas.height = viewport.height;
       canvas.width = viewport.width;

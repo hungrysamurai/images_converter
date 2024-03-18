@@ -1,13 +1,16 @@
+import { OutputFileFormatsNames } from "../../../types";
+import { AppDispatch } from "../../../store/store";
+
 import { tiffToFiles } from "./tiffToFiles";
 import { gifToFiles } from "./gifToFiles";
 import { pdfToFiles } from "./pdfToFiles";
 
 export const processMultiPagesFile = async (
-  source,
-  targetFormatSettings,
-  activeTargetFormatName,
-  inputSettings,
-  dispatch
+  source: SourceFile,
+  targetFormatSettings: OutputConversionSettings,
+  activeTargetFormatName: OutputFileFormatsNames,
+  inputSettings: PDFInputSettings,
+  dispatch: AppDispatch
 ) => {
   const { type: srcType } = source;
 
@@ -49,7 +52,8 @@ export const processMultiPagesFile = async (
           targetFormatSettings,
           activeTargetFormatName,
           inputSettings,
-          dispatch);
+          dispatch
+        );
       } catch (err) {
         throw new Error("Failed to process image:", err);
       }

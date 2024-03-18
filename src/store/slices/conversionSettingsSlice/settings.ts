@@ -9,7 +9,7 @@ import {
 export const initialState: ConversionSettings = {
   inputSettings: {
     pdf: {
-      resolution: 300,
+      resolution: 72,
       rotation: 0,
     },
   },
@@ -82,4 +82,3 @@ export const initialState: ConversionSettings = {
     },
   },
 };
-

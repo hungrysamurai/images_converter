@@ -1,6 +1,5 @@
 import { OutputFileFormatsNames } from "../types";
 
-
 import { encodeJpgPngWebp } from "./encoders/encodeJpgPngWebp";
 import { encodeBmp } from "./encoders/encodeBmp";
 import { encodeTiff } from "./encoders/encodeTiff";
@@ -15,26 +14,16 @@ export const encode = (
   switch (activeTargetFormatName) {
     case OutputFileFormatsNames.JPG:
     case OutputFileFormatsNames.WEBP:
-    case OutputFileFormatsNames.PNG:
-      {
-        return encodeJpgPngWebp(
-          canvas,
-          targetFormatSettings,
-          activeTargetFormatName
-        );
-      }
-    case OutputFileFormatsNames.BMP:
-      {
-        try {
-          return encodeBmp(
-            canvas,
-            targetFormatSettings
-          );
-        } catch (err) {
-          console.log(err);
-        }
-      }
-      break;
+    case OutputFileFormatsNames.PNG: {
+      return encodeJpgPngWebp(
+        canvas,
+        targetFormatSettings,
+        activeTargetFormatName
+      );
+    }
+    case OutputFileFormatsNames.BMP: {
+      return encodeBmp(canvas, targetFormatSettings);
+    }
 
     case OutputFileFormatsNames.TIFF:
       {

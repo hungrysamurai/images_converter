@@ -23,7 +23,7 @@ export const encodeJpgPngWebp = async (
     );
 
   }
-  // throw 'error from encodeJpgPngWebp'
+
   return new Promise((resolve, reject) => {
     let quality
 

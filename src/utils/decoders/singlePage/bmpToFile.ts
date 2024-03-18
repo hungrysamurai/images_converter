@@ -1,20 +1,71 @@
+import { OutputFileFormatsNames } from "../../../types";
 import { encode } from "../../encode";
 
-export const bmpToFile = async (blobURL, targetFormatSettings, activeTargetFormatName) => {
+interface Bitmap {
+  stride: number;
+  pixels: Uint8ClampedArray | undefined;
+  fileheader: {
+    bfReserved1: number;
+    bfReserved2: number;
+    bfOffBits: number;
+    bfType: number;
+    bfSize: number;
+  };
+  infoheader: {
+    biBitCount: number;
+    biCompression: number;
+    biSizeImage: number;
+    biXPelsPerMeter: number;
+    biYPelsPerMeter: number;
+    biClrUsed: number;
+    biClrImportant: number;
+    biPlanes: number;
+    biHeight: number;
+    biWidth: number;
+    biSize: number;
+  };
+}
+
+export const bmpToFile = async (
+  blobURL: string,
+  targetFormatSettings: OutputConversionSettings,
+  activeTargetFormatName: OutputFileFormatsNames
+): Promise<Blob> => {
   const blob = await fetch(blobURL);
   const arrayBuffer = await blob.arrayBuffer();
 
   const dataView = new DataView(arrayBuffer);
-  const bitmap = {};
+  const bitmap: Bitmap = {
+    fileheader: {
+      bfType: 0,
+      bfSize: 0,
+      bfReserved1: 0,
+      bfReserved2: 0,
+      bfOffBits: 0,
+    },
+    infoheader: {
+      biWidth: 0,
+      biSize: 0,
+      biHeight: 0,
+      biBitCount: 0,
+      biCompression: 0,
+      biSizeImage: 0,
+      biXPelsPerMeter: 0,
+      biYPelsPerMeter: 0,
+      biClrUsed: 0,
+      biClrImportant: 0,
+      biPlanes: 0,
+    },
+    stride: 0,
+    pixels: undefined,
+  };
 
-  bitmap.fileheader = {};
   bitmap.fileheader.bfType = dataView.getUint16(0, true);
   bitmap.fileheader.bfSize = dataView.getUint32(2, true);
   bitmap.fileheader.bfReserved1 = dataView.getUint16(6, true);
   bitmap.fileheader.bfReserved2 = dataView.getUint16(8, true);
   bitmap.fileheader.bfOffBits = dataView.getUint32(10, true);
 
-  bitmap.infoheader = {};
   bitmap.infoheader.biSize = dataView.getUint32(14, true);
   bitmap.infoheader.biWidth = dataView.getUint32(18, true);
   bitmap.infoheader.biHeight = dataView.getUint32(22, true);
@@ -35,7 +86,7 @@ export const bmpToFile = async (blobURL, targetFormatSettings, activeTargetForma
   bitmap.pixels = new Uint8ClampedArray(arrayBuffer, start);
 
   const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
   const width = bitmap.infoheader.biWidth;
   const height = bitmap.infoheader.biHeight;
@@ -63,10 +114,16 @@ export const bmpToFile = async (blobURL, targetFormatSettings, activeTargetForma
   ctx.putImageData(imageData, 0, 0);
 
   return new Promise((resolve, reject) => {
-    try {
-      resolve(encode(canvas, targetFormatSettings, activeTargetFormatName));
-    } catch (err) {
-      reject(new Error(`Failed to process BMP image file.`));
+    const encoded = encode(
+      canvas,
+      targetFormatSettings,
+      activeTargetFormatName
+    );
+
+    if (encoded) {
+      resolve(encoded);
+    } else {
+      reject();
     }
   });
 };
