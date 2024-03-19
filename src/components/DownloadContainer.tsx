@@ -59,7 +59,7 @@ const StyledDownloadContainer = styled.div`
   width: 95%;
   height: calc((100% - 11rem) / 2);
   background-color: var(--bg-light-gray);
-  border-radius: 0rem 0rem 2.5rem 2.5rem;
+  border-radius: 0rem 0rem var(--round-corner) var(--round-corner);
   box-shadow: var(--container-inner-shadow);
   position: relative;
   overflow-y: scroll;
@@ -108,6 +108,12 @@ const StyledDownloadContainer = styled.div`
         font-weight: 700;
       }
     }
+  }
+
+  @media (min-aspect-ratio: 1/1) {
+    width: calc((100% - 11rem) / 2);
+    height: 95%;
+    border-radius: 0rem var(--round-corner) var(--round-corner) 0rem;
   }
 `;
 

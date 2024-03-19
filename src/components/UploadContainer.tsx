@@ -173,7 +173,7 @@ const StyledUploadContainer = styled.div`
   width: 95%;
   height: calc((100% - 11rem) / 2);
   background-color: var(--bg-light-gray);
-  border-radius: 2.5rem 2.5rem 0rem 0rem;
+  border-radius: var(--round-corner) var(--round-corner) 0rem 0rem;
   box-shadow: var(--container-inner-shadow);
   overflow-y: scroll;
   overflow-x: hidden;
@@ -187,6 +187,12 @@ const StyledUploadContainer = styled.div`
 
   @media (max-width: 768px) {
     height: calc((100% - 8rem) / 2);
+  }
+
+  @media (min-aspect-ratio: 1/1) {
+    width: calc((100% - 11rem) / 2);
+    height: 95%;
+    border-radius: var(--round-corner) 0rem 0rem var(--round-corner);
   }
 `;
 

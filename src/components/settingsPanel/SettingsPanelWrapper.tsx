@@ -90,7 +90,7 @@ const StyledSettingsPanel = styled(motion.div)`
   backdrop-filter: blur(48px);
   width: 75vw;
   height: 100vh;
-  border-radius: 2.5rem 0 0 2.5rem;
+  border-radius: var(--round-corner) 0 0 var(--round-corner);
   display: flex;
   flex-direction: column;
   align-items: center;

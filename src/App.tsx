@@ -41,8 +41,16 @@ const StyledMainContainer = styled.div`
   height: 100vh;
   background-color: var(--bg-container-gray);
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
+
+  @media (max-aspect-ratio: 1/1) {
+    flex-direction: column;
+  }
+
+  @media (min-aspect-ratio: 1/1) {
+    flex-direction: row;
+  }
 `;
 
 export default App;

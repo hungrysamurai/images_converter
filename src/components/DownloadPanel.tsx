@@ -57,6 +57,13 @@ const StyledDownloadPanel = styled.div`
   @media (max-width: 768px) {
     height: 3.5rem;
   }
+
+  @media (min-aspect-ratio: 1/1) {
+    flex-direction: column;
+    width: 5rem;
+    height: 100%;
+    gap: 2rem;
+  }
 `;
 
 const StyledDownloadButton = styled.button`
