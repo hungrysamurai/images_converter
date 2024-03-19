@@ -50,3 +50,12 @@ export function isCompressionSetting(
 ): toCheck is PDFOutputConversionSettings {
   return (toCheck as PDFOutputConversionSettings).compression !== undefined;
 }
+
+
+// Type checker for File
+
+export function isProcessedFile(
+  toCheck: ProcessedFile | SourceFile
+): toCheck is ProcessedFile {
+  return (toCheck as ProcessedFile).downloadLink !== undefined;
+}

@@ -14,7 +14,7 @@ declare module "gif.js" {
 
  type finishCallback = (blob: Blob) => void
 
- class GIFInstance {
+ class GIF {
   constructor(opt: options)
 
   addFrame: (
@@ -28,5 +28,5 @@ declare module "gif.js" {
   render: () => void
  }
 
- export = GIFInstance
+ export = GIF
 }

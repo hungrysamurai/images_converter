@@ -52,7 +52,7 @@ export const tiffToFiles = async (
     addConvertedFile({
      blobURL: URL,
      downloadLink: URL,
-     name: `${name}_${index + 1}.${activeTargetFormatName}`,
+     name: `${name}_${index + 1}`,
      size,
      type: `image/${activeTargetFormatName}` as MIMETypes,
      id: nanoid(),

@@ -36,22 +36,35 @@ export const convertFiles = createAsyncThunk<
         `Error processing file ${source.name}.${getFileFormat(source.type)}:`,
         (err as Error).message
       );
-      // dispatch(removeSourceFile(source.id));
     }
   }
 });
 
-export const downloadAllFiles = createAsyncThunk(
+export const downloadAllFiles = createAsyncThunk<
+  void,
+  void,
+  {
+    state: RootState
+  }
+>(
   "processFiles/downloadAllFiles",
-  async (_, { getState }) => {
-    const state = getState() as RootState;
+  async (_: void, { getState }) => {
+    const state = getState();
     const {
       processFiles: { files },
       conversionSettings: {
         outputSettings: { activeTargetFormatName },
       },
     } = state;
-    await zipAndSave(files, activeTargetFormatName);
+
+    try {
+      await zipAndSave(files, activeTargetFormatName);
+    } catch (err) {
+      console.error(
+        `Error generating zip archive:`,
+        (err as Error).message
+      );
+    }
   }
 );
 
@@ -60,30 +73,15 @@ const processFilesSlice = createSlice({
   initialState,
   reducers: {
     addConvertedFile: (state, action: PayloadAction<ProcessedFile>) => {
-      // Check for name collisions
-      const nameCollisionsCount = current(state).files.filter((file) => {
-        const inStateFileName = file.name.split(".").toSpliced(-1).join("");
-        const processedFileName = action.payload.name
-          .split(".")
-          .toSpliced(-1)
-          .join("");
+      const isSameFileInState = current(state).files.some(file => file.name === action.payload.name)
 
-        return (
-          inStateFileName.startsWith(processedFileName) &&
-          file.type === action.payload.type
-        );
-      }).length;
+      let name = action.payload.name;
 
-      if (nameCollisionsCount > 0) {
-        const format = action.payload.name.split(".").slice(-1).join("");
-        const newName =
-          action.payload.name.split(".").toSpliced(-1).join("") +
-          `_${nameCollisionsCount}`;
-
-        action.payload.name = `${newName}.${format}`;
+      if (isSameFileInState) {
+        name = `${name}_${Date.now()}`
       }
 
-      state.files.push(action.payload);
+      state.files.push({ ...action.payload, name });
     },
     removeConvertedFile: (state, action: PayloadAction<string>) => {
       const fileToRemove = current(state).files.find(

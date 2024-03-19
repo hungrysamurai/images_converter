@@ -1,23 +1,26 @@
 import styled from "styled-components";
+import { AnimatePresence, motion } from "framer-motion";
+import { fadeAnimation } from "../animations";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   getActiveTargetFormatName,
   switchTargetFormat,
 } from "../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-
 import { getAllProcessedFiles } from "../store/slices/processFilesSlice/processFilesSlice";
 
 import FilesList from "./filesList/FilesList";
+import { Lang } from "../types/types";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { fadeAnimation } from "../animations";
+type DownloadContainerProps = {
+  lang: Lang;
+};
 
-const DownloadContainer = ({ lang }) => {
-  const activeTargetFormatName = useSelector(getActiveTargetFormatName);
-  const allProccecedFiles = useSelector(getAllProcessedFiles);
+const DownloadContainer: React.FC<DownloadContainerProps> = ({ lang }) => {
+  const activeTargetFormatName = useAppSelector(getActiveTargetFormatName);
+  const allProccecedFiles = useAppSelector(getAllProcessedFiles);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <StyledDownloadContainer>

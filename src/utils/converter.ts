@@ -42,7 +42,7 @@ const processFile = async (
               addConvertedFile({
                 blobURL: URL,
                 downloadLink: URL,
-                name: `${name}.${activeTargetFormatName}`,
+                name,
                 size,
                 type: `image/${activeTargetFormatName}` as MIMETypes,
                 id: nanoid(),

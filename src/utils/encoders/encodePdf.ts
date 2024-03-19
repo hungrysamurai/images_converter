@@ -15,12 +15,12 @@ export const encodePdf = async (
       targetFormatSettings;
 
     if (resize) {
-      resultingCanvas = await getResizedCanvas(
+      resultingCanvas = getResizedCanvas(
         canvas,
+        smoothing,
+        units,
         targetWidth,
         targetHeight,
-        smoothing,
-        units
       );
     }
 

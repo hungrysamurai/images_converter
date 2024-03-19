@@ -2,8 +2,7 @@ import styled from "styled-components";
 import IconDownloadAll from "./icons/IconDownloadAll";
 import IconRemoveAll from "./icons/IconRemoveAll";
 
-import { useDispatch, useSelector } from "react-redux";
-
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   getAllProcessedFiles,
   removeAllConvertedFiles,
@@ -11,11 +10,11 @@ import {
   isProcessingLoading,
 } from "../store/slices/processFilesSlice/processFilesSlice";
 
-const DownloadPanel = () => {
-  const dispatch = useDispatch();
+const DownloadPanel: React.FC = () => {
+  const dispatch = useAppDispatch();
 
-  const processedFiles = useSelector(getAllProcessedFiles);
-  const isLoading = useSelector(isProcessingLoading);
+  const processedFiles = useAppSelector(getAllProcessedFiles);
+  const isLoading = useAppSelector(isProcessingLoading);
 
   const downloadAllProcessedFiles = () => {
     dispatch(downloadAllFiles());
@@ -31,13 +30,13 @@ const DownloadPanel = () => {
         <>
           <StyledDownloadButton
             className={isLoading ? "disabled" : ""}
-            onClick={isLoading ? null : () => downloadAllProcessedFiles()}
+            onClick={isLoading ? () => null : () => downloadAllProcessedFiles()}
           >
             <IconDownloadAll />
           </StyledDownloadButton>
           <StyledDownloadButton
             className={isLoading ? "disabled" : ""}
-            onClick={isLoading ? null : () => removeAllProcessedFiles()}
+            onClick={isLoading ? () => null : () => removeAllProcessedFiles()}
           >
             <IconRemoveAll />
           </StyledDownloadButton>

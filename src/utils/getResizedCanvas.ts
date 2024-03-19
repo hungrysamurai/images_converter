@@ -1,9 +1,11 @@
-export const getResizedCanvas = async (
+import { ResizeUnits, SmoothingPresets } from "../types/types";
+
+export const getResizedCanvas = (
   canvas: HTMLCanvasElement,
-  targetWidth,
-  targetHeight,
-  smoothing,
-  units
+  smoothing: false | SmoothingPresets,
+  units: ResizeUnits,
+  targetWidth?: number | null,
+  targetHeight?: number | null,
 ) => {
   if (!targetWidth && !targetHeight) return canvas;
 
@@ -15,7 +17,7 @@ export const getResizedCanvas = async (
 
   let resultWidth, resultHeight;
 
-  if (units === 'pixels') {
+  if (units === ResizeUnits.PIXELS) {
     if (targetWidth && targetHeight) {
       resultWidth = targetWidth;
       resultHeight = targetHeight;
@@ -26,7 +28,7 @@ export const getResizedCanvas = async (
       resultWidth = targetWidth;
       resultHeight = Number((targetWidth / srcAspectRatio).toFixed(0));
     }
-  } else if (units === 'percentages') {
+  } else if (units === ResizeUnits.PERCENTAGES) {
     if (targetWidth && targetHeight) {
       resultWidth = Number(((srcWidth / 100) * targetWidth).toFixed(0));
       resultHeight = Number(((srcHeight / 100) * targetHeight).toFixed(0));
@@ -39,17 +41,22 @@ export const getResizedCanvas = async (
     }
   }
 
+  if (resultWidth && resultHeight) {
 
-  resultingCanvas.width = resultWidth;
-  resultingCanvas.height = resultHeight;
+    resultingCanvas.width = resultWidth;
+    resultingCanvas.height = resultHeight;
 
-  if (!smoothing) {
-    resultingCanvasContext.imageSmoothingEnabled = false;
-  } else {
-    resultingCanvasContext.imageSmoothingQuality = smoothing;
+    if (!smoothing) {
+      resultingCanvasContext.imageSmoothingEnabled = false;
+    } else {
+      resultingCanvasContext.imageSmoothingQuality = smoothing as ImageSmoothingQuality;
+    }
+
+    resultingCanvasContext.drawImage(canvas, 0, 0, resultWidth, resultHeight);
+
+
+    return resultingCanvas;
   }
 
-  resultingCanvasContext.drawImage(canvas, 0, 0, resultWidth, resultHeight);
-
-  return resultingCanvas;
+  return canvas;
 };

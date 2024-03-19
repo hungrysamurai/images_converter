@@ -67,7 +67,7 @@ export const pdfToFiles = async (
         addConvertedFile({
           blobURL: URL,
           downloadLink: URL,
-          name: `${name}_${i + 1}.${activeTargetFormatName}`,
+          name: `${name}_${i + 1}`,
           size,
           type: `image/${activeTargetFormatName}` as MIMETypes,
           id: nanoid(),

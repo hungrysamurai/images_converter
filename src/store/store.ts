@@ -10,6 +10,7 @@ export const store = configureStore({
     conversionSettings: conversionSettingsReducer,
     processFiles: processFilesReducer,
   },
+  devTools: import.meta.env.DEV ? true : false,
 });
 
 export type RootState = ReturnType<typeof store.getState>;

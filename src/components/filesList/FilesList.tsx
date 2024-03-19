@@ -5,13 +5,7 @@ import FileElement from "./FileElement";
 
 import { getFileFormat } from "../../utils/helpers/getFileFormat";
 import { getFileSize } from "../../utils/helpers/getFileSize";
-
-// type guard
-function isProcessedFile(
-  toCheck: ProcessedFile | SourceFile
-): toCheck is ProcessedFile {
-  return (toCheck as ProcessedFile).downloadLink !== undefined;
-}
+import { isProcessedFile } from "../../utils/typeGuards";
 
 type FilesListProps = {
   files: ProcessedFile[] | SourceFile[];
