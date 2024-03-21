@@ -45,6 +45,7 @@ const InputSettings: React.FC<InputSettingsProps> = memo(
             min="0"
             max="360"
             inputSetting={true}
+            step="90"
           />
         </StyledPDFRasterizationSettingsContainer>
       </StyledInputSettingsContainer>

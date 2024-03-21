@@ -50,7 +50,7 @@ const SliderInput: React.FC<SliderInputProps> = ({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(
       updateActiveTargetFormatSliderSetting({
-        [e.target.name as keyof QualityOption]: getConvertedValue(
+        [name]: getConvertedValue(
           Number(e.target.value),
           stateValuesConversionMode
         ),

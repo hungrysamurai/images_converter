@@ -24,7 +24,7 @@ const CheckboxInput: React.FC<CheckboxInputProps> = ({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(
       updateActiveTargetFormatToggleSetting({
-        [e.target.name as keyof ResizeOption]: e.target.checked,
+        [name]: e.target.checked,
       })
     );
   };

@@ -6,6 +6,7 @@ import { ResizeUnits } from "../../../types/types";
 import { useAppDispatch } from "../../../store/hooks";
 import { updateActiveTargetFormatNumericSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 import { updateInputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import getClosestMatchedValue from "../../../utils/helpers/getClosestMatchesValue";
 
 type NumberInputProps = {
   caption: string;
@@ -16,6 +17,7 @@ type NumberInputProps = {
   currentValue: number | null;
   active: boolean;
   inputSetting?: boolean;
+  step?: string;
 };
 
 const NumberInput: React.FC<NumberInputProps> = ({
@@ -27,27 +29,43 @@ const NumberInput: React.FC<NumberInputProps> = ({
   active,
   currentValue,
   inputSetting,
+  step,
 }) => {
   const dispatch = useAppDispatch();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let newValue = Number(e.target.value);
-
     if (newValue < 0 || newValue > Number(max)) return;
 
+    updateState(newValue);
+  };
+
+  const checkValue = () => {
+    if (step) {
+      const newValue = getClosestMatchedValue(
+        currentValue as number,
+        Number(max),
+        Number(step)
+      );
+
+      updateState(newValue);
+    }
+  };
+
+  const updateState = (value: number) => {
     if (inputSetting) {
       dispatch(
         updateInputSettings({
-          [e.target.name]: Number(e.target.value),
+          [name]: value,
+        } as NumericOptions)
+      );
+    } else {
+      dispatch(
+        updateActiveTargetFormatNumericSetting({
+          [name]: value,
         } as NumericOptions)
       );
     }
-
-    dispatch(
-      updateActiveTargetFormatNumericSetting({
-        [e.target.name]: Number(e.target.value),
-      } as NumericOptions)
-    );
   };
 
   return (
@@ -57,9 +75,11 @@ const NumberInput: React.FC<NumberInputProps> = ({
         placeholder={currentValue ? currentValue.toString() : "auto"}
         value={currentValue ? currentValue : ""}
         onChange={handleChange}
+        onBlur={checkValue}
         max={max ? max : ""}
         min={min ? min : "1"}
         name={name}
+        step={step ? step : ""}
       />
 
       {caption && (

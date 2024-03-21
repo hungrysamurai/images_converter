@@ -3,7 +3,7 @@ import { AppDispatch } from "../../../store/store";
 
 import { tiffToFiles } from "./tiffToFiles";
 import { gifToFiles } from "./gifToFiles";
-import { pdfToFiles } from "./pdfToFiles";
+import { pdfToFiles } from './pdfToFiles';
 
 export const processMultiPagesFile = async (
   source: SourceFile,
