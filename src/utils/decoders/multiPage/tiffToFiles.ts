@@ -12,7 +12,9 @@ export const tiffToFiles = async (
  source: SourceFile,
  targetFormatSettings: OutputConversionSettings,
  activeTargetFormatName: OutputFileFormatsNames,
- dispatch: AppDispatch
+ dispatch: AppDispatch,
+ compileToOne: boolean,
+ collection: CompileCollection
 ): Promise<void> => {
  const { blobURL, id, name } = source;
 
@@ -41,24 +43,28 @@ export const tiffToFiles = async (
 
   ctx.putImageData(imageData, 0, 0);
 
-  const encoded = await encode(canvas, targetFormatSettings,
-   activeTargetFormatName);
+  if (compileToOne) {
+   collection.push(canvas)
+  } else {
+   const encoded = await encode(canvas, targetFormatSettings,
+    activeTargetFormatName);
 
-  if (encoded) {
-   const size = encoded.size;
-   const URL = window.URL.createObjectURL(encoded);
+   if (encoded) {
+    const size = encoded.size;
+    const URL = window.URL.createObjectURL(encoded);
 
-   dispatch(
-    addConvertedFile({
-     blobURL: URL,
-     downloadLink: URL,
-     name: `${name}_${index + 1}`,
-     size,
-     type: `image/${activeTargetFormatName}` as MIMETypes,
-     id: nanoid(),
-     sourceId: id,
-    })
-   );
+    dispatch(
+     addConvertedFile({
+      blobURL: URL,
+      downloadLink: URL,
+      name: `${name}_${index + 1}`,
+      size,
+      type: `image/${activeTargetFormatName}` as MIMETypes,
+      id: nanoid(),
+      sourceId: id,
+     })
+    );
+   }
   }
  }
 }

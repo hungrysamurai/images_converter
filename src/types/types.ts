@@ -92,6 +92,14 @@ declare global {
     resize: boolean;
   };
 
+  type CompileOption = {
+    compile: boolean
+  }
+
+  type CheckboxOptions = ResizeOption | CompileOption;
+
+  type CheckboxOptionsKeys = keyof ResizeOption | keyof CompileOption
+
   // Slider
   type QualityOption = {
     quality: number;
@@ -167,7 +175,7 @@ declare global {
   type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings &
     DitherOption;
   type PDFOutputConversionSettings = BasicOutputConversionSettings &
-    CompressionOption;
+    CompressionOption & CompileOption;
 
   type OutputConversionSettings = BasicOutputConversionSettings | JPEG_WEBPOutputConversionSettings | GIFOutputConversionSettings | PDFOutputConversionSettings
 
@@ -194,5 +202,7 @@ declare global {
     loading: boolean;
     files: ProcessedFile[];
   }
+
+  type CompileCollection = (HTMLCanvasElement | Blob)[]
 }
 

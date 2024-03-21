@@ -115,14 +115,22 @@ export const conversionSettingsSlice = createSlice({
     },
     updateActiveTargetFormatToggleSetting: (
       state,
-      action: PayloadAction<ResizeOption>
+      action: PayloadAction<CheckboxOptions>
     ) => {
       const {
         outputSettings: { activeTargetFormatName },
       } = current(state);
 
-      const { resize } = action.payload;
-      state.outputSettings.settings[activeTargetFormatName].resize = resize;
+      const key = Object.keys(action.payload)[0] as CheckboxOptionsKeys;
+      const value = Object.values(action.payload)[0] as boolean;
+
+      if (key === 'compile' && activeTargetFormatName === OutputFileFormatsNames.PDF) {
+        state.outputSettings.settings[activeTargetFormatName].compile = value
+      }
+
+      if (key === 'resize') {
+        state.outputSettings.settings[activeTargetFormatName].resize = value
+      }
     },
     updateInputSettings: (state, action: PayloadAction<NumericOptions>) => {
       const key = Object.keys(action.payload)[0] as NumericOptionsKeys;

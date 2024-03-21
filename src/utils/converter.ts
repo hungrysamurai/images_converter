@@ -1,4 +1,4 @@
-import { MIMETypes } from "../types/types";
+import { MIMETypes, OutputFileFormatsNames } from "../types/types";
 
 import { processSinglePageFile } from "./decoders/singlePage/processSinglePageFile";
 import { processMultiPagesFile } from "./decoders/multiPage/processMultiPageFile";
@@ -10,14 +10,15 @@ import { AppDispatch } from "../store/store";
 
 const processFile = async (
   source: SourceFile,
-  settings: ConversionSettings,
-  dispatch: AppDispatch
+  outputSettings: OutputConversionSettings,
+  activeTargetFormatName: OutputFileFormatsNames,
+  inputSettings: {
+    [OutputFileFormatsNames.PDF]: PDFInputSettings
+  },
+  dispatch: AppDispatch,
+  compileToOne: boolean,
+  collection: CompileCollection
 ): Promise<void> => {
-  const { inputSettings, outputSettings } = settings;
-  const { activeTargetFormatName } = outputSettings;
-
-  const targetFormatSettings = outputSettings.settings[activeTargetFormatName];
-
   switch (source.type) {
     case MIMETypes.JPG:
     case MIMETypes.PNG:
@@ -28,8 +29,10 @@ const processFile = async (
         try {
           const processed = await processSinglePageFile(
             source,
-            targetFormatSettings,
-            activeTargetFormatName
+            outputSettings,
+            activeTargetFormatName,
+            compileToOne,
+            collection
           );
 
           if (processed) {
@@ -63,10 +66,12 @@ const processFile = async (
         try {
           await processMultiPagesFile(
             source,
-            targetFormatSettings,
+            outputSettings,
             activeTargetFormatName,
             inputSettings,
-            dispatch
+            dispatch,
+            compileToOne,
+            collection
           );
         } catch (err) {
           throw err;

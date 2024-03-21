@@ -12,7 +12,9 @@ export const processMultiPagesFile = async (
   inputSettings: {
     [OutputFileFormatsNames.PDF]: PDFInputSettings
   },
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
+  compileToOne: boolean,
+  collection: CompileCollection
 ) => {
   const { type: srcType } = source;
 
@@ -23,7 +25,9 @@ export const processMultiPagesFile = async (
           source,
           targetFormatSettings,
           activeTargetFormatName,
-          dispatch
+          dispatch,
+          compileToOne,
+          collection
         );
       }
       break;
@@ -33,7 +37,9 @@ export const processMultiPagesFile = async (
           source,
           targetFormatSettings,
           activeTargetFormatName,
-          dispatch
+          dispatch,
+          compileToOne,
+          collection
         );
       }
       break;
@@ -44,7 +50,9 @@ export const processMultiPagesFile = async (
         targetFormatSettings,
         activeTargetFormatName,
         inputSettings,
-        dispatch
+        dispatch,
+        compileToOne,
+        collection
       );
     }
   }

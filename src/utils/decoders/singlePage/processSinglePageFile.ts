@@ -7,7 +7,9 @@ import { jpegPngWebpToFile } from "./jpegPngWebpToFile";
 export const processSinglePageFile = async (
   source: SourceFile,
   targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFileFormatsNames
+  activeTargetFormatName: OutputFileFormatsNames,
+  compileToOne: boolean,
+  collection: CompileCollection
 ): Promise<Blob | void> => {
   const { blobURL, type: srcType } = source;
 
@@ -15,18 +17,51 @@ export const processSinglePageFile = async (
     case MIMETypes.JPG:
     case MIMETypes.PNG:
     case MIMETypes.WEBP: {
-      return jpegPngWebpToFile(
+      const processed = await jpegPngWebpToFile(
         blobURL,
         targetFormatSettings,
-        activeTargetFormatName
+        activeTargetFormatName,
+        compileToOne
       );
+
+      if (processed instanceof HTMLCanvasElement) {
+        collection.push(processed)
+      } else {
+        return processed
+      }
     }
+      break;
 
     case MIMETypes.BMP: {
-      return bmpToFile(blobURL, targetFormatSettings, activeTargetFormatName);
+      const processed = await bmpToFile(
+        blobURL,
+        targetFormatSettings,
+        activeTargetFormatName,
+        compileToOne
+      );
+
+      if (processed instanceof HTMLCanvasElement) {
+        collection.push(processed)
+      } else {
+        return processed
+      }
     }
+      break;
+
     case MIMETypes.HEIC: {
-      return heicToFile(blobURL, targetFormatSettings, activeTargetFormatName);
+      const processed = await heicToFile(
+        blobURL,
+        targetFormatSettings,
+        activeTargetFormatName,
+        compileToOne
+      );
+
+      if (processed instanceof HTMLCanvasElement) {
+        collection.push(processed)
+      } else {
+        return processed
+      }
     }
+      break;
   }
 };

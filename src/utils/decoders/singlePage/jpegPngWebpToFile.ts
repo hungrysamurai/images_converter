@@ -4,8 +4,9 @@ import { encode } from "../../encode";
 export const jpegPngWebpToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFileFormatsNames
-): Promise<Blob> => {
+  activeTargetFormatName: OutputFileFormatsNames,
+  compileToOne: boolean
+): Promise<Blob | HTMLCanvasElement | void> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.src = blobURL;
@@ -19,13 +20,17 @@ export const jpegPngWebpToFile = async (
 
         ctx.drawImage(img, 0, 0);
 
-        const encoded = await encode(
-          canvas,
-          targetFormatSettings,
-          activeTargetFormatName
-        );
-        if (encoded) {
-          resolve(encoded);
+        if (compileToOne) {
+          resolve(canvas)
+        } else {
+          const encoded = await encode(
+            canvas,
+            targetFormatSettings,
+            activeTargetFormatName
+          );
+          if (encoded) {
+            resolve(encoded);
+          }
         }
       } catch (err) {
         reject(err);

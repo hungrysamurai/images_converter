@@ -15,7 +15,9 @@ export const pdfToFiles = async (
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
   inputSettings: { [OutputFileFormatsNames.PDF]: PDFInputSettings },
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
+  compileToOne: boolean,
+  collection: CompileCollection
 ) => {
   const { blobURL, id, name } = source;
 
@@ -52,17 +54,21 @@ export const pdfToFiles = async (
       const URL = window.URL.createObjectURL(blob);
       const size = blob.size;
 
-      dispatch(
-        addConvertedFile({
-          blobURL: URL,
-          downloadLink: URL,
-          name: `${name}_${i}`,
-          size,
-          type: `image/${activeTargetFormatName}` as MIMETypes,
-          id: nanoid(),
-          sourceId: id,
-        })
-      );
+      if (compileToOne) {
+        collection.push(blob);
+      } else {
+        dispatch(
+          addConvertedFile({
+            blobURL: URL,
+            downloadLink: URL,
+            name: `${name}_${i}`,
+            size,
+            type: `image/${activeTargetFormatName}` as MIMETypes,
+            id: nanoid(),
+            sourceId: id,
+          })
+        );
+      }
     })
   } else {
     PDFJS.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}/assets/workers/pdf.worker.js`;
@@ -75,7 +81,6 @@ export const pdfToFiles = async (
     for (let i = 1; i < numPages + 1; i++) {
       const page = await pdf.getPage(i);
       const scale = resolution / 72;
-      console.log(rotation);
 
       const viewport = page.getViewport({
         scale,
@@ -96,27 +101,31 @@ export const pdfToFiles = async (
 
       await page.render(renderContext).promise;
 
-      const encoded = await encode(
-        canvas,
-        targetFormatSettings,
-        activeTargetFormatName
-      );
-
-      if (encoded) {
-        const size = encoded.size;
-        const URL = window.URL.createObjectURL(encoded);
-
-        dispatch(
-          addConvertedFile({
-            blobURL: URL,
-            downloadLink: URL,
-            name: `${name}_${i + 1}`,
-            size,
-            type: `image/${activeTargetFormatName}` as MIMETypes,
-            id: nanoid(),
-            sourceId: id,
-          })
+      if (compileToOne) {
+        collection.push(canvas)
+      } else {
+        const encoded = await encode(
+          canvas,
+          targetFormatSettings,
+          activeTargetFormatName
         );
+
+        if (encoded) {
+          const size = encoded.size;
+          const URL = window.URL.createObjectURL(encoded);
+
+          dispatch(
+            addConvertedFile({
+              blobURL: URL,
+              downloadLink: URL,
+              name: `${name}_${i + 1}`,
+              size,
+              type: `image/${activeTargetFormatName}` as MIMETypes,
+              id: nanoid(),
+              sourceId: id,
+            })
+          );
+        }
       }
     }
   }

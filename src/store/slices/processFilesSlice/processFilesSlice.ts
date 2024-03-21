@@ -11,6 +11,7 @@ import processFile from "../../../utils/converter";
 
 import { zipAndSave } from "../../../utils/zipAndSave";
 import { getFileFormat } from "../../../utils/helpers/getFileFormat";
+import { isCompileSetting } from "../../../utils/typeGuards";
 
 const initialState: ProcessFilesState = {
   loading: false,
@@ -28,14 +29,39 @@ export const convertFiles = createAsyncThunk<
   const state = getState();
   const { sourceFiles, conversionSettings } = state;
 
+  const { inputSettings, outputSettings } = conversionSettings;
+
+  const { activeTargetFormatName } = outputSettings;
+  const targetFormatSettings = outputSettings.settings[activeTargetFormatName];
+
+  const compileToOne = isCompileSetting(targetFormatSettings) ? targetFormatSettings.compile : false
+
+  const collection: CompileCollection = []
+
   for (const source of sourceFiles) {
     try {
-      await processFile(source, conversionSettings, dispatch);
+      await processFile(
+        source,
+        targetFormatSettings,
+        activeTargetFormatName,
+        inputSettings,
+        dispatch,
+        compileToOne,
+        collection
+      );
     } catch (err) {
       console.error(
         `Error processing file ${source.name}.${getFileFormat(source.type)}:`,
         (err as Error).message
       );
+    }
+  }
+
+  if (compileToOne) {
+    try {
+
+    } catch (err) {
+
     }
   }
 });

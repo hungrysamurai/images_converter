@@ -88,15 +88,25 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
     const pdfCompressionSettingContent =
       isCompressionSetting(activeTargetFromatOutputSettings) &&
       activeTargetFormatName === OutputFileFormatsNames.PDF ? (
-        <SelectInput
-          options={Object.values(PDFCompressionTypes)}
-          label={lang === Lang.EN ? "Compression:" : "Компрессия:"}
-          name="compression"
-          currentValue={
-            activeTargetFromatOutputSettings.compression as PDFCompressionTypes
-          }
-          active={true}
-        />
+        <>
+          <SelectInput
+            options={Object.values(PDFCompressionTypes)}
+            label={lang === Lang.EN ? "Compression:" : "Компрессия:"}
+            name="compression"
+            currentValue={
+              activeTargetFromatOutputSettings.compression as PDFCompressionTypes
+            }
+            active={true}
+          />
+
+          <CheckboxInput
+            label={lang === Lang.EN ? "To one file:" : "В один файл"}
+            currentValue={activeTargetFromatOutputSettings.compile}
+            displayValueOn={lang === Lang.EN ? "On" : "Вкл"}
+            displayValueOff={lang === Lang.EN ? "Off" : "Выкл"}
+            name="compile"
+          />
+        </>
       ) : null;
 
     return (

@@ -29,8 +29,9 @@ interface Bitmap {
 export const bmpToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFileFormatsNames
-): Promise<Blob | void> => {
+  activeTargetFormatName: OutputFileFormatsNames,
+  compileToOne: boolean
+): Promise<Blob | HTMLCanvasElement | void> => {
   const blob = await fetch(blobURL);
   const arrayBuffer = await blob.arrayBuffer();
 
@@ -113,16 +114,17 @@ export const bmpToFile = async (
 
   ctx.putImageData(imageData, 0, 0);
 
-  return new Promise((resolve, reject) => {
+  if (compileToOne) {
+    return canvas
+  } else {
     const encoded = encode(
       canvas,
       targetFormatSettings,
       activeTargetFormatName
     );
     if (encoded) {
-      resolve(encoded);
-    } else {
-      reject();
+      return encoded
     }
-  });
+  }
+
 };

@@ -7,8 +7,9 @@ import { encode } from "../../encode";
 export const heicToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFileFormatsNames
-): Promise<Blob | void> => {
+  activeTargetFormatName: OutputFileFormatsNames,
+  compileToOne: boolean
+): Promise<Blob | HTMLCanvasElement | void> => {
   const file = await fetch(blobURL);
   const blob = await file.blob();
 
@@ -33,14 +34,18 @@ export const heicToFile = async (
 
           ctx.drawImage(img, 0, 0);
 
-          const encoded = encode(
-            canvas,
-            targetFormatSettings,
-            activeTargetFormatName
-          );
+          if (compileToOne) {
+            resolve(canvas)
+          } else {
+            const encoded = encode(
+              canvas,
+              targetFormatSettings,
+              activeTargetFormatName
+            );
 
-          if (encoded) {
-            resolve(encoded);
+            if (encoded) {
+              resolve(encoded);
+            }
           }
         } catch (err) {
           reject(err);
@@ -70,14 +75,18 @@ export const heicToFile = async (
 
             ctx.drawImage(img, 0, 0);
 
-            const encoded = encode(
-              canvas,
-              targetFormatSettings,
-              activeTargetFormatName
-            );
+            if (compileToOne) {
+              resolve(canvas)
+            } else {
+              const encoded = encode(
+                canvas,
+                targetFormatSettings,
+                activeTargetFormatName
+              );
 
-            if (encoded) {
-              resolve(encoded);
+              if (encoded) {
+                resolve(encoded);
+              }
             }
           } catch (err) {
             console.log(3);

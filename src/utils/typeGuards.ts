@@ -51,6 +51,12 @@ export function isCompressionSetting(
   return (toCheck as PDFOutputConversionSettings).compression !== undefined;
 }
 
+export function isCompileSetting(
+  toCheck: BasicOutputConversionSettings | PDFOutputConversionSettings
+): toCheck is PDFOutputConversionSettings {
+  return (toCheck as PDFOutputConversionSettings).compile !== undefined;
+}
+
 
 // Type checker for File
 

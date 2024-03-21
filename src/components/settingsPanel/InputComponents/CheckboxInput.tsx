@@ -9,7 +9,7 @@ type CheckboxInputProps = {
   displayValueOn: string;
   displayValueOff: string;
   label: string;
-  name: keyof ResizeOption;
+  name: CheckboxOptionsKeys;
 };
 
 const CheckboxInput: React.FC<CheckboxInputProps> = ({
@@ -25,7 +25,7 @@ const CheckboxInput: React.FC<CheckboxInputProps> = ({
     dispatch(
       updateActiveTargetFormatToggleSetting({
         [name]: e.target.checked,
-      })
+      } as CheckboxOptions)
     );
   };
 
