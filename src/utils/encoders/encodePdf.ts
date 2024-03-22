@@ -1,34 +1,44 @@
-import { jsPDF } from "jspdf";
+import { PDFDocument, PDFImage } from "pdf-lib";
+
+import { PDFCompressionTypes } from "../../types/types";
 import { isCompressionSetting } from "../typeGuards";
+
+import canvasToBlob from "./canvasToBlob";
 
 const encodePDF = async (
   canvas: HTMLCanvasElement,
   targetFormatSettings: OutputConversionSettings
 ): Promise<Blob | void> => {
-
-  let resultingCanvas = canvas;
-
   if (isCompressionSetting(targetFormatSettings)) {
 
-    const { compression } =
+    const { compression, quality } =
       targetFormatSettings;
 
-    let pdf: jsPDF;
-    const canvasWidth = resultingCanvas.width;
-    const canvasHeight = resultingCanvas.height;
+    const blob = await canvasToBlob(canvas, compression, quality);
+    const arrayBuffer = await blob.arrayBuffer();
 
-    if (canvasWidth > canvasHeight) {
-      pdf = new jsPDF("l", "px", [canvasWidth, canvasHeight]);
+    const pdfDoc = await PDFDocument.create();
+
+    let image: PDFImage;
+
+    if (compression === PDFCompressionTypes.JPG) {
+      image = await pdfDoc.embedJpg(arrayBuffer)
     } else {
-      pdf = new jsPDF("p", "px", [canvasHeight, canvasWidth]);
+      image = await pdfDoc.embedPng(arrayBuffer)
     }
 
-    const width = pdf.internal.pageSize.getWidth();
-    const height = pdf.internal.pageSize.getHeight();
+    const page = pdfDoc.addPage([canvas.width, canvas.height]);
 
-    pdf.addImage(resultingCanvas, compression, 0, 0, width, height);
+    page.drawImage(image, {
+      x: 0,
+      y: 0,
+      width: canvas.width,
+      height: canvas.height,
+    });
 
-    return pdf.output("blob")
+    const pdfBytes = await pdfDoc.save();
+
+    return new Blob([pdfBytes], { type: 'application/pdf' })
   }
 };
 

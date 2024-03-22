@@ -62,8 +62,8 @@ export enum GIFDitherOptions {
 }
 
 export enum PDFCompressionTypes {
-  JPG = "JPG",
-  PNG = "PNG",
+  JPG = "jpeg",
+  PNG = "png",
 }
 
 export enum SliderConvertModes {

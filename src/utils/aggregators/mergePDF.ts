@@ -1,4 +1,4 @@
-const mergePDF = async () => {
+const mergePDF = async (collection: MergeCollection) => {
 
 }
 
