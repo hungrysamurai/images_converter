@@ -99,12 +99,24 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
             active={true}
           />
 
+          {activeTargetFromatOutputSettings.compression ===
+            PDFCompressionTypes.JPG && (
+            <SliderInput
+              label={lang === Lang.EN ? "Quality:" : "Качество:"}
+              currentValue={activeTargetFromatOutputSettings.quality}
+              min="1"
+              max="100"
+              name="quality"
+              mode={activeTargetFormatName}
+            />
+          )}
+
           <CheckboxInput
             label={lang === Lang.EN ? "To one file:" : "В один файл"}
-            currentValue={activeTargetFromatOutputSettings.compile}
+            currentValue={activeTargetFromatOutputSettings.merge}
             displayValueOn={lang === Lang.EN ? "On" : "Вкл"}
             displayValueOff={lang === Lang.EN ? "Off" : "Выкл"}
-            name="compile"
+            name="merge"
           />
         </>
       ) : null;

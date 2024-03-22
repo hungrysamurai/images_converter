@@ -9,21 +9,25 @@ import { AppDispatch } from "../../../store/store";
 import { addConvertedFile } from "../../../store/slices/processFilesSlice/processFilesSlice";
 
 import { encode } from "../../encode";
+import { getResizedCanvas } from '../../getResizedCanvas';
 
-export const pdfToFiles = async (
+const PDFToFiles = async (
   source: SourceFile,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
   inputSettings: { [OutputFileFormatsNames.PDF]: PDFInputSettings },
   dispatch: AppDispatch,
-  compileToOne: boolean,
-  collection: CompileCollection
+  mergeToOne: boolean,
+  collection: MergeCollection
 ) => {
   const { blobURL, id, name } = source;
 
   const {
     pdf: { resolution, rotation },
   } = inputSettings;
+
+  const { resize, units, smoothing, targetHeight, targetWidth } =
+    targetFormatSettings;
 
   // Don't rasterize PDF Source, just split it!
   if (activeTargetFormatName === OutputFileFormatsNames.PDF && !targetFormatSettings.resize) {
@@ -33,7 +37,7 @@ export const pdfToFiles = async (
     const pdfDoc = await PDFDocument.load(arrayBuffer);
     const pages = pdfDoc.getPages();
 
-    const arrays = await Promise.all(pages.map(async function (_, index) {
+    const arrays = await Promise.all(pages.map(async (_, index) => {
       const newDocument = await PDFDocument.create();
       const [copiedPage] = await newDocument.copyPages(pdfDoc, [index]);
 
@@ -54,7 +58,7 @@ export const pdfToFiles = async (
       const URL = window.URL.createObjectURL(blob);
       const size = blob.size;
 
-      if (compileToOne) {
+      if (mergeToOne) {
         collection.push(blob);
       } else {
         dispatch(
@@ -88,7 +92,7 @@ export const pdfToFiles = async (
         dontFlip: false,
       });
 
-      const canvas = document.createElement("canvas");
+      let canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
       canvas.height = viewport.height;
@@ -101,7 +105,17 @@ export const pdfToFiles = async (
 
       await page.render(renderContext).promise;
 
-      if (compileToOne) {
+      if (resize) {
+        canvas = getResizedCanvas(
+          canvas,
+          smoothing,
+          units,
+          targetWidth,
+          targetHeight,
+        );
+      }
+
+      if (mergeToOne) {
         collection.push(canvas)
       } else {
         const encoded = await encode(
@@ -130,3 +144,6 @@ export const pdfToFiles = async (
     }
   }
 };
+
+
+export default PDFToFiles;

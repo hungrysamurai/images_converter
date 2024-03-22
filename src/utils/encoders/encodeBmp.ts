@@ -1,28 +1,15 @@
-import { canvasToBlob } from "../canvasToBMP";
-import { getResizedCanvas } from "../getResizedCanvas";
+import { canvasToBlob } from "./canvasToBMP";
 
-export const encodeBmp = async (
+const encodeBMP = async (
   canvas: HTMLCanvasElement,
-  targetFormatSettings: OutputConversionSettings
 ): Promise<Blob> => {
-  let resultingCanvas = canvas;
-
-  const { resize, units, smoothing, targetHeight, targetWidth } =
-    targetFormatSettings;
-
-  if (resize) {
-    resultingCanvas = getResizedCanvas(
-      canvas,
-      smoothing,
-      units,
-      targetWidth,
-      targetHeight,
-    );
-  }
 
   return new Promise((resolve) => {
-    canvasToBlob(resultingCanvas, (blob: Blob) => {
+    canvasToBlob(canvas, (blob: Blob) => {
       resolve(blob);
     });
   });
 };
+
+
+export default encodeBMP;

@@ -1,8 +1,7 @@
 import { jsPDF } from "jspdf";
-import { getResizedCanvas } from "../getResizedCanvas";
 import { isCompressionSetting } from "../typeGuards";
 
-export const encodePdf = async (
+const encodePDF = async (
   canvas: HTMLCanvasElement,
   targetFormatSettings: OutputConversionSettings
 ): Promise<Blob | void> => {
@@ -11,18 +10,8 @@ export const encodePdf = async (
 
   if (isCompressionSetting(targetFormatSettings)) {
 
-    const { resize, units, smoothing, targetHeight, targetWidth, compression } =
+    const { compression } =
       targetFormatSettings;
-
-    if (resize) {
-      resultingCanvas = getResizedCanvas(
-        canvas,
-        smoothing,
-        units,
-        targetWidth,
-        targetHeight,
-      );
-    }
 
     let pdf: jsPDF;
     const canvasWidth = resultingCanvas.width;
@@ -42,6 +31,8 @@ export const encodePdf = async (
     return pdf.output("blob")
   }
 };
+
+export default encodePDF;
 /*
 <html>
   <head>

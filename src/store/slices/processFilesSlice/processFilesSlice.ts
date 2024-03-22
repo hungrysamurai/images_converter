@@ -8,10 +8,12 @@ import {
 import { AppDispatch, RootState } from "../../store";
 
 import processFile from "../../../utils/converter";
+import merge from "../../../utils/merge";
 
 import { zipAndSave } from "../../../utils/zipAndSave";
 import { getFileFormat } from "../../../utils/helpers/getFileFormat";
-import { isCompileSetting } from "../../../utils/typeGuards";
+import { isMergeSetting } from "../../../utils/typeGuards";
+
 
 const initialState: ProcessFilesState = {
   loading: false,
@@ -34,9 +36,9 @@ export const convertFiles = createAsyncThunk<
   const { activeTargetFormatName } = outputSettings;
   const targetFormatSettings = outputSettings.settings[activeTargetFormatName];
 
-  const compileToOne = isCompileSetting(targetFormatSettings) ? targetFormatSettings.compile : false
+  const mergeToOne = isMergeSetting(targetFormatSettings) ? targetFormatSettings.merge : false
 
-  const collection: CompileCollection = []
+  const collection: MergeCollection = []
 
   for (const source of sourceFiles) {
     try {
@@ -46,7 +48,7 @@ export const convertFiles = createAsyncThunk<
         activeTargetFormatName,
         inputSettings,
         dispatch,
-        compileToOne,
+        mergeToOne,
         collection
       );
     } catch (err) {
@@ -57,11 +59,11 @@ export const convertFiles = createAsyncThunk<
     }
   }
 
-  if (compileToOne) {
+  if (mergeToOne) {
     try {
-
+      await merge(collection, targetFormatSettings, activeTargetFormatName, dispatch)
     } catch (err) {
-
+      console.log(err);
     }
   }
 });

@@ -51,10 +51,10 @@ export function isCompressionSetting(
   return (toCheck as PDFOutputConversionSettings).compression !== undefined;
 }
 
-export function isCompileSetting(
+export function isMergeSetting(
   toCheck: BasicOutputConversionSettings | PDFOutputConversionSettings
 ): toCheck is PDFOutputConversionSettings {
-  return (toCheck as PDFOutputConversionSettings).compile !== undefined;
+  return (toCheck as PDFOutputConversionSettings).merge !== undefined;
 }
 
 

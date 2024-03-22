@@ -50,7 +50,8 @@ export const conversionSettingsSlice = createSlice({
       if (
         activeTargetFormatName === OutputFileFormatsNames.JPG ||
         activeTargetFormatName === OutputFileFormatsNames.WEBP ||
-        activeTargetFormatName === OutputFileFormatsNames.GIF
+        activeTargetFormatName === OutputFileFormatsNames.GIF ||
+        activeTargetFormatName === OutputFileFormatsNames.PDF
       ) {
         state.outputSettings.settings[activeTargetFormatName].quality = quality;
       }
@@ -124,8 +125,8 @@ export const conversionSettingsSlice = createSlice({
       const key = Object.keys(action.payload)[0] as CheckboxOptionsKeys;
       const value = Object.values(action.payload)[0] as boolean;
 
-      if (key === 'compile' && activeTargetFormatName === OutputFileFormatsNames.PDF) {
-        state.outputSettings.settings[activeTargetFormatName].compile = value
+      if (key === 'merge' && activeTargetFormatName === OutputFileFormatsNames.PDF) {
+        state.outputSettings.settings[activeTargetFormatName].merge = value
       }
 
       if (key === 'resize') {

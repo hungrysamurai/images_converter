@@ -7,19 +7,24 @@ import { AppDispatch } from "../../../store/store";
 import { addConvertedFile } from "../../../store/slices/processFilesSlice/processFilesSlice";
 
 import { encode } from "../../encode";
+import { getResizedCanvas } from "../../getResizedCanvas";
 
-export const tiffToFiles = async (
+const TIFFToFiles = async (
  source: SourceFile,
  targetFormatSettings: OutputConversionSettings,
  activeTargetFormatName: OutputFileFormatsNames,
  dispatch: AppDispatch,
- compileToOne: boolean,
- collection: CompileCollection
+ mergeToOne: boolean,
+ collection: MergeCollection
 ): Promise<void> => {
  const { blobURL, id, name } = source;
 
  const file = await fetch(blobURL);
  const arrayBuffer = await file.arrayBuffer();
+
+ const { resize, units, smoothing, targetHeight, targetWidth } =
+  targetFormatSettings;
+
 
  const pages = UTIF.decode(arrayBuffer);
 
@@ -35,7 +40,7 @@ export const tiffToFiles = async (
    height
   );
 
-  const canvas = document.createElement("canvas");
+  let canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D
 
   canvas.width = page.width;
@@ -43,7 +48,17 @@ export const tiffToFiles = async (
 
   ctx.putImageData(imageData, 0, 0);
 
-  if (compileToOne) {
+  if (resize) {
+   canvas = getResizedCanvas(
+    canvas,
+    smoothing,
+    units,
+    targetWidth,
+    targetHeight,
+   );
+  }
+
+  if (mergeToOne) {
    collection.push(canvas)
   } else {
    const encoded = await encode(canvas, targetFormatSettings,
@@ -68,3 +83,5 @@ export const tiffToFiles = async (
   }
  }
 }
+
+export default TIFFToFiles;

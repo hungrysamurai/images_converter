@@ -92,13 +92,13 @@ declare global {
     resize: boolean;
   };
 
-  type CompileOption = {
-    compile: boolean
+  type MergeOption = {
+    merge: boolean
   }
 
-  type CheckboxOptions = ResizeOption | CompileOption;
+  type CheckboxOptions = ResizeOption | MergeOption;
 
-  type CheckboxOptionsKeys = keyof ResizeOption | keyof CompileOption
+  type CheckboxOptionsKeys = keyof ResizeOption | keyof MergeOption
 
   // Slider
   type QualityOption = {
@@ -175,7 +175,7 @@ declare global {
   type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings &
     DitherOption;
   type PDFOutputConversionSettings = BasicOutputConversionSettings &
-    CompressionOption & CompileOption;
+    CompressionOption & MergeOption & QualityOption;
 
   type OutputConversionSettings = BasicOutputConversionSettings | JPEG_WEBPOutputConversionSettings | GIFOutputConversionSettings | PDFOutputConversionSettings
 
@@ -203,6 +203,6 @@ declare global {
     files: ProcessedFile[];
   }
 
-  type CompileCollection = (HTMLCanvasElement | Blob)[]
+  type MergeCollection = (HTMLCanvasElement | Blob)[]
 }
 

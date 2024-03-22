@@ -20,7 +20,8 @@ type SliderInputProps = {
   mode:
     | OutputFileFormatsNames.JPG
     | OutputFileFormatsNames.WEBP
-    | OutputFileFormatsNames.GIF;
+    | OutputFileFormatsNames.GIF
+    | OutputFileFormatsNames.PDF;
 };
 
 const SliderInput: React.FC<SliderInputProps> = ({
@@ -34,11 +35,15 @@ const SliderInput: React.FC<SliderInputProps> = ({
   const dispatch = useAppDispatch();
 
   const displayValuesConversionMode =
-    mode === OutputFileFormatsNames.JPG || mode === OutputFileFormatsNames.WEBP
+    mode === OutputFileFormatsNames.JPG ||
+    mode === OutputFileFormatsNames.WEBP ||
+    mode === OutputFileFormatsNames.PDF
       ? SliderConvertModes.DecimalsToPercentages
       : SliderConvertModes.GifDisplay;
   const stateValuesConversionMode =
-    mode === OutputFileFormatsNames.JPG || mode === OutputFileFormatsNames.WEBP
+    mode === OutputFileFormatsNames.JPG ||
+    mode === OutputFileFormatsNames.WEBP ||
+    mode === OutputFileFormatsNames.PDF
       ? SliderConvertModes.PercentagesToDecimals
       : SliderConvertModes.GifState;
 

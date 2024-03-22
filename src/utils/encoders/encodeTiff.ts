@@ -1,23 +1,10 @@
 import UTIF from "utif";
-import { getResizedCanvas } from "../getResizedCanvas";
 
-export const encodeTiff = async (
+const encodeTIFF = async (
   canvas: HTMLCanvasElement,
-  targetFormatSettings: OutputConversionSettings
 ): Promise<Blob> => {
 
   let resultingCanvas = canvas;
-  const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
-
-  if (resize) {
-    resultingCanvas = getResizedCanvas(
-      canvas,
-      smoothing,
-      units,
-      targetWidth,
-      targetHeight,
-    );
-  }
 
   const { width, height } = resultingCanvas;
 
@@ -28,3 +15,5 @@ export const encodeTiff = async (
 
   return new Blob([encoded], { type: "image/tiff" });
 };
+
+export default encodeTIFF;

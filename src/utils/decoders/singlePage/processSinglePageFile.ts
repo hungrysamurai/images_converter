@@ -1,15 +1,15 @@
 import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
 
-import { bmpToFile } from "./bmpToFile";
-import { heicToFile } from "./heicToFile";
-import { jpegPngWebpToFile } from "./jpegPngWebpToFile";
+import BMPToFile from "./BMPToFile";
+import HEICToFile from "./HEICToFile";
+import JPEG_WEBP_PNG_ToFile from "./JPEG_WEBP_PNG_ToFile";
 
-export const processSinglePageFile = async (
+const processSinglePageFile = async (
   source: SourceFile,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-  compileToOne: boolean,
-  collection: CompileCollection
+  mergeToOne: boolean,
+  collection: MergeCollection
 ): Promise<Blob | void> => {
   const { blobURL, type: srcType } = source;
 
@@ -17,11 +17,11 @@ export const processSinglePageFile = async (
     case MIMETypes.JPG:
     case MIMETypes.PNG:
     case MIMETypes.WEBP: {
-      const processed = await jpegPngWebpToFile(
+      const processed = await JPEG_WEBP_PNG_ToFile(
         blobURL,
         targetFormatSettings,
         activeTargetFormatName,
-        compileToOne
+        mergeToOne
       );
 
       if (processed instanceof HTMLCanvasElement) {
@@ -33,11 +33,11 @@ export const processSinglePageFile = async (
       break;
 
     case MIMETypes.BMP: {
-      const processed = await bmpToFile(
+      const processed = await BMPToFile(
         blobURL,
         targetFormatSettings,
         activeTargetFormatName,
-        compileToOne
+        mergeToOne
       );
 
       if (processed instanceof HTMLCanvasElement) {
@@ -49,11 +49,11 @@ export const processSinglePageFile = async (
       break;
 
     case MIMETypes.HEIC: {
-      const processed = await heicToFile(
+      const processed = await HEICToFile(
         blobURL,
         targetFormatSettings,
         activeTargetFormatName,
-        compileToOne
+        mergeToOne
       );
 
       if (processed instanceof HTMLCanvasElement) {
@@ -65,3 +65,6 @@ export const processSinglePageFile = async (
       break;
   }
 };
+
+
+export default processSinglePageFile;

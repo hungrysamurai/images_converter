@@ -1,10 +1,10 @@
 import { OutputFileFormatsNames } from "../types/types";
 
-import { encodeJpgPngWebp } from "./encoders/encodeJpgPngWebp";
-import { encodeBmp } from "./encoders/encodeBmp";
-import { encodeTiff } from "./encoders/encodeTiff";
-import { encodeGif } from "./encoders/encodeGif";
-import { encodePdf } from "./encoders/encodePdf";
+import encodeJPEG_PNG_WEBP from "./encoders/encodeJPEG_PNG_WEBP";
+import encodeBMP from "./encoders/encodeBMP";
+import encodeTIFF from "./encoders/encodeTIFF";
+import encodeGIF from "./encoders/encodeGIF";
+import encodePDF from "./encoders/encodePDF";
 
 export const encode = (
   canvas: HTMLCanvasElement,
@@ -15,34 +15,31 @@ export const encode = (
     case OutputFileFormatsNames.JPG:
     case OutputFileFormatsNames.WEBP:
     case OutputFileFormatsNames.PNG: {
-      return encodeJpgPngWebp(
+      return encodeJPEG_PNG_WEBP(
         canvas,
         targetFormatSettings,
         activeTargetFormatName
       );
     }
     case OutputFileFormatsNames.BMP: {
-      return encodeBmp(canvas, targetFormatSettings);
+      return encodeBMP(canvas);
     }
 
     case OutputFileFormatsNames.TIFF:
       {
-        return encodeTiff(
-          canvas,
-          targetFormatSettings
-        );
+        return encodeTIFF(canvas);
       }
 
     case OutputFileFormatsNames.GIF:
       {
-        return encodeGif(
+        return encodeGIF(
           canvas,
           targetFormatSettings
         )
       }
     case OutputFileFormatsNames.PDF:
       {
-        return encodePdf(
+        return encodePDF(
           canvas,
           targetFormatSettings
         );

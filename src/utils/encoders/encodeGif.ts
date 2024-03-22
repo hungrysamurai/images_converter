@@ -1,9 +1,7 @@
 import GIF from "gif.js"
-
-import { getResizedCanvas } from "../getResizedCanvas";
 import { isDitherSetting } from "../typeGuards";
 
-export const encodeGif = async (
+const encodeGIF = async (
   canvas: HTMLCanvasElement,
   targetFormatSettings: OutputConversionSettings
 ): Promise<Blob | void> => {
@@ -12,24 +10,9 @@ export const encodeGif = async (
   if (isDitherSetting(targetFormatSettings)) {
 
     const {
-      resize,
-      units,
-      smoothing,
-      targetHeight,
-      targetWidth,
       quality,
       dither,
     } = targetFormatSettings;
-
-    if (resize) {
-      resultingCanvas = getResizedCanvas(
-        canvas,
-        smoothing,
-        units,
-        targetWidth,
-        targetHeight,
-      );
-    }
 
     return new Promise((resolve) => {
       const options = {
@@ -51,3 +34,5 @@ export const encodeGif = async (
     });
   }
 };
+
+export default encodeGIF;

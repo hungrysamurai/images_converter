@@ -73,7 +73,8 @@ export const initialState: ConversionSettings = {
       },
       [InputFileFormatsNames.PDF]: {
         resize: false,
-        compile: false,
+        merge: false,
+        quality: 0.75,
         units: ResizeUnits.PIXELS,
         targetWidth: null,
         targetHeight: null,

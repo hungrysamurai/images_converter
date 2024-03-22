@@ -1,11 +1,11 @@
 import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
 import { AppDispatch } from "../../../store/store";
 
-import { tiffToFiles } from "./tiffToFiles";
-import { gifToFiles } from "./gifToFiles";
-import { pdfToFiles } from './pdfToFiles';
+import TIFFToFiles from "./TIFFToFiles";
+import GIFToFiles from "./GIFToFiles";
+import PDFToFiles from './PDFToFiles';
 
-export const processMultiPagesFile = async (
+const processMultiPagesFile = async (
   source: SourceFile,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
@@ -13,47 +13,49 @@ export const processMultiPagesFile = async (
     [OutputFileFormatsNames.PDF]: PDFInputSettings
   },
   dispatch: AppDispatch,
-  compileToOne: boolean,
-  collection: CompileCollection
+  mergeToOne: boolean,
+  collection: MergeCollection
 ) => {
   const { type: srcType } = source;
 
   switch (srcType) {
     case MIMETypes.TIFF:
       {
-        await tiffToFiles(
+        await TIFFToFiles(
           source,
           targetFormatSettings,
           activeTargetFormatName,
           dispatch,
-          compileToOne,
+          mergeToOne,
           collection
         );
       }
       break;
     case MIMETypes.GIF:
       {
-        await gifToFiles(
+        await GIFToFiles(
           source,
           targetFormatSettings,
           activeTargetFormatName,
           dispatch,
-          compileToOne,
+          mergeToOne,
           collection
         );
       }
       break;
 
     case MIMETypes.PDF: {
-      await pdfToFiles(
+      await PDFToFiles(
         source,
         targetFormatSettings,
         activeTargetFormatName,
         inputSettings,
         dispatch,
-        compileToOne,
+        mergeToOne,
         collection
       );
     }
   }
 };
+
+export default processMultiPagesFile;

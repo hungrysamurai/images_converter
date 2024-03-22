@@ -7,19 +7,23 @@ import { AppDispatch } from "../../../store/store";
 import { addConvertedFile } from "../../../store/slices/processFilesSlice/processFilesSlice";
 
 import { encode } from "../../encode";
+import { getResizedCanvas } from "../../getResizedCanvas";
 
-export const gifToFiles = async (
+const GIFToFiles = async (
   source: SourceFile,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
   dispatch: AppDispatch,
-  compileToOne: boolean,
-  collection: CompileCollection
+  mergeToOne: boolean,
+  collection: MergeCollection
 ): Promise<void> => {
   const { blobURL, id, name } = source;
 
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
+
+  const { resize, units, smoothing, targetHeight, targetWidth } =
+    targetFormatSettings;
 
   const gif = parseGIF(arrayBuffer);
   const frames = decompressFrames(gif, true);
@@ -38,7 +42,7 @@ export const gifToFiles = async (
       frameHeight
     );
 
-    const canvas = document.createElement("canvas");
+    let canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     canvas.width = width;
@@ -46,7 +50,17 @@ export const gifToFiles = async (
 
     ctx.putImageData(imageData, top, left);
 
-    if (compileToOne) {
+    if (resize) {
+      canvas = getResizedCanvas(
+        canvas,
+        smoothing,
+        units,
+        targetWidth,
+        targetHeight,
+      );
+    }
+
+    if (mergeToOne) {
       collection.push(canvas)
     } else {
       const encoded = await encode(
@@ -74,3 +88,6 @@ export const gifToFiles = async (
     }
   }
 };
+
+
+export default GIFToFiles

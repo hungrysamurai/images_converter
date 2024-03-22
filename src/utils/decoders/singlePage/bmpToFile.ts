@@ -1,5 +1,6 @@
 import { OutputFileFormatsNames } from "../../../types/types";
 import { encode } from "../../encode";
+import { getResizedCanvas } from "../../getResizedCanvas";
 
 interface Bitmap {
   stride: number;
@@ -26,14 +27,17 @@ interface Bitmap {
   };
 }
 
-export const bmpToFile = async (
+const BMPToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-  compileToOne: boolean
+  mergeToOne: boolean
 ): Promise<Blob | HTMLCanvasElement | void> => {
-  const blob = await fetch(blobURL);
-  const arrayBuffer = await blob.arrayBuffer();
+  const file = await fetch(blobURL);
+  const arrayBuffer = await file.arrayBuffer();
+
+  const { resize, units, smoothing, targetHeight, targetWidth } =
+    targetFormatSettings;
 
   const dataView = new DataView(arrayBuffer);
   const bitmap: Bitmap = {
@@ -86,7 +90,7 @@ export const bmpToFile = async (
     ) * 4;
   bitmap.pixels = new Uint8ClampedArray(arrayBuffer, start);
 
-  const canvas = document.createElement("canvas");
+  let canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
   const width = bitmap.infoheader.biWidth;
@@ -114,8 +118,18 @@ export const bmpToFile = async (
 
   ctx.putImageData(imageData, 0, 0);
 
-  if (compileToOne) {
-    return canvas
+  if (resize) {
+    canvas = getResizedCanvas(
+      canvas,
+      smoothing,
+      units,
+      targetWidth,
+      targetHeight,
+    );
+  }
+
+  if (mergeToOne) {
+    return canvas;
   } else {
     const encoded = encode(
       canvas,
@@ -128,3 +142,6 @@ export const bmpToFile = async (
   }
 
 };
+
+
+export default BMPToFile;

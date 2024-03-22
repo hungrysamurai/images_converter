@@ -3,15 +3,19 @@ import heic2any from "heic2any";
 import { OutputFileFormatsNames } from "../../../types/types";
 
 import { encode } from "../../encode";
+import { getResizedCanvas } from "../../getResizedCanvas";
 
-export const heicToFile = async (
+const HEICToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-  compileToOne: boolean
+  mergeToOne: boolean
 ): Promise<Blob | HTMLCanvasElement | void> => {
   const file = await fetch(blobURL);
   const blob = await file.blob();
+
+  const { resize, units, smoothing, targetHeight, targetWidth } =
+    targetFormatSettings;
 
   try {
     const result = (await heic2any({
@@ -26,7 +30,7 @@ export const heicToFile = async (
 
       img.onload = () => {
         try {
-          const canvas = document.createElement("canvas");
+          let canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
           canvas.width = img.width;
@@ -34,7 +38,17 @@ export const heicToFile = async (
 
           ctx.drawImage(img, 0, 0);
 
-          if (compileToOne) {
+          if (resize) {
+            canvas = getResizedCanvas(
+              canvas,
+              smoothing,
+              units,
+              targetWidth,
+              targetHeight,
+            );
+          }
+
+          if (mergeToOne) {
             resolve(canvas)
           } else {
             const encoded = encode(
@@ -67,7 +81,7 @@ export const heicToFile = async (
 
         img.onload = () => {
           try {
-            const canvas = document.createElement("canvas");
+            let canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
             canvas.width = img.width;
@@ -75,7 +89,17 @@ export const heicToFile = async (
 
             ctx.drawImage(img, 0, 0);
 
-            if (compileToOne) {
+            if (resize) {
+              canvas = getResizedCanvas(
+                canvas,
+                smoothing,
+                units,
+                targetWidth,
+                targetHeight,
+              );
+            }
+
+            if (mergeToOne) {
               resolve(canvas)
             } else {
               const encoded = encode(
@@ -104,3 +128,6 @@ export const heicToFile = async (
     }
   }
 };
+
+
+export default HEICToFile;
