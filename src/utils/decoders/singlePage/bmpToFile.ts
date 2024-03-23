@@ -124,7 +124,7 @@ const BMPToFile = async (
       smoothing,
       units,
       targetWidth,
-      targetHeight,
+      targetHeight
     );
   }
 
@@ -137,11 +137,9 @@ const BMPToFile = async (
       activeTargetFormatName
     );
     if (encoded) {
-      return encoded
+      return encoded;
     }
   }
-
 };
-
 
 export default BMPToFile;

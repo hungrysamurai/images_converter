@@ -84,7 +84,7 @@ declare global {
 
   type ProcessedFile = SourceFile & {
     downloadLink: string;
-    sourceId: string;
+    sourceId?: string;
   };
 
   // Checkbox
@@ -93,12 +93,12 @@ declare global {
   };
 
   type MergeOption = {
-    merge: boolean
-  }
+    merge: boolean;
+  };
 
   type CheckboxOptions = ResizeOption | MergeOption;
 
-  type CheckboxOptionsKeys = keyof ResizeOption | keyof MergeOption
+  type CheckboxOptionsKeys = keyof ResizeOption | keyof MergeOption;
 
   // Slider
   type QualityOption = {
@@ -175,9 +175,15 @@ declare global {
   type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings &
     DitherOption;
   type PDFOutputConversionSettings = BasicOutputConversionSettings &
-    CompressionOption & MergeOption & QualityOption;
+    CompressionOption &
+    MergeOption &
+    QualityOption;
 
-  type OutputConversionSettings = BasicOutputConversionSettings | JPEG_WEBPOutputConversionSettings | GIFOutputConversionSettings | PDFOutputConversionSettings
+  type OutputConversionSettings =
+    | BasicOutputConversionSettings
+    | JPEG_WEBPOutputConversionSettings
+    | GIFOutputConversionSettings
+    | PDFOutputConversionSettings;
 
   interface ConversionSettings {
     inputSettings: {
@@ -203,6 +209,5 @@ declare global {
     files: ProcessedFile[];
   }
 
-  type MergeCollection = (HTMLCanvasElement | Blob)[]
+  type MergeCollection = (HTMLCanvasElement | Blob)[];
 }
-
