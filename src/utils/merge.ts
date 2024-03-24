@@ -3,6 +3,7 @@ import { addConvertedFile } from "../store/slices/processFilesSlice/processFiles
 import { AppDispatch } from "../store/store";
 import { MIMETypes, OutputFileFormatsNames } from "../types/types";
 import mergePDF from "./aggregators/mergePDF";
+import mergeGIF from "./aggregators/mergeGIF";
 
 const merge = async (
   collection: MergeCollection,
@@ -16,15 +17,13 @@ const merge = async (
         const merged = await mergePDF(collection, targetFormatSettings);
 
         if (merged) {
-          const blob = new Blob([merged], { type: "application/pdf" });
-          const URL = window.URL.createObjectURL(blob);
-
+          const URL = window.URL.createObjectURL(merged);
           dispatch(
             addConvertedFile({
               blobURL: URL,
               downloadLink: URL,
               name: `Merged-${Date.now()}`,
-              size: blob.size,
+              size: merged.size,
               type: `image/${activeTargetFormatName}` as MIMETypes,
               id: nanoid(),
             })
@@ -37,6 +36,21 @@ const merge = async (
     }
     case OutputFileFormatsNames.GIF: {
       try {
+        const merged = await mergeGIF(collection, targetFormatSettings);
+
+        if (merged) {
+          const URL = window.URL.createObjectURL(merged);
+          dispatch(
+            addConvertedFile({
+              blobURL: URL,
+              downloadLink: URL,
+              name: `Merged-${Date.now()}`,
+              size: merged.size,
+              type: `image/${activeTargetFormatName}` as MIMETypes,
+              id: nanoid(),
+            })
+          );
+        }
       } catch (err) {
         throw err;
       }

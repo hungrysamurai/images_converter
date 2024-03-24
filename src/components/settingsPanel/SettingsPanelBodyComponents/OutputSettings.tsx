@@ -57,7 +57,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
           />
         ) : null}
 
-        {/* GIF quality slider & dither options */}
+        {/* GIF quality slider, dither options, merge & animation delay */}
         {isDitherSetting(activeTargetFromatOutputSettings) &&
         activeTargetFormatName === OutputFileFormatsNames.GIF ? (
           <>
@@ -80,6 +80,25 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
               }
               active={true}
             />
+            <CheckboxInput
+              label={lang === Lang.EN ? "To one file:" : "В один файл"}
+              currentValue={activeTargetFromatOutputSettings.merge}
+              displayValueOn={lang === Lang.EN ? "On" : "Вкл"}
+              displayValueOff={lang === Lang.EN ? "Off" : "Выкл"}
+              name="merge"
+            />
+
+            {activeTargetFromatOutputSettings.merge && (
+              <NumberInput
+                caption={lang === Lang.EN ? "Задержка" : "Delay"}
+                units={ResizeUnits.MS}
+                active={true}
+                name="animationDelay"
+                currentValue={activeTargetFromatOutputSettings.animationDelay}
+                min="1"
+                max="10000"
+              />
+            )}
           </>
         ) : null}
       </>

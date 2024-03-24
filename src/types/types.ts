@@ -40,6 +40,7 @@ export enum ResizeUnits {
   PERCENTAGES = "percentages",
   PPI = "ppi",
   DEG = "deg",
+  MS = "ms",
 }
 
 export enum SmoothingPresets {
@@ -148,6 +149,10 @@ declare global {
     targetHeight: number | null;
   };
 
+  type GIFAnimationDelay = {
+    animationDelay: number;
+  };
+
   // Input numeric settings
   type PDFInputSettings = {
     resolution: number;
@@ -157,12 +162,14 @@ declare global {
   type NumericOptions =
     | TargetHeightOption
     | TargetWidthOption
-    | PDFInputSettings;
+    | PDFInputSettings
+    | GIFAnimationDelay;
 
   type NumericOptionsKeys =
     | keyof TargetHeightOption
     | keyof TargetWidthOption
-    | keyof PDFInputSettings;
+    | keyof PDFInputSettings
+    | keyof GIFAnimationDelay;
 
   // Comp
   type BasicOutputConversionSettings = ResizeOption &
@@ -170,10 +177,15 @@ declare global {
     TargetWidthOption &
     TargetHeightOption &
     SmoothingOption;
+
   type JPEG_WEBPOutputConversionSettings = BasicOutputConversionSettings &
     QualityOption;
+
   type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings &
-    DitherOption;
+    DitherOption &
+    MergeOption &
+    GIFAnimationDelay;
+
   type PDFOutputConversionSettings = BasicOutputConversionSettings &
     CompressionOption &
     MergeOption &

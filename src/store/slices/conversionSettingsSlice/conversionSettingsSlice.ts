@@ -110,6 +110,14 @@ export const conversionSettingsSlice = createSlice({
       const key = Object.keys(action.payload)[0] as NumericOptionsKeys;
       const value = Object.values(action.payload)[0] as number | null;
 
+      if (
+        key === "animationDelay" &&
+        activeTargetFormatName === OutputFileFormatsNames.GIF
+      ) {
+        state.outputSettings.settings[activeTargetFormatName].animationDelay =
+          value || 200;
+      }
+
       if (key === "targetHeight" || key === "targetWidth") {
         state.outputSettings.settings[activeTargetFormatName][key] = value;
       }
@@ -125,12 +133,16 @@ export const conversionSettingsSlice = createSlice({
       const key = Object.keys(action.payload)[0] as CheckboxOptionsKeys;
       const value = Object.values(action.payload)[0] as boolean;
 
-      if (key === 'merge' && activeTargetFormatName === OutputFileFormatsNames.PDF) {
-        state.outputSettings.settings[activeTargetFormatName].merge = value
+      if (
+        key === "merge" &&
+        (activeTargetFormatName === OutputFileFormatsNames.PDF ||
+          activeTargetFormatName === OutputFileFormatsNames.GIF)
+      ) {
+        state.outputSettings.settings[activeTargetFormatName].merge = value;
       }
 
-      if (key === 'resize') {
-        state.outputSettings.settings[activeTargetFormatName].resize = value
+      if (key === "resize") {
+        state.outputSettings.settings[activeTargetFormatName].resize = value;
       }
     },
     updateInputSettings: (state, action: PayloadAction<NumericOptions>) => {

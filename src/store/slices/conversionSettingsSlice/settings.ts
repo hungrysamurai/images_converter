@@ -60,8 +60,10 @@ export const initialState: ConversionSettings = {
         units: ResizeUnits.PIXELS,
         targetWidth: null,
         targetHeight: null,
+        merge: false,
         smoothing: SmoothingPresets.MEDIUM,
         quality: 11,
+        animationDelay: 200,
         dither: false,
       },
       [InputFileFormatsNames.TIFF]: {

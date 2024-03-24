@@ -6,7 +6,7 @@ import { MIMETypes } from "../../types/types";
 const mergePDF = async (
   collection: MergeCollection,
   targetFormatSettings: OutputConversionSettings
-) => {
+): Promise<Blob | void> => {
   if (isCompressionSetting(targetFormatSettings)) {
     const { compression, quality } = targetFormatSettings;
 
@@ -44,7 +44,10 @@ const mergePDF = async (
       }
     }
 
-    return await merged.save();
+    const arrayBuffer = await merged.save();
+
+    const blob = new Blob([arrayBuffer], { type: "application/pdf" });
+    return blob;
   }
 };
 
