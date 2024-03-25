@@ -47,6 +47,7 @@ const mergePDF = async (
     const arrayBuffer = await merged.save();
 
     const blob = new Blob([arrayBuffer], { type: "application/pdf" });
+
     return blob;
   }
 };

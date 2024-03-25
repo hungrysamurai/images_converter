@@ -35,7 +35,7 @@ export enum Lang {
   RU = "ru",
 }
 
-export enum ResizeUnits {
+export enum Units {
   PIXELS = "pixels",
   PERCENTAGES = "percentages",
   PPI = "ppi",
@@ -107,8 +107,8 @@ declare global {
   };
 
   // Select
-  type ResizeUnitsOption = {
-    units: ResizeUnits;
+  type UnitsOption = {
+    units: Units;
   };
 
   type SmoothingOption = {
@@ -124,18 +124,18 @@ declare global {
   };
 
   type SelectOptions =
-    | ResizeUnitsOption
+    | UnitsOption
     | SmoothingOption
     | DitherOption
     | CompressionOption;
 
   type SelectOptionsValues =
-    | ResizeUnits
+    | Units
     | SmoothingPresets
     | GIFDitherOptions
     | PDFCompressionTypes;
   type SelectOptionsKeys =
-    | keyof ResizeUnitsOption
+    | keyof UnitsOption
     | keyof SmoothingOption
     | keyof DitherOption
     | keyof CompressionOption;
@@ -173,7 +173,7 @@ declare global {
 
   // Comp
   type BasicOutputConversionSettings = ResizeOption &
-    ResizeUnitsOption &
+    UnitsOption &
     TargetWidthOption &
     TargetHeightOption &
     SmoothingOption;

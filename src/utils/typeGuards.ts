@@ -1,14 +1,14 @@
 import {
   GIFDitherOptions,
   PDFCompressionTypes,
-  ResizeUnits,
+  Units,
   SmoothingPresets,
 } from "../types/types";
 
 // Type checkers for conversion setting store slice
 
-export function isUnits(toCheck: SelectOptionsValues): toCheck is ResizeUnits {
-  return Object.values(ResizeUnits).includes(toCheck as ResizeUnits);
+export function isUnits(toCheck: SelectOptionsValues): toCheck is Units {
+  return Object.values(Units).includes(toCheck as Units);
 }
 
 export function isSmoothingOption(

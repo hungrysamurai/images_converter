@@ -1,9 +1,9 @@
-import { ResizeUnits, SmoothingPresets } from "../types/types";
+import { Units, SmoothingPresets } from "../types/types";
 
 export const getResizedCanvas = (
   canvas: HTMLCanvasElement,
   smoothing: false | SmoothingPresets,
-  units: ResizeUnits,
+  units: Units,
   targetWidth?: number | null,
   targetHeight?: number | null,
 ) => {
@@ -17,7 +17,7 @@ export const getResizedCanvas = (
 
   let resultWidth, resultHeight;
 
-  if (units === ResizeUnits.PIXELS) {
+  if (units === Units.PIXELS) {
     if (targetWidth && targetHeight) {
       resultWidth = targetWidth;
       resultHeight = targetHeight;
@@ -28,7 +28,7 @@ export const getResizedCanvas = (
       resultWidth = targetWidth;
       resultHeight = Number((targetWidth / srcAspectRatio).toFixed(0));
     }
-  } else if (units === ResizeUnits.PERCENTAGES) {
+  } else if (units === Units.PERCENTAGES) {
     if (targetWidth && targetHeight) {
       resultWidth = Number(((srcWidth / 100) * targetWidth).toFixed(0));
       resultHeight = Number(((srcHeight / 100) * targetHeight).toFixed(0));

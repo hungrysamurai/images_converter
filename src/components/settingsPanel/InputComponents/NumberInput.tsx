@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React, { ChangeEvent } from "react";
 
-import { ResizeUnits } from "../../../types/types";
+import { Units } from "../../../types/types";
 
 import { useAppDispatch } from "../../../store/hooks";
 import { updateActiveTargetFormatNumericSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
@@ -10,7 +10,7 @@ import getClosestMatchedValue from "../../../utils/helpers/getClosestMatchesValu
 
 type NumberInputProps = {
   caption: string;
-  units: ResizeUnits;
+  units: Units;
   min: string | null;
   max: string | null;
   name: NumericOptionsKeys;
@@ -88,9 +88,9 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
       {units && (
         <StyledInputUnitsLabel>
-          {units === ResizeUnits.PIXELS
+          {units === Units.PIXELS
             ? "px"
-            : units === ResizeUnits.PERCENTAGES
+            : units === Units.PERCENTAGES
             ? "%"
             : units}
         </StyledInputUnitsLabel>

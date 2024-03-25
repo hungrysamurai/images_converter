@@ -1,7 +1,7 @@
 import {
   InputFileFormatsNames,
   OutputFileFormatsNames,
-  ResizeUnits,
+  Units,
   SmoothingPresets,
   PDFCompressionTypes,
 } from "../../../types/types";
@@ -27,7 +27,7 @@ export const initialState: ConversionSettings = {
     settings: {
       [InputFileFormatsNames.JPG]: {
         resize: false,
-        units: ResizeUnits.PIXELS,
+        units: Units.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
@@ -35,14 +35,14 @@ export const initialState: ConversionSettings = {
       },
       [InputFileFormatsNames.PNG]: {
         resize: false,
-        units: ResizeUnits.PIXELS,
+        units: Units.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
       },
       [InputFileFormatsNames.WEBP]: {
         resize: false,
-        units: ResizeUnits.PIXELS,
+        units: Units.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
@@ -50,14 +50,14 @@ export const initialState: ConversionSettings = {
       },
       [InputFileFormatsNames.BMP]: {
         resize: false,
-        units: ResizeUnits.PIXELS,
+        units: Units.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
       },
       [InputFileFormatsNames.GIF]: {
         resize: false,
-        units: ResizeUnits.PIXELS,
+        units: Units.PIXELS,
         targetWidth: null,
         targetHeight: null,
         merge: false,
@@ -68,7 +68,7 @@ export const initialState: ConversionSettings = {
       },
       [InputFileFormatsNames.TIFF]: {
         resize: false,
-        units: ResizeUnits.PIXELS,
+        units: Units.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
@@ -77,7 +77,7 @@ export const initialState: ConversionSettings = {
         resize: false,
         merge: false,
         quality: 0.75,
-        units: ResizeUnits.PIXELS,
+        units: Units.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,

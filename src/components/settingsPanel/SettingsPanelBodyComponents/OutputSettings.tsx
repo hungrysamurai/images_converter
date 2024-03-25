@@ -6,7 +6,7 @@ import {
   GIFDitherOptions,
   OutputFileFormatsNames,
   PDFCompressionTypes,
-  ResizeUnits,
+  Units,
   SmoothingPresets,
 } from "../../../types/types";
 
@@ -90,8 +90,8 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
 
             {activeTargetFromatOutputSettings.merge && (
               <NumberInput
-                caption={lang === Lang.EN ? "Задержка" : "Delay"}
-                units={ResizeUnits.MS}
+                caption={lang === Lang.EN ? "delay" : "кадр"}
+                units={Units.MS}
                 active={true}
                 name="animationDelay"
                 currentValue={activeTargetFromatOutputSettings.animationDelay}
@@ -158,7 +158,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
             name="resize"
           />
           <SelectInput
-            options={[ResizeUnits.PERCENTAGES, ResizeUnits.PIXELS]}
+            options={[Units.PERCENTAGES, Units.PIXELS]}
             label={lang === Lang.EN ? "Units:" : "Ед. измерения:"}
             name="units"
             currentValue={units}
