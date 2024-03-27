@@ -63,7 +63,7 @@ export const convertFiles = createAsyncThunk<
     try {
       await merge(collection, targetFormatSettings, activeTargetFormatName, dispatch)
     } catch (err) {
-      console.log(err);
+      console.error('Error merging file:', err)
     }
   }
 });

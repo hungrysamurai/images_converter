@@ -50,30 +50,31 @@ const ActionsPanel: React.FC<ActionsPanelProps> = ({
 };
 
 const StyledActionPanel = styled.div`
-  width: 95%;
-  height: 5rem;
+  width: var(--full);
+  height: var(--panel-thickness);
   background-color: var(--bg-container-gray);
   display: flex;
   align-items: center;
   justify-content: center;
-
-  @media (max-width: 768px) {
-    height: 3.5rem;
-  }
+  gap: 1.5rem;
 
   @media (min-aspect-ratio: 1/1) {
     flex-direction: column;
-    width: 5rem;
-    height: 100%;
-    gap: 2rem;
+    width: var(--panel-thickness);
+    height: var(--full);
   }
 `;
 
 const StyledActionButton = styled(motion.div)`
   background: none;
   border: none;
-  margin: 0 0.75rem;
   cursor: pointer;
+  width: 3rem;
+  padding: 0.25rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &.disabled {
     cursor: default;
@@ -84,19 +85,13 @@ const StyledActionButton = styled(motion.div)`
     }
   }
 
-  svg {
-    width: 3rem;
-  }
-
   &:hover {
     filter: brightness(0.9);
   }
 
-  @media (max-width: 768px) {
-    margin: 0 1rem;
-    svg {
-      width: 1.75rem;
-    }
+  @media (min-aspect-ratio: 1/1) {
+    width: 100%;
+    height: 3rem;
   }
 `;
 

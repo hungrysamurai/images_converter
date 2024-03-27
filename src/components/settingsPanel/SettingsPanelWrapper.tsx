@@ -88,7 +88,7 @@ const StyledSettingsPanel = styled(motion.div)`
   right: 0;
   background-color: #e3e3e3b6;
   backdrop-filter: blur(48px);
-  width: 75vw;
+  width: 55vw;
   height: 100vh;
   border-radius: var(--round-corner) 0 0 var(--round-corner);
   display: flex;
@@ -99,14 +99,29 @@ const StyledSettingsPanel = styled(motion.div)`
   z-index: 3;
   box-shadow: var(--container-shadow);
   overflow: hidden;
+  overflow-y: scroll;
 
-  @media (max-width: 768px) {
-    padding: 1.5rem;
+  &::-webkit-scrollbar {
+    width: 0.35rem;
+    height: 0.35rem;
   }
 
-  @media (max-width: 500px) {
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: var(--element-dark-gray);
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--element-light-gray);
+  }
+
+  /* @media (min-width: 1920px) {
+    width: 35%;
+  } */
+
+  @media (max-width: 768px) {
     width: 100vw;
-    overflow-y: scroll;
   }
 `;
 
@@ -117,11 +132,11 @@ const StyledCloseSettingsPanelHeader = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  @media (max-width: 500px) {
+  /* @media (max-width: 500px) {
     h1 {
       font-size: 1.5rem;
     }
-  }
+  } */
 `;
 
 const StyledCloseSettingsPanelButton = styled.button`
@@ -133,12 +148,16 @@ const StyledCloseSettingsPanelButton = styled.button`
     filter: brightness(0.9);
   }
 
-  @media (max-width: 768px) {
+  svg {
+    width: 3rem;
+  }
+
+  /* @media (max-width: 768px) {
     top: 0;
     svg {
       width: 1.5rem;
     }
-  }
+  } */
 `;
 
 export default SettingsPanelWrapper;

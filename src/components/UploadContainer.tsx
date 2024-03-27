@@ -13,6 +13,7 @@ import {
 
 import IconUpload from "./icons/IconUpload";
 import FilesList from "./filesList/FilesList";
+import StyledInnerShadow from "./StyledInnerShadow";
 
 import { fadeAnimation } from "../animations";
 
@@ -94,6 +95,10 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
       onDragEnter={handleDrag}
       onClick={handleContainerClick}
     >
+      <StyledInnerShadow
+        $brHorizontal={`var(--round-corner) 0rem 0rem var(--round-corner)`}
+        $brVertical={`var(--round-corner) var(--round-corner) 0rem 0rem`}
+      />
       <AnimatePresence>
         {sourceFiles.length !== 0 && (
           <StyledUploadedFilesListWrapper
@@ -170,11 +175,10 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
 
 const StyledUploadContainer = styled.div`
   position: relative;
-  width: 95%;
-  height: calc((100% - 11rem) / 2);
+  width: var(--container-fit);
+  height: var(--container-calc);
   background-color: var(--bg-light-gray);
   border-radius: var(--round-corner) var(--round-corner) 0rem 0rem;
-  box-shadow: var(--container-inner-shadow);
   overflow-y: scroll;
   overflow-x: hidden;
   scroll-behavior: smooth;
@@ -185,13 +189,9 @@ const StyledUploadContainer = styled.div`
     display: none;
   }
 
-  @media (max-width: 768px) {
-    height: calc((100% - 8rem) / 2);
-  }
-
   @media (min-aspect-ratio: 1/1) {
-    width: calc((100% - 11rem) / 2);
-    height: 95%;
+    width: var(--container-calc);
+    height: var(--container-fit);
     border-radius: var(--round-corner) 0rem 0rem var(--round-corner);
   }
 `;

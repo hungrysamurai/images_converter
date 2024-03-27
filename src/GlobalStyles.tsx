@@ -18,7 +18,7 @@ const GlobalStyles = createGlobalStyle`
     height:100%;
     width:100%;
     font-family: 'Ubuntu Mono', monospace;
-
+    background-color: var(--bg-container-gray);
     --bg-container-gray: #E3E3E3;
     --bg-light-gray: #F8F8F8;
     --icon-medium-gray: #9F9F9F;
@@ -44,19 +44,32 @@ const GlobalStyles = createGlobalStyle`
     --container-inner-shadow: inset 0px 24px 24px 0px rgba(0, 0, 0, 0.25), inset 0px 6px 6px 6px rgba(0, 0, 0, 0.16) ;
     --image-element-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.33); 
     --container-shadow: -12px 0px 24px 0px rgba(0, 0, 0, 0.25); 
-
     --round-corner: 1.25rem;
+
+
+    --panel-long: 5rem;
+
+    --full: 95%;
+
+    --panel-thickness: 3rem;
+    --panel-fit: var(--full);
+
+    --container-calc: calc((100% - (var(--panel-thickness) * 2 + 1rem)) / 2);
+    --container-fit: var(--full);
   }
 
   #root {
     position: relative;
-    width:100%;
-    height:100%;
-    display:flex;
-    flex-direction: column;
     overflow: hidden;
     background-color: var(--bg-container-gray);
-    padding-top: 1rem;
+   
+    @media (max-aspect-ratio: 1/1) {
+      padding-top: 0.5rem;
+    }
+
+    @media (min-aspect-ratio: 1/1) {
+      padding-left: 0.5rem;
+    }
   }
 
   h1 {
@@ -64,9 +77,10 @@ const GlobalStyles = createGlobalStyle`
     font-weight: 400;
     color: var(--text-medium-gray);
       
-    @media (max-width: 768px){
+    @media screen and (max-width: 768px), 
+       screen and (max-height: 500px) {
         font-size: 2rem;
-      }
+    }
   }
 
   h2 {
@@ -74,7 +88,8 @@ const GlobalStyles = createGlobalStyle`
     font-weight: 700;
     color: var(--text-dark-gray);
 
-      @media (max-width: 768px){
+      @media screen and (max-width: 768px), 
+       screen and (max-height: 500px){
         font-size: 1.25rem;
       }
   }
@@ -84,7 +99,8 @@ const GlobalStyles = createGlobalStyle`
     font-weight: 700;
     color: var(--text-dark-gray);
 
-      @media (max-width: 768px){
+     @media screen and (max-width: 768px), 
+       screen and (max-height: 500px){
         font-size: 1rem;
       }
   }

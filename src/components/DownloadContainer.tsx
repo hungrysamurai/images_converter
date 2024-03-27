@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 import { fadeAnimation } from "../animations";
 
+import { Lang } from "../types/types";
+
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   getActiveTargetFormatName,
@@ -10,7 +12,7 @@ import {
 import { getAllProcessedFiles } from "../store/slices/processFilesSlice/processFilesSlice";
 
 import FilesList from "./filesList/FilesList";
-import { Lang } from "../types/types";
+import StyledInnerShadow from "./StyledInnerShadow";
 
 type DownloadContainerProps = {
   lang: Lang;
@@ -24,6 +26,10 @@ const DownloadContainer: React.FC<DownloadContainerProps> = ({ lang }) => {
 
   return (
     <StyledDownloadContainer>
+      <StyledInnerShadow
+        $brHorizontal={`0rem var(--round-corner) var(--round-corner) 0rem`}
+        $brVertical={`0rem 0rem var(--round-corner) var(--round-corner)`}
+      />
       <AnimatePresence>
         {allProccecedFiles.length === 0 ? (
           <>
@@ -56,11 +62,10 @@ const DownloadContainer: React.FC<DownloadContainerProps> = ({ lang }) => {
 };
 
 const StyledDownloadContainer = styled.div`
-  width: 95%;
-  height: calc((100% - 11rem) / 2);
+  width: var(--container-fit);
+  height: var(--container-calc);
   background-color: var(--bg-light-gray);
   border-radius: 0rem 0rem var(--round-corner) var(--round-corner);
-  box-shadow: var(--container-inner-shadow);
   position: relative;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -97,7 +102,7 @@ const StyledDownloadContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    height: calc((100% - 8rem) / 2);
+    /* height: calc((100% - 8rem) / 2); */
 
     .placeholder {
       .output-caption {
@@ -111,8 +116,8 @@ const StyledDownloadContainer = styled.div`
   }
 
   @media (min-aspect-ratio: 1/1) {
-    width: calc((100% - 11rem) / 2);
-    height: 95%;
+    width: var(--container-calc);
+    height: var(--container-fit);
     border-radius: 0rem var(--round-corner) var(--round-corner) 0rem;
   }
 `;
