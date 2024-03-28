@@ -101,9 +101,7 @@ const StyledDownloadContainer = styled.div`
     }
   }
 
-  @media (max-width: 768px) {
-    /* height: calc((100% - 8rem) / 2); */
-
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
     .placeholder {
       .output-caption {
         font-size: 1rem;

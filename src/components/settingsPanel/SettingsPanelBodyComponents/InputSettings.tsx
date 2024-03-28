@@ -55,28 +55,30 @@ const InputSettings: React.FC<InputSettingsProps> = memo(
 
 const StyledInputSettingsContainer = styled.div`
   width: 100%;
-  margin: 1rem;
+  margin: 0.5rem;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   flex-direction: column;
 
   h2 {
     text-align: center;
+    font-size: 1.5rem;
   }
 `;
 
 const StyledPDFRasterizationSettingsContainer = styled.div`
-  margin: 2rem 1rem 2rem 1rem;
+  margin-top: 2rem;
   height: 3rem;
-  width: 40%;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-evenly;
 
-  @media (max-width: 500px) {
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
     width: 100%;
     justify-content: space-around;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
   }
 `;
 

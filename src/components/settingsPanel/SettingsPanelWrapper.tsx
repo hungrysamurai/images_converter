@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
+import { MutableRefObject, useRef } from "react";
 
 import { Lang } from "../../types/types";
 
@@ -14,6 +15,7 @@ import {
 
 import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
 import SettingsPanelBody from "./SettingsPanelBody";
+import useOutsideClick from "../../hooks/useOutsideClick";
 
 type SettingsPanelWrapperType = {
   setSettingsPanelVisibility: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,6 +31,12 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
   const isPDF = useAppSelector(checkPDFInSourceFiles);
   const formats = useAppSelector(getAllTargetFormats);
   const activeTargetFormatName = useAppSelector(getActiveTargetFormatName);
+
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick(panelRef as MutableRefObject<HTMLDivElement>, () => {
+    setSettingsPanelVisibility(() => false);
+  });
 
   return (
     <AnimatePresence>
@@ -48,6 +56,7 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
             initial="hidden"
             animate="show"
             exit="exit"
+            ref={panelRef}
           >
             <StyledCloseSettingsPanelHeader>
               <StyledCloseSettingsPanelButton
@@ -77,7 +86,7 @@ const StyledSettingsPanelBackground = styled(motion.div)`
   height: 100%;
   top: 0;
   left: 0;
-  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.25);
   opacity: 1;
   z-index: 2;
 `;
@@ -86,15 +95,14 @@ const StyledSettingsPanel = styled(motion.div)`
   position: absolute;
   top: 0;
   right: 0;
-  background-color: #e3e3e3b6;
-  backdrop-filter: blur(48px);
-  width: 55vw;
+  background-color: #e3e3e3c3;
+  backdrop-filter: blur(36px);
+  width: 30rem;
   height: 100vh;
   border-radius: var(--round-corner) 0 0 var(--round-corner);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
   padding: 2rem;
   z-index: 3;
   box-shadow: var(--container-shadow);
@@ -116,10 +124,6 @@ const StyledSettingsPanel = styled(motion.div)`
     background: var(--element-light-gray);
   }
 
-  /* @media (min-width: 1920px) {
-    width: 35%;
-  } */
-
   @media (max-width: 768px) {
     width: 100vw;
   }
@@ -132,11 +136,11 @@ const StyledCloseSettingsPanelHeader = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  /* @media (max-width: 500px) {
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
     h1 {
       font-size: 1.5rem;
     }
-  } */
+  }
 `;
 
 const StyledCloseSettingsPanelButton = styled.button`
@@ -151,13 +155,6 @@ const StyledCloseSettingsPanelButton = styled.button`
   svg {
     width: 3rem;
   }
-
-  /* @media (max-width: 768px) {
-    top: 0;
-    svg {
-      width: 1.5rem;
-    }
-  } */
 `;
 
 export default SettingsPanelWrapper;

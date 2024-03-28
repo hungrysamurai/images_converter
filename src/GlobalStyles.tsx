@@ -9,16 +9,13 @@ const GlobalStyles = createGlobalStyle`
   }
 
   html{
-    height:100%;
-    width:100%;
     overflow: hidden;
   }
 
   body {
-    height:100%;
-    width:100%;
     font-family: 'Ubuntu Mono', monospace;
     background-color: var(--bg-container-gray);
+
     --bg-container-gray: #E3E3E3;
     --bg-light-gray: #F8F8F8;
     --icon-medium-gray: #9F9F9F;
@@ -43,11 +40,8 @@ const GlobalStyles = createGlobalStyle`
 
     --container-inner-shadow: inset 0px 24px 24px 0px rgba(0, 0, 0, 0.25), inset 0px 6px 6px 6px rgba(0, 0, 0, 0.16) ;
     --image-element-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.33); 
-    --container-shadow: -12px 0px 24px 0px rgba(0, 0, 0, 0.25); 
+    --container-shadow: -12px 0px 24px 0px rgba(0, 0, 0, 0.33); 
     --round-corner: 1.25rem;
-
-
-    --panel-long: 5rem;
 
     --full: 95%;
 
@@ -65,9 +59,11 @@ const GlobalStyles = createGlobalStyle`
    
     @media (max-aspect-ratio: 1/1) {
       padding-top: 0.5rem;
+      padding-left: 0;
     }
 
     @media (min-aspect-ratio: 1/1) {
+      padding-top: 0;
       padding-left: 0.5rem;
     }
   }

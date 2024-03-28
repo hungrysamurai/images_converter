@@ -50,7 +50,7 @@ const StyledFormatSelect = styled.div`
   justify-content: center;
   margin-top: 2rem;
 
-  @media (max-width: 768px) {
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
     margin-top: 1rem;
   }
 `;
@@ -63,29 +63,32 @@ const StyledLabel = styled.label`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   width: 100%;
+
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
+    font-size: 1rem;
+  }
 `;
 
 const StyledSelect = styled.select`
-  width: 12rem;
-  max-width: 80%;
+  width: 7rem;
   height: 3rem;
   border: 0.25rem solid var(--element-medium-gray);
   border-radius: 0.5rem;
   margin-left: 0.5rem;
-  padding: 0.5rem;
   font-family: inherit;
   font-size: 1.5rem;
   font-weight: 700;
+  text-align: center;
   color: var(--text-dark-gray);
   background: var(--bg-light-gray);
   cursor: pointer;
 
-  @media (max-width: 768px) {
-    height: 2rem;
-    width: 6rem;
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
+    height: 2.5rem;
+    width: 5rem;
     font-size: 1rem;
-    padding: 0.1rem;
   }
 `;
 

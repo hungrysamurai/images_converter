@@ -7,14 +7,14 @@ import FormatSelect from "./SettingsPanelBodyComponents/FormatSelect";
 import OutputSettings from "./SettingsPanelBodyComponents/OutputSettings";
 import InputSettings from "./SettingsPanelBodyComponents/InputSettings";
 
-type SettingsPanelBodyType = {
+type SettingsPanelBodyProps = {
   isPDF: boolean;
   lang: Lang;
   formats: OutputFileFormatsNames[];
   activeTargetFormatName: OutputFileFormatsNames;
 };
 
-const SettingsPanelBody: React.FC<SettingsPanelBodyType> = memo(
+const SettingsPanelBody: React.FC<SettingsPanelBodyProps> = memo(
   function SettingsPanelBody({ isPDF, lang, formats, activeTargetFormatName }) {
     return (
       <>

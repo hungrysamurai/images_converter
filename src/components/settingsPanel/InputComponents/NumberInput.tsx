@@ -100,7 +100,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
 };
 
 const StyledNumberContainer = styled.label`
-  margin: 1rem;
+  margin: 0.5rem 0;
   position: relative;
 
   &.inactive {
@@ -111,7 +111,7 @@ const StyledNumberContainer = styled.label`
 
 const StyledNumberInput = styled.input`
   width: 6rem;
-  height: 3rem;
+  min-height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,21 +130,15 @@ const StyledNumberInput = styled.input`
   &:focus {
     outline: none;
   }
-
-  @media (max-width: 768px) {
-    width: 5rem;
-    height: 2.5rem;
-    font-size: 1rem;
-  }
 `;
 
 const StyledNumberInputCaption = styled.span`
   position: absolute;
-  bottom: -1.25rem;
+  bottom: -0.75rem;
   left: 50%;
   transform: translateX(-50%);
   color: var(--text-dark-gray);
-  font-size: 1rem;
+  font-size: 0.75rem;
 `;
 
 const StyledInputUnitsLabel = styled.div`

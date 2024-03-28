@@ -35,76 +35,71 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
       getActiveFormatOutputSettings
     );
 
-    // Basic Options
+    // Basic options
     const { resize, units, targetHeight, targetWidth, smoothing } =
       activeTargetFromatOutputSettings;
 
-    // Display quality slider
-    const qualitySliderContent = isQualitySetting(
-      activeTargetFromatOutputSettings
-    ) ? (
-      <>
-        {/* JPEG / WEBP  quality slider */}
-        {activeTargetFormatName === OutputFileFormatsNames.JPG ||
-        activeTargetFormatName === OutputFileFormatsNames.WEBP ? (
+    // Format specific options
+    const JPEG_WEBP_QualitySlider =
+      isQualitySetting(activeTargetFromatOutputSettings) &&
+      (activeTargetFormatName === OutputFileFormatsNames.JPG ||
+        activeTargetFormatName === OutputFileFormatsNames.WEBP) ? (
+        <SliderInput
+          label={lang === Lang.EN ? "Quality:" : "Качество:"}
+          currentValue={activeTargetFromatOutputSettings.quality}
+          min="1"
+          max="100"
+          name="quality"
+          mode={activeTargetFormatName}
+        />
+      ) : null;
+
+    const GIFSettings =
+      isDitherSetting(activeTargetFromatOutputSettings) &&
+      activeTargetFormatName === OutputFileFormatsNames.GIF ? (
+        <>
           <SliderInput
             label={lang === Lang.EN ? "Quality:" : "Качество:"}
             currentValue={activeTargetFromatOutputSettings.quality}
             min="1"
-            max="100"
+            max="20"
             name="quality"
             mode={activeTargetFormatName}
           />
-        ) : null}
+          <SelectInput
+            options={Object.values(GIFDitherOptions)}
+            label={lang === Lang.EN ? "Dither:" : "Дизеринг:"}
+            name="dither"
+            currentValue={
+              activeTargetFromatOutputSettings.dither
+                ? activeTargetFromatOutputSettings.dither
+                : GIFDitherOptions.OFF
+            }
+            active={true}
+          />
+          <CheckboxInput
+            label={lang === Lang.EN ? "To one file:" : "В один файл"}
+            currentValue={activeTargetFromatOutputSettings.merge}
+            displayValueOn={lang === Lang.EN ? "On" : "Вкл"}
+            displayValueOff={lang === Lang.EN ? "Off" : "Выкл"}
+            name="merge"
+          />
 
-        {/* GIF quality slider, dither options, merge & animation delay */}
-        {isDitherSetting(activeTargetFromatOutputSettings) &&
-        activeTargetFormatName === OutputFileFormatsNames.GIF ? (
-          <>
-            <SliderInput
-              label={lang === Lang.EN ? "Quality:" : "Качество:"}
-              currentValue={activeTargetFromatOutputSettings.quality}
-              min="1"
-              max="20"
-              name="quality"
-              mode={activeTargetFormatName}
-            />
-            <SelectInput
-              options={Object.values(GIFDitherOptions)}
-              label={lang === Lang.EN ? "Dither:" : "Дизеринг:"}
-              name="dither"
-              currentValue={
-                activeTargetFromatOutputSettings.dither
-                  ? activeTargetFromatOutputSettings.dither
-                  : GIFDitherOptions.OFF
-              }
+          {activeTargetFromatOutputSettings.merge && (
+            <NumberInput
+              caption={lang === Lang.EN ? "delay" : "кадр"}
+              units={Units.MS}
               active={true}
+              name="animationDelay"
+              currentValue={activeTargetFromatOutputSettings.animationDelay}
+              min="1"
+              max="10000"
             />
-            <CheckboxInput
-              label={lang === Lang.EN ? "To one file:" : "В один файл"}
-              currentValue={activeTargetFromatOutputSettings.merge}
-              displayValueOn={lang === Lang.EN ? "On" : "Вкл"}
-              displayValueOff={lang === Lang.EN ? "Off" : "Выкл"}
-              name="merge"
-            />
+          )}
+        </>
+      ) : null;
 
-            {activeTargetFromatOutputSettings.merge && (
-              <NumberInput
-                caption={lang === Lang.EN ? "delay" : "кадр"}
-                units={Units.MS}
-                active={true}
-                name="animationDelay"
-                currentValue={activeTargetFromatOutputSettings.animationDelay}
-                min="1"
-                max="10000"
-              />
-            )}
-          </>
-        ) : null}
-      </>
-    ) : null;
-
-    const pdfCompressionSettingContent =
+    const PDFCompressionSettings =
       isCompressionSetting(activeTargetFromatOutputSettings) &&
       activeTargetFormatName === OutputFileFormatsNames.PDF ? (
         <>
@@ -112,9 +107,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
             options={Object.values(PDFCompressionTypes)}
             label={lang === Lang.EN ? "Compression:" : "Компрессия:"}
             name="compression"
-            currentValue={
-              activeTargetFromatOutputSettings.compression as PDFCompressionTypes
-            }
+            currentValue={activeTargetFromatOutputSettings.compression}
             active={true}
           />
 
@@ -143,8 +136,9 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
     return (
       <StyledOutputSettingsContainer>
         <StyledOptionalSettingsContainer>
-          {qualitySliderContent}
-          {pdfCompressionSettingContent}
+          {JPEG_WEBP_QualitySlider}
+          {GIFSettings}
+          {PDFCompressionSettings}
         </StyledOptionalSettingsContainer>
 
         <StyledDivider></StyledDivider>
@@ -213,7 +207,7 @@ const StyledOutputSettingsContainer = styled.div`
   justify-content: flex-start;
   flex-direction: column;
 
-  @media (max-width: 768px) {
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
     margin-top: 0.5rem;
   }
 `;
@@ -226,8 +220,8 @@ const StyledDivider = styled.div`
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.33) inset;
   margin: 1rem 0 1rem 0;
 
-  @media (max-width: 768px) {
-    margin: 0.25rem 0 0.25rem 0;
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
+    margin: 1rem 0;
   }
 `;
 
@@ -240,16 +234,18 @@ const StyledResizeSettingsContainer = styled.div`
 `;
 
 const StyledResizeDimensionsContainer = styled.div`
-  margin: 1rem 1rem 2rem 1rem;
+  margin: 0.5rem;
   height: 3rem;
-  width: 40%;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-evenly;
 
-  @media (max-width: 500px) {
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
     width: 100%;
     justify-content: space-around;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
   }
 `;
 

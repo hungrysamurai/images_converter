@@ -47,33 +47,36 @@ const SelectInput: React.FC<SelectInputProps> = ({
 
 const StyledInputContainer = styled.div`
   width: 100%;
-  height: 3rem;
+  min-height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 1rem;
+  margin: 1rem 0;
 
   &.inactive {
     opacity: 0.5;
     pointer-events: none;
   }
 
-  @media (max-width: 768px) {
-    margin: 0.5rem;
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
+    /* margin: 1rem 0; */
   }
 `;
 
 const StyledLabel = styled.label`
   font-size: 1.5rem;
   font-weight: 700;
+  text-align: center;
   color: var(--text-dark-gray);
-  height: 3rem;
+  min-height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
 
-  @media (max-width: 768px) {
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
+    flex-wrap: wrap;
+    gap: 1rem;
     font-size: 1rem;
   }
 `;
@@ -87,13 +90,13 @@ const StyledSelect = styled.select`
   margin-left: 0.5rem;
   padding: 0.5rem;
   font-family: inherit;
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-dark-gray);
   background: var(--bg-light-gray);
   cursor: pointer;
 
-  @media (max-width: 768px) {
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
     width: 80%;
     font-size: 1rem;
   }

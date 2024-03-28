@@ -55,13 +55,13 @@ const CheckboxInput: React.FC<CheckboxInputProps> = ({
 
 const StyledCheckboxContainer = styled.div`
   width: 100%;
-  margin: 1rem;
+  margin: 0.5rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  @media (max-width: 768px) {
-    margin: 0.5rem;
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
+    flex-wrap: wrap;
   }
 `;
 
@@ -69,7 +69,7 @@ const StyledCheckboxDescription = styled.p`
   font-size: 1.5rem;
   margin-right: 1rem;
 
-  @media (max-width: 768px) {
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
     font-size: 1rem;
     font-weight: 700;
   }
@@ -123,14 +123,14 @@ const StyledTogglerBall = styled.div`
 `;
 
 const StyledCheckboxDisplayValue = styled.div`
-  width: 10%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  font-size: 2rem;
-  margin-left: 1rem;
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+  width: 10%;
 
-  @media (max-width: 768px) {
+  @media screen and (max-width: 768px), screen and (max-height: 500px) {
     font-size: 1rem;
     font-weight: 700;
     margin-left: 0.5rem;
