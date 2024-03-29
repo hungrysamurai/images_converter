@@ -2,7 +2,12 @@ import { memo } from "react";
 
 const IconDownloadAll: React.FC = memo(function IconDownloadAll() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 50 50"
+      width="50"
+      height="50"
+    >
       <g>
         <rect
           x="9.73461"

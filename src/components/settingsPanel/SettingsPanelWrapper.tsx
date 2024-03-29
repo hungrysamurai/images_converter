@@ -98,7 +98,7 @@ const StyledSettingsPanel = styled(motion.div)`
   background-color: #e3e3e3c3;
   backdrop-filter: blur(36px);
   width: 30rem;
-  height: 100vh;
+  height: 100dvh;
   border-radius: var(--round-corner) 0 0 var(--round-corner);
   display: flex;
   flex-direction: column;

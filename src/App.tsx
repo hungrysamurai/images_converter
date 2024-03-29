@@ -38,7 +38,7 @@ function App() {
 
 const StyledMainContainer = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   background-color: var(--bg-container-gray);
   display: flex;
   align-items: center;
