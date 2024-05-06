@@ -4,14 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite --host --base=/projects/images_converter",
     "build": "vite build --base=./",
     "deploy": "vite build --outDir ../../server/dist/public/projects/images_converter --base=/projects/images_converter",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.9.5",
+    "@reduxjs/toolkit": "^2.2.3",
     "file-saver": "^2.0.5",
     "framer-motion": "^10.15.1",
     "gif.js": "^0.2.0",
@@ -23,7 +23,7 @@
     "pdfjs-dist": "^3.9.179",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-redux": "^8.1.2",
+    "react-redux": "^9.1.2",
     "styled-components": "^6.0.7",
     "utif": "^3.1.0"
   },

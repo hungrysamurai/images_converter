@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction, nanoid, current } from "@reduxjs/toolkit";
-import { RootState } from "../../store";
 
 import { MIMETypes } from "../../../types/types";
 
@@ -42,13 +41,15 @@ export const sourceFilesSlice = createSlice({
       return state.filter((el) => el.id !== action.payload);
     },
   },
+  selectors: {
+    getAllSourceFiles: (state): SourceFile[] => state,
+    checkPDFInSourceFiles: (state) =>
+      state.some((f) => f.type === MIMETypes.PDF)
+  },
 });
 
 export const { addSourceFile, removeSourceFile } = sourceFilesSlice.actions;
 
-export const getAllSourceFiles = (state: RootState): SourceFile[] =>
-  state.sourceFiles;
-export const checkPDFInSourceFiles = (state: RootState) =>
-  state.sourceFiles.some((f) => f.type === MIMETypes.PDF);
+export const { getAllSourceFiles, checkPDFInSourceFiles } = sourceFilesSlice.selectors;
 
 export default sourceFilesSlice.reducer;

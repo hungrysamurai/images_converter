@@ -1,6 +1,5 @@
 import { PayloadAction, createSlice, current } from "@reduxjs/toolkit";
 import { initialState } from "./settings";
-import { RootState } from "../../store";
 
 import {
   GIFDitherOptions,
@@ -154,25 +153,20 @@ export const conversionSettingsSlice = createSlice({
       }
     },
   },
+  selectors: {
+    getActiveTargetFormatName: (state) => state.outputSettings.activeTargetFormatName,
+    getAllTargetFormats: (state) => state.outputSettings.allFormats,
+    getActiveFormatOutputSettings: (state) => {
+      const activeTargetFormatName =
+        state.outputSettings.activeTargetFormatName;
+
+      return state.outputSettings.settings[
+        activeTargetFormatName
+      ];
+    },
+    getPDFInputSettings: (state) => state.inputSettings.pdf
+  }
 });
-
-export const getActiveTargetFormatName = (state: RootState) =>
-  state.conversionSettings.outputSettings.activeTargetFormatName;
-
-export const getAllTargetFormats = (state: RootState) =>
-  state.conversionSettings.outputSettings.allFormats;
-
-export const getActiveFormatOutputSettings = (state: RootState) => {
-  const activeTargetFormatName =
-    state.conversionSettings.outputSettings.activeTargetFormatName;
-
-  return state.conversionSettings.outputSettings.settings[
-    activeTargetFormatName
-  ];
-};
-
-export const getPDFInputSettings = (state: RootState) =>
-  state.conversionSettings.inputSettings.pdf;
 
 export const {
   switchTargetFormat,
@@ -183,5 +177,12 @@ export const {
   updateActiveTargetFormatToggleSetting,
   updateInputSettings,
 } = conversionSettingsSlice.actions;
+
+export const {
+  getActiveTargetFormatName,
+  getAllTargetFormats,
+  getActiveFormatOutputSettings,
+  getPDFInputSettings
+} = conversionSettingsSlice.selectors;
 
 export default conversionSettingsSlice.reducer;
