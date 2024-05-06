@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
-    "deploy": "vite build --outDir ../../server/dist/public/projects/images_converter",
+    "build": "vite build --base=./",
+    "deploy": "vite build --outDir ../../server/dist/public/projects/images_converter --base=/projects/images_converter",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
