@@ -197,6 +197,11 @@ declare global {
     | GIFOutputConversionSettings
     | PDFOutputConversionSettings;
 
+  type CombinedOutputConversionSettings = BasicOutputConversionSettings &
+    JPEG_WEBPOutputConversionSettings &
+    GIFOutputConversionSettings &
+    PDFOutputConversionSettings;
+
   interface ConversionSettings {
     inputSettings: {
       [InputFileFormatsNames.PDF]: PDFInputSettings;
