@@ -1,6 +1,4 @@
-import { memo } from "react";
-
-const IconRemoveAll = memo(function IconRemoveAll() {
+const IconRemoveAll = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -22,6 +20,6 @@ const IconRemoveAll = memo(function IconRemoveAll() {
       />
     </svg>
   );
-});
+};
 
 export default IconRemoveAll;

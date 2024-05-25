@@ -1,6 +1,4 @@
-import { memo } from "react";
-
-const IconDownloadAll: React.FC = memo(function IconDownloadAll() {
+const IconDownloadAll: React.FC = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -23,6 +21,6 @@ const IconDownloadAll: React.FC = memo(function IconDownloadAll() {
       </g>
     </svg>
   );
-});
+};
 
 export default IconDownloadAll;

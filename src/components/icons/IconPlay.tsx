@@ -1,6 +1,4 @@
-import { memo } from "react";
-
-const IconPlay: React.FC = memo(function IconPlay() {
+const IconPlay: React.FC = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,6 +12,6 @@ const IconPlay: React.FC = memo(function IconPlay() {
       />
     </svg>
   );
-});
+};
 
 export default IconPlay;

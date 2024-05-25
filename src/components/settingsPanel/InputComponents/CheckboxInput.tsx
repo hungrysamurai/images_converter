@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, memo } from "react";
 
 import { useAppDispatch } from "../../../store/hooks";
 import { updateActiveTargetFormatToggleSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
@@ -12,46 +12,42 @@ type CheckboxInputProps = {
   name: CheckboxOptionsKeys;
 };
 
-const CheckboxInput: React.FC<CheckboxInputProps> = ({
-  currentValue,
-  displayValueOn,
-  displayValueOff,
-  label,
-  name,
-}) => {
-  const dispatch = useAppDispatch();
+const CheckboxInput: React.FC<CheckboxInputProps> = memo(
+  ({ currentValue, displayValueOn, displayValueOff, label, name }) => {
+    const dispatch = useAppDispatch();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(
-      updateActiveTargetFormatToggleSetting({
-        [name]: e.target.checked,
-      } as CheckboxOptions)
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      dispatch(
+        updateActiveTargetFormatToggleSetting({
+          [name]: e.target.checked,
+        } as CheckboxOptions)
+      );
+    };
+
+    return (
+      <StyledCheckboxContainer>
+        <StyledCheckboxDescription>{label}</StyledCheckboxDescription>
+
+        <StyledToggleWrapper>
+          <StyledToggler>
+            <StyledInputCheckbox
+              type="checkbox"
+              name={name}
+              onChange={handleChange}
+              checked={currentValue}
+            />
+
+            <StyledTogglerBall></StyledTogglerBall>
+          </StyledToggler>
+        </StyledToggleWrapper>
+
+        <StyledCheckboxDisplayValue>
+          {currentValue ? displayValueOn : displayValueOff}
+        </StyledCheckboxDisplayValue>
+      </StyledCheckboxContainer>
     );
-  };
-
-  return (
-    <StyledCheckboxContainer>
-      <StyledCheckboxDescription>{label}</StyledCheckboxDescription>
-
-      <StyledToggleWrapper>
-        <StyledToggler>
-          <StyledInputCheckbox
-            type="checkbox"
-            name={name}
-            onChange={handleChange}
-            checked={currentValue}
-          />
-
-          <StyledTogglerBall></StyledTogglerBall>
-        </StyledToggler>
-      </StyledToggleWrapper>
-
-      <StyledCheckboxDisplayValue>
-        {currentValue ? displayValueOn : displayValueOff}
-      </StyledCheckboxDisplayValue>
-    </StyledCheckboxContainer>
-  );
-};
+  }
+);
 
 const StyledCheckboxContainer = styled.div`
   width: 100%;

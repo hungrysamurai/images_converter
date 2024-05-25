@@ -9,7 +9,7 @@ import {
   OutputFileFormatsNames,
   SliderConvertModes,
 } from "../../../types/types";
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, memo } from "react";
 
 type SliderInputProps = {
   label: string;
@@ -24,63 +24,58 @@ type SliderInputProps = {
     | OutputFileFormatsNames.PDF;
 };
 
-const SliderInput: React.FC<SliderInputProps> = ({
-  label,
-  currentValue,
-  min,
-  max,
-  name,
-  mode,
-}) => {
-  const dispatch = useAppDispatch();
+const SliderInput: React.FC<SliderInputProps> = memo(
+  ({ label, currentValue, min, max, name, mode }) => {
+    const dispatch = useAppDispatch();
 
-  const displayValuesConversionMode =
-    mode === OutputFileFormatsNames.JPG ||
-    mode === OutputFileFormatsNames.WEBP ||
-    mode === OutputFileFormatsNames.PDF
-      ? SliderConvertModes.DecimalsToPercentages
-      : SliderConvertModes.GifDisplay;
-  const stateValuesConversionMode =
-    mode === OutputFileFormatsNames.JPG ||
-    mode === OutputFileFormatsNames.WEBP ||
-    mode === OutputFileFormatsNames.PDF
-      ? SliderConvertModes.PercentagesToDecimals
-      : SliderConvertModes.GifState;
+    const displayValuesConversionMode =
+      mode === OutputFileFormatsNames.JPG ||
+      mode === OutputFileFormatsNames.WEBP ||
+      mode === OutputFileFormatsNames.PDF
+        ? SliderConvertModes.DecimalsToPercentages
+        : SliderConvertModes.GifDisplay;
+    const stateValuesConversionMode =
+      mode === OutputFileFormatsNames.JPG ||
+      mode === OutputFileFormatsNames.WEBP ||
+      mode === OutputFileFormatsNames.PDF
+        ? SliderConvertModes.PercentagesToDecimals
+        : SliderConvertModes.GifState;
 
-  const convertedValue = getConvertedValue(
-    currentValue,
-    displayValuesConversionMode
-  );
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(
-      updateActiveTargetFormatSliderSetting({
-        [name]: getConvertedValue(
-          Number(e.target.value),
-          stateValuesConversionMode
-        ),
-      })
+    const convertedValue = getConvertedValue(
+      currentValue,
+      displayValuesConversionMode
     );
-  };
 
-  return (
-    <StyledSliderContainer>
-      <StyledSliderLabel>
-        {label}
-        <StyledSliderInput
-          type="range"
-          min={min}
-          max={max}
-          onChange={handleChange}
-          value={convertedValue}
-          name={name}
-        />
-      </StyledSliderLabel>
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      dispatch(
+        updateActiveTargetFormatSliderSetting({
+          [name]: getConvertedValue(
+            Number(e.target.value),
+            stateValuesConversionMode
+          ),
+        })
+      );
+    };
 
-      <StyledSliderDisplayValue>{convertedValue}</StyledSliderDisplayValue>
-    </StyledSliderContainer>
-  );
-};
+    return (
+      <StyledSliderContainer>
+        <StyledSliderLabel>
+          {label}
+          <StyledSliderInput
+            type="range"
+            min={min}
+            max={max}
+            onChange={handleChange}
+            value={convertedValue}
+            name={name}
+          />
+        </StyledSliderLabel>
+
+        <StyledSliderDisplayValue>{convertedValue}</StyledSliderDisplayValue>
+      </StyledSliderContainer>
+    );
+  }
+);
 
 const StyledSliderContainer = styled.div`
   width: 100%;

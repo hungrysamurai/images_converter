@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, memo } from "react";
 import styled from "styled-components";
 
 import { useAppDispatch } from "../../../store/hooks";
@@ -12,38 +12,38 @@ type SelectInputProps = {
   active: boolean;
 };
 
-const SelectInput: React.FC<SelectInputProps> = ({
-  options,
-  label,
-  name,
-  currentValue,
-  active,
-}) => {
-  const dispatch = useAppDispatch();
+const SelectInput: React.FC<SelectInputProps> = memo(
+  ({ options, label, name, currentValue, active }) => {
+    const dispatch = useAppDispatch();
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    dispatch(
-      updateActiveTargetFormatSelectSetting({
-        [name]: e.target.value,
-      } as SelectOptions)
+    const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+      dispatch(
+        updateActiveTargetFormatSelectSetting({
+          [name]: e.target.value,
+        } as SelectOptions)
+      );
+    };
+
+    return (
+      <StyledInputContainer className={!active ? "inactive" : ""}>
+        <StyledLabel>
+          {label}
+          <StyledSelect
+            onChange={handleChange}
+            name={name}
+            value={currentValue}
+          >
+            {options.map((optionName, i) => (
+              <option key={i} value={optionName}>
+                {optionName}
+              </option>
+            ))}
+          </StyledSelect>
+        </StyledLabel>
+      </StyledInputContainer>
     );
-  };
-
-  return (
-    <StyledInputContainer className={!active ? "inactive" : ""}>
-      <StyledLabel>
-        {label}
-        <StyledSelect onChange={handleChange} name={name} value={currentValue}>
-          {options.map((optionName, i) => (
-            <option key={i} value={optionName}>
-              {optionName}
-            </option>
-          ))}
-        </StyledSelect>
-      </StyledLabel>
-    </StyledInputContainer>
-  );
-};
+  }
+);
 
 const StyledInputContainer = styled.div`
   width: 100%;

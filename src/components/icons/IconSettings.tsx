@@ -1,6 +1,4 @@
-import React, { memo } from "react";
-
-const IconSettings: React.FC = memo(function IconSettings() {
+const IconSettings: React.FC = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -24,6 +22,6 @@ const IconSettings: React.FC = memo(function IconSettings() {
       </g>
     </svg>
   );
-});
+};
 
 export default IconSettings;

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, memo } from "react";
 
 import { Units } from "../../../types/types";
 
@@ -20,84 +20,86 @@ type NumberInputProps = {
   step?: string;
 };
 
-const NumberInput: React.FC<NumberInputProps> = ({
-  caption,
-  units,
-  min,
-  max,
-  name,
-  active,
-  currentValue,
-  inputSetting,
-  step,
-}) => {
-  const dispatch = useAppDispatch();
+const NumberInput: React.FC<NumberInputProps> = memo(
+  ({
+    caption,
+    units,
+    min,
+    max,
+    name,
+    active,
+    currentValue,
+    inputSetting,
+    step,
+  }) => {
+    const dispatch = useAppDispatch();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let newValue = Number(e.target.value);
-    if (newValue < 0 || newValue > Number(max)) return;
-
-    updateState(newValue);
-  };
-
-  const checkValue = () => {
-    if (step) {
-      const newValue = getClosestMatchedValue(
-        currentValue as number,
-        Number(max),
-        Number(step)
-      );
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      let newValue = Number(e.target.value);
+      if (newValue < 0 || newValue > Number(max)) return;
 
       updateState(newValue);
-    }
-  };
+    };
 
-  const updateState = (value: number) => {
-    if (inputSetting) {
-      dispatch(
-        updateInputSettings({
-          [name]: value,
-        } as NumericOptions)
-      );
-    } else {
-      dispatch(
-        updateActiveTargetFormatNumericSetting({
-          [name]: value,
-        } as NumericOptions)
-      );
-    }
-  };
+    const checkValue = () => {
+      if (step) {
+        const newValue = getClosestMatchedValue(
+          currentValue as number,
+          Number(max),
+          Number(step)
+        );
 
-  return (
-    <StyledNumberContainer className={!active ? "inactive" : ""}>
-      <StyledNumberInput
-        type="number"
-        placeholder={currentValue ? currentValue.toString() : "auto"}
-        value={currentValue ? currentValue : ""}
-        onChange={handleChange}
-        onBlur={checkValue}
-        max={max ? max : ""}
-        min={min ? min : "1"}
-        name={name}
-        step={step ? step : ""}
-      />
+        updateState(newValue);
+      }
+    };
 
-      {caption && (
-        <StyledNumberInputCaption>{caption}</StyledNumberInputCaption>
-      )}
+    const updateState = (value: number) => {
+      if (inputSetting) {
+        dispatch(
+          updateInputSettings({
+            [name]: value,
+          } as NumericOptions)
+        );
+      } else {
+        dispatch(
+          updateActiveTargetFormatNumericSetting({
+            [name]: value,
+          } as NumericOptions)
+        );
+      }
+    };
 
-      {units && (
-        <StyledInputUnitsLabel>
-          {units === Units.PIXELS
-            ? "px"
-            : units === Units.PERCENTAGES
-            ? "%"
-            : units}
-        </StyledInputUnitsLabel>
-      )}
-    </StyledNumberContainer>
-  );
-};
+    return (
+      <StyledNumberContainer className={!active ? "inactive" : ""}>
+        <StyledNumberInput
+          type="number"
+          placeholder={currentValue ? currentValue.toString() : "auto"}
+          value={currentValue ? currentValue : ""}
+          onChange={handleChange}
+          onBlur={checkValue}
+          max={max ? max : ""}
+          min={min ? min : "1"}
+          name={name}
+          step={step ? step : ""}
+        />
+
+        {caption && (
+          <StyledNumberInputCaption>{caption}</StyledNumberInputCaption>
+        )}
+
+        {units && (
+          <StyledInputUnitsLabel>
+            {units === Units.PIXELS
+              ? "px"
+              : units === Units.PERCENTAGES
+              ? "%"
+              : units}
+          </StyledInputUnitsLabel>
+        )}
+      </StyledNumberContainer>
+    );
+  }
+);
 
 const StyledNumberContainer = styled.label`
   margin: 0.5rem 0;

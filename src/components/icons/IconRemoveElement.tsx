@@ -1,13 +1,10 @@
-import { memo } from "react";
 import { ElementColorMode } from "../filesList/FileElement";
 
 type IconProp = {
   bg: ElementColorMode;
 };
 
-const IconRemoveElement: React.FC<IconProp> = memo(function IconRemoveElement({
-  bg,
-}) {
+const IconRemoveElement: React.FC<IconProp> = ({ bg }) => {
   return (
     <svg
       width="22"
@@ -36,6 +33,6 @@ const IconRemoveElement: React.FC<IconProp> = memo(function IconRemoveElement({
       />
     </svg>
   );
-});
+};
 
 export default IconRemoveElement;

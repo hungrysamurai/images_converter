@@ -1,6 +1,4 @@
-import { memo } from "react";
-
-const IconLoadingSpinner: React.FC = memo(function IconLoadingSpinner() {
+const IconLoadingSpinner: React.FC = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -111,6 +109,6 @@ const IconLoadingSpinner: React.FC = memo(function IconLoadingSpinner() {
       </circle>
     </svg>
   );
-});
+};
 
 export default IconLoadingSpinner;

@@ -6,12 +6,13 @@ import FileElement from "./FileElement";
 import { getFileFormat } from "../../utils/helpers/getFileFormat";
 import { getFileSize } from "../../utils/helpers/getFileSize";
 import { isProcessedFile } from "../../utils/typeGuards";
+import { memo } from "react";
 
 type FilesListProps = {
   files: ProcessedFile[] | SourceFile[];
 };
 
-const FilesList: React.FC<FilesListProps> = ({ files }) => {
+const FilesList: React.FC<FilesListProps> = memo(({ files }) => {
   return (
     <StyledFilesList layout layoutRoot>
       <AnimatePresence>
@@ -32,7 +33,7 @@ const FilesList: React.FC<FilesListProps> = ({ files }) => {
       </AnimatePresence>
     </StyledFilesList>
   );
-};
+});
 
 const StyledFilesList = styled(motion.div)`
   position: absolute;
