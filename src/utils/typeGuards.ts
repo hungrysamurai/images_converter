@@ -57,7 +57,6 @@ export function isMergeSetting(
   return (toCheck as PDFOutputConversionSettings).merge !== undefined;
 }
 
-
 // Type checker for File
 
 export function isProcessedFile(

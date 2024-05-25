@@ -6,11 +6,12 @@ import { Lang } from "../../types/types";
 
 import { fadeAnimation, settingsPanelAnimation } from "../../animations";
 
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { checkPDFInSourceFiles } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
 import {
   getAllTargetFormats,
   getActiveTargetFormatName,
+  defaultActiveTargetFormat,
 } from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 
 import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
@@ -31,6 +32,8 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
   const isPDF = useAppSelector(checkPDFInSourceFiles);
   const formats = useAppSelector(getAllTargetFormats);
   const activeTargetFormatName = useAppSelector(getActiveTargetFormatName);
+
+  const dispatch = useAppDispatch();
 
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -73,12 +76,40 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
               formats={formats}
               activeTargetFormatName={activeTargetFormatName}
             />
+
+            <StyledDefaultButton
+              onClick={() => dispatch(defaultActiveTargetFormat())}
+            >
+              {lang === Lang.EN ? "Default Settings" : "Сбросить настройки"}
+            </StyledDefaultButton>
           </StyledSettingsPanel>
         </>
       )}
     </AnimatePresence>
   );
 };
+
+const StyledDefaultButton = styled.button`
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-dark-gray);
+  border: 0.25rem solid var(--element-medium-gray);
+  border-radius: 0.5rem;
+  background-color: var(--bg-container-gray);
+  cursor: pointer;
+  box-shadow: 4px 4px 12px 0px rgba(0, 0, 0, 0.11);
+
+  &:hover {
+    background-color: var(--bg-light-gray);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
 
 const StyledSettingsPanelBackground = styled(motion.div)`
   position: absolute;
