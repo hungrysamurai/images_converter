@@ -78,7 +78,6 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
               activeTargetFormatName={activeTargetFormatName}
             />
 
-            <StyledDivider />
             <StyledDefaultButton
               onClick={() => dispatch(defaultActiveTargetFormat())}
             >

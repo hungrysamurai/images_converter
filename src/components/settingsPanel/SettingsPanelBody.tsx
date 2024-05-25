@@ -4,7 +4,9 @@ import { Lang } from "../../types/types";
 import { OutputFileFormatsNames } from "../../types/types";
 
 import FormatSelect from "./SettingsPanelBodyComponents/FormatSelect";
-import OutputSettings from "./SettingsPanelBodyComponents/OutputSettings";
+import OutputSettings, {
+  StyledDivider,
+} from "./SettingsPanelBodyComponents/OutputSettings";
 import InputSettings from "./SettingsPanelBodyComponents/InputSettings";
 
 type SettingsPanelBodyProps = {
@@ -29,7 +31,12 @@ const SettingsPanelBody: React.FC<SettingsPanelBodyProps> = memo(
           activeTargetFormatName={activeTargetFormatName}
         />
 
-        {isPDF && <InputSettings lang={lang} />}
+        {isPDF && (
+          <>
+            <InputSettings lang={lang} />
+            <StyledDivider />
+          </>
+        )}
       </>
     );
   }
