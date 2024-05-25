@@ -23,11 +23,14 @@ export const conversionSettingsSlice = createSlice({
       } = current(state);
 
       // Type not very safe, but whatever
-      const defaultSettings = initialState.outputSettings.settings[
+      const defaultOutputSettings = initialState.outputSettings.settings[
         activeTargetFormatName
       ] as CombinedOutputConversionSettings;
+      const defaultInputSettings = initialState.inputSettings;
 
-      state.outputSettings.settings[activeTargetFormatName] = defaultSettings;
+      state.outputSettings.settings[activeTargetFormatName] =
+        defaultOutputSettings;
+      state.inputSettings = defaultInputSettings;
     }),
 
     switchTargetFormat: create.reducer((state) => {

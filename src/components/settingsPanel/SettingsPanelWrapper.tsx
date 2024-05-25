@@ -17,6 +17,7 @@ import {
 import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
 import SettingsPanelBody from "./SettingsPanelBody";
 import useOutsideClick from "../../hooks/useOutsideClick";
+import { StyledDivider } from "./SettingsPanelBodyComponents/OutputSettings";
 
 type SettingsPanelWrapperType = {
   setSettingsPanelVisibility: React.Dispatch<React.SetStateAction<boolean>>;
@@ -77,6 +78,7 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
               activeTargetFormatName={activeTargetFormatName}
             />
 
+            <StyledDivider />
             <StyledDefaultButton
               onClick={() => dispatch(defaultActiveTargetFormat())}
             >
@@ -90,7 +92,7 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
 };
 
 const StyledDefaultButton = styled.button`
-  margin-top: 0.75rem;
+  margin-top: 1rem;
   padding: 0.75rem;
   font-family: inherit;
   font-weight: 700;
