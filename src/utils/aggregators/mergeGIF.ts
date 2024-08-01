@@ -12,9 +12,7 @@ const mergeGIF = async (
       const options = {
         workers: 4,
         quality,
-        workerScript: `${
-          import.meta.env.BASE_URL
-        }/assets/workers/gif.worker.js`,
+        workerScript: '/assets/workers/gif.worker.js',
         dither,
         repeat: 0,
       };

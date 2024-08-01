@@ -75,7 +75,7 @@ const PDFToFiles = async (
       }
     })
   } else {
-    PDFJS.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}/assets/workers/pdf.worker.js`;
+    PDFJS.GlobalWorkerOptions.workerSrc = '/assets/workers/pdf.worker.js';
 
     const loadingTask = PDFJS.getDocument(blobURL);
     const pdf = await loadingTask.promise;
