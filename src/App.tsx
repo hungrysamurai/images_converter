@@ -1,3 +1,5 @@
+import { Ubuntu_Mono } from "next/font/google";
+
 import { useState } from "react";
 
 import styled from "styled-components";
@@ -11,6 +13,11 @@ import DownloadPanel from "./components/DownloadPanel";
 import SettingsPanelWrapper from "./components/settingsPanel/SettingsPanelWrapper";
 
 import { getNavigatorLang } from "./utils/getNavigatorLang";
+import { Provider } from "react-redux";
+import { persistor, store } from "./store/store";
+import { PersistGate } from "redux-persist/integration/react";
+
+const ubuntu = Ubuntu_Mono({ weight: "400", subsets: ["latin", "cyrillic"] });
 
 function App() {
   const [settingsPanelVisibility, setSettingsPanelVisibility] = useState(false);
@@ -18,20 +25,32 @@ function App() {
 
   return (
     <>
-      <GlobalStyles />
+      <style jsx global>{`
+        html {
+          font-family: ${ubuntu.style.fontFamily};
+        }
+      `}</style>
 
-      <SettingsPanelWrapper
-        settingsPanelVisibility={settingsPanelVisibility}
-        setSettingsPanelVisibility={setSettingsPanelVisibility}
-        lang={lang}
-      />
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <GlobalStyles />
 
-      <StyledMainContainer>
-        <UploadContainer lang={lang} />
-        <ActionsPanel setSettingsPanelVisibility={setSettingsPanelVisibility} />
-        <DownloadContainer lang={lang} />
-        <DownloadPanel />
-      </StyledMainContainer>
+          <SettingsPanelWrapper
+            settingsPanelVisibility={settingsPanelVisibility}
+            setSettingsPanelVisibility={setSettingsPanelVisibility}
+            lang={lang}
+          />
+
+          <StyledMainContainer>
+            <UploadContainer lang={lang} />
+            <ActionsPanel
+              setSettingsPanelVisibility={setSettingsPanelVisibility}
+            />
+            <DownloadContainer lang={lang} />
+            <DownloadPanel />
+          </StyledMainContainer>
+        </PersistGate>
+      </Provider>
     </>
   );
 }

@@ -5,6 +5,7 @@ import { OutputFileFormatsNames } from "../../../types/types";
 import { encode } from "../../encode";
 import { getResizedCanvas } from "../../getResizedCanvas";
 
+
 const HEICToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,

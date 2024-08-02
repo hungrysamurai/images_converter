@@ -1,5 +1,5 @@
 export const isHEIC = (file: File) => {
-  let x = file.type
+  const x = file.type
     ? file.type.split("image/").pop()
     : file.name.split(".").pop()?.toLowerCase();
 

@@ -35,7 +35,7 @@ const NumberInput: React.FC<NumberInputProps> = memo(
     const dispatch = useAppDispatch();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      let newValue = Number(e.target.value);
+      const newValue = Number(e.target.value);
       if (newValue < 0 || newValue > Number(max)) return;
 
       updateState(newValue);

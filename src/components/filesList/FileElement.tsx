@@ -1,3 +1,5 @@
+import { Ubuntu_Mono, Ubuntu_Condensed } from "next/font/google";
+
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
@@ -38,48 +40,65 @@ const elementsColor = {
   heic: ElementColorMode.Light,
 };
 
-const FileElement: React.FC<FileElementProps> = memo(
-  ({ id, format, size, name, downloadLink }) => {
-    const dispatch = useAppDispatch();
+const ubuntu_mono = Ubuntu_Mono({
+  subsets: ["latin", "cyrillic"],
+  weight: "700",
+});
 
-    const removeElement = (id: string) => {
-      if (downloadLink) {
-        dispatch(removeConvertedFile(id));
-      } else {
-        dispatch(removeSourceFile(id));
-      }
-    };
+const ubuntu_condensed = Ubuntu_Condensed({
+  subsets: ["latin", "cyrillic"],
+  weight: "400",
+});
 
-    const trimName = name.length > 14 ? name.slice(0, 14) + "..." : name;
+const FileElement: React.FC<FileElementProps> = memo(function FileElement({
+  id,
+  format,
+  size,
+  name,
+  downloadLink,
+}) {
+  const dispatch = useAppDispatch();
 
-    return (
-      <StyledFileElement
-        variants={fileElementAnimation}
-        initial="hidden"
-        animate="show"
-        exit="exit"
-        layout
-        $bg={format}
-        $color={elementsColor[format]}
-      >
-        <StyledRemoveElementButton onClick={() => removeElement(id)}>
-          <IconRemoveElement bg={elementsColor[format]} />
-        </StyledRemoveElementButton>
+  const removeElement = (id: string) => {
+    if (downloadLink) {
+      dispatch(removeConvertedFile(id));
+    } else {
+      dispatch(removeSourceFile(id));
+    }
+  };
 
-        {downloadLink && (
-          <StyledDownloadElementLink href={downloadLink} download={name}>
-            <IconDownloadElement bg={elementsColor[format]} />
-          </StyledDownloadElementLink>
-        )}
+  const trimName = name.length > 14 ? name.slice(0, 14) + "..." : name;
 
-        <div className="file-name">{`${trimName}`}</div>
-        <div className="file-size">{size}</div>
+  return (
+    <StyledFileElement
+      variants={fileElementAnimation}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+      layout
+      $bg={format}
+      $color={elementsColor[format]}
+      className={ubuntu_condensed.className}
+    >
+      <StyledRemoveElementButton onClick={() => removeElement(id)}>
+        <IconRemoveElement bg={elementsColor[format]} />
+      </StyledRemoveElementButton>
 
-        <div className="format-caption">{format.toUpperCase()}</div>
-      </StyledFileElement>
-    );
-  }
-);
+      {downloadLink && (
+        <StyledDownloadElementLink href={downloadLink} download={name}>
+          <IconDownloadElement bg={elementsColor[format]} />
+        </StyledDownloadElementLink>
+      )}
+
+      <div className="file-name">{`${trimName}`}</div>
+      <div className="file-size">{size}</div>
+
+      <div className={`${ubuntu_mono.className} format-caption`}>
+        {format.toUpperCase()}
+      </div>
+    </StyledFileElement>
+  );
+});
 
 const StyledFileElement = styled(motion.div).attrs<{
   $bg: InputFileFormatsNames;
@@ -99,7 +118,6 @@ const StyledFileElement = styled(motion.div).attrs<{
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: "Ubuntu Condensed", sans-serif;
   cursor: pointer;
 
   .file-name {
@@ -118,8 +136,6 @@ const StyledFileElement = styled(motion.div).attrs<{
     bottom: 0.5rem;
     right: 50%;
     transform: translateX(50%);
-    font-family: "Ubuntu Mono", monospace;
-    font-weight: 700;
     font-size: 0.75rem;
     color: var(--text-${(props) => props.$color}-gray);
   }

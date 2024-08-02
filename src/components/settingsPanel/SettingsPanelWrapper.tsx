@@ -17,7 +17,6 @@ import {
 import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
 import SettingsPanelBody from "./SettingsPanelBody";
 import useOutsideClick from "../../hooks/useOutsideClick";
-import { StyledDivider } from "./SettingsPanelBodyComponents/OutputSettings";
 
 type SettingsPanelWrapperType = {
   setSettingsPanelVisibility: React.Dispatch<React.SetStateAction<boolean>>;

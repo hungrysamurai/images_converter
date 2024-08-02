@@ -107,8 +107,8 @@ const BMPToFile = async (
 
   for (let y = 0; y < height; ++y) {
     for (let x = 0; x < width; ++x) {
-      let index1 = (x + width * (height - y)) * 4;
-      let index2 = x * 3 + stride * y;
+      const index1 = (x + width * (height - y)) * 4;
+      const index2 = x * 3 + stride * y;
       data[index1] = bmpdata[index2 + 2];
       data[index1 + 1] = bmpdata[index2 + 1];
       data[index1 + 2] = bmpdata[index2];

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 function useOutsideClick(
  ref: React.MutableRefObject<HTMLElement>,
- cb: Function
+ cb: () => void
 ) {
  useEffect(() => {
   function handleClickOutside(event: Event) {

@@ -6,7 +6,7 @@ const encodeJPEG_PNG_WEBP = async (
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames
 ): Promise<Blob> => {
-  let resultingCanvas = canvas;
+  const resultingCanvas = canvas;
 
   return new Promise((resolve, reject) => {
     let quality;

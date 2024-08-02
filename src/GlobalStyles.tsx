@@ -13,7 +13,7 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: 'Ubuntu Mono', monospace;
+    /* font-family: 'Ubuntu Mono', monospace; */
     background-color: var(--bg-container-gray);
 
     --bg-container-gray: #E3E3E3;

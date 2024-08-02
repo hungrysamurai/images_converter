@@ -10,7 +10,7 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import storage from "./persistStorage";
 
 import sourceFilesReducer from "./slices/sourceFilesSlice/sourceFilesSlice";
 import conversionSettingsReducer from "./slices/conversionSettingsSlice/conversionSettingsSlice";

@@ -7,8 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "lint": "eslint src/**/*.ts[x] --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.3",
@@ -30,6 +29,7 @@
     "utif": "^3.1.0"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^14.2.5",
     "@types/file-saver": "^2.0.7",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",

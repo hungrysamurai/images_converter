@@ -26,56 +26,47 @@ const processFile = async (
     case MIMETypes.BMP:
     case MIMETypes.HEIC:
       {
-        try {
-          const processed = await processSinglePageFile(
-            source,
-            outputSettings,
-            activeTargetFormatName,
-            mergeToOne,
-            collection
+        const processed = await processSinglePageFile(
+          source,
+          outputSettings,
+          activeTargetFormatName,
+          mergeToOne,
+          collection
+        );
+
+        if (processed) {
+          const { name, id } = source;
+
+          const size = processed.size;
+          const URL = window.URL.createObjectURL(processed);
+
+          dispatch(
+            addConvertedFile({
+              blobURL: URL,
+              downloadLink: URL,
+              name,
+              size,
+              type: `image/${activeTargetFormatName}` as MIMETypes,
+              id: nanoid(),
+              sourceId: id,
+            })
           );
-
-          if (processed) {
-            const { name, id } = source;
-
-            const size = processed.size;
-            const URL = window.URL.createObjectURL(processed);
-
-            dispatch(
-              addConvertedFile({
-                blobURL: URL,
-                downloadLink: URL,
-                name,
-                size,
-                type: `image/${activeTargetFormatName}` as MIMETypes,
-                id: nanoid(),
-                sourceId: id,
-              })
-            );
-          }
-        } catch (err) {
-          throw err;
         }
       }
       break;
-
     case MIMETypes.TIFF:
     case MIMETypes.GIF:
     case MIMETypes.PDF:
       {
-        try {
-          await processMultiPagesFile(
-            source,
-            outputSettings,
-            activeTargetFormatName,
-            inputSettings,
-            dispatch,
-            mergeToOne,
-            collection
-          );
-        } catch (err) {
-          throw err;
-        }
+        await processMultiPagesFile(
+          source,
+          outputSettings,
+          activeTargetFormatName,
+          inputSettings,
+          dispatch,
+          mergeToOne,
+          collection
+        );
       }
       break;
   }

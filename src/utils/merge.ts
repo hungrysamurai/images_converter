@@ -13,46 +13,38 @@ const merge = async (
 ): Promise<void> => {
   switch (activeTargetFormatName) {
     case OutputFileFormatsNames.PDF: {
-      try {
-        const merged = await mergePDF(collection, targetFormatSettings);
+      const merged = await mergePDF(collection, targetFormatSettings);
 
-        if (merged) {
-          const URL = window.URL.createObjectURL(merged);
-          dispatch(
-            addConvertedFile({
-              blobURL: URL,
-              downloadLink: URL,
-              name: `Merged-${Date.now()}`,
-              size: merged.size,
-              type: `image/${activeTargetFormatName}` as MIMETypes,
-              id: nanoid(),
-            })
-          );
-        }
-      } catch (err) {
-        throw err;
+      if (merged) {
+        const URL = window.URL.createObjectURL(merged);
+        dispatch(
+          addConvertedFile({
+            blobURL: URL,
+            downloadLink: URL,
+            name: `Merged-${Date.now()}`,
+            size: merged.size,
+            type: `image/${activeTargetFormatName}` as MIMETypes,
+            id: nanoid(),
+          })
+        );
       }
       break;
     }
     case OutputFileFormatsNames.GIF: {
-      try {
-        const merged = await mergeGIF(collection, targetFormatSettings);
+      const merged = await mergeGIF(collection, targetFormatSettings);
 
-        if (merged) {
-          const URL = window.URL.createObjectURL(merged);
-          dispatch(
-            addConvertedFile({
-              blobURL: URL,
-              downloadLink: URL,
-              name: `Merged-${Date.now()}`,
-              size: merged.size,
-              type: `image/${activeTargetFormatName}` as MIMETypes,
-              id: nanoid(),
-            })
-          );
-        }
-      } catch (err) {
-        throw err;
+      if (merged) {
+        const URL = window.URL.createObjectURL(merged);
+        dispatch(
+          addConvertedFile({
+            blobURL: URL,
+            downloadLink: URL,
+            name: `Merged-${Date.now()}`,
+            size: merged.size,
+            type: `image/${activeTargetFormatName}` as MIMETypes,
+            id: nanoid(),
+          })
+        );
       }
     }
   }
