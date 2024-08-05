@@ -1,4 +1,4 @@
-import { degrees, PDFDocument } from 'pdf-lib';
+import { degrees, PDFDocument } from "pdf-lib";
 import * as PDFJS from "pdfjs-dist";
 
 import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
@@ -9,7 +9,7 @@ import { AppDispatch } from "../../../store/store";
 import { addConvertedFile } from "../../../store/slices/processFilesSlice/processFilesSlice";
 
 import { encode } from "../../encode";
-import { getResizedCanvas } from '../../getResizedCanvas';
+import { getResizedCanvas } from "../../getResizedCanvas";
 
 const PDFToFiles = async (
   source: SourceFile,
@@ -30,31 +30,36 @@ const PDFToFiles = async (
     targetFormatSettings;
 
   // Don't rasterize PDF Source, just split it!
-  if (activeTargetFormatName === OutputFileFormatsNames.PDF && !targetFormatSettings.resize) {
+  if (
+    activeTargetFormatName === OutputFileFormatsNames.PDF &&
+    !targetFormatSettings.resize
+  ) {
     const blob = await fetch(blobURL);
     const arrayBuffer = await blob.arrayBuffer();
 
     const pdfDoc = await PDFDocument.load(arrayBuffer);
     const pages = pdfDoc.getPages();
 
-    const arrays = await Promise.all(pages.map(async (_, index) => {
-      const newDocument = await PDFDocument.create();
-      const [copiedPage] = await newDocument.copyPages(pdfDoc, [index]);
+    const arrays = await Promise.all(
+      pages.map(async (_, index) => {
+        const newDocument = await PDFDocument.create();
+        const [copiedPage] = await newDocument.copyPages(pdfDoc, [index]);
 
-      copiedPage.setRotation(degrees(rotation))
+        copiedPage.setRotation(degrees(rotation));
 
-      // if (targetFormatSettings.resize) {
-      //   const mediaBox = copiedPage.getCropBox()
-      //   copiedPage.setHeight(targetFormatSettings.targetHeight)
-      //   copiedPage.setWidth(targetFormatSettings.targetWidth)
-      // }
-      newDocument.addPage(copiedPage);
+        // if (targetFormatSettings.resize) {
+        //   const mediaBox = copiedPage.getCropBox()
+        //   copiedPage.setHeight(targetFormatSettings.targetHeight)
+        //   copiedPage.setWidth(targetFormatSettings.targetWidth)
+        // }
+        newDocument.addPage(copiedPage);
 
-      return await newDocument.save();
-    }));
+        return await newDocument.save();
+      })
+    );
 
     arrays.forEach((arr, i) => {
-      const blob = new Blob([arr], { type: 'application/pdf' })
+      const blob = new Blob([arr], { type: "application/pdf" });
       const URL = window.URL.createObjectURL(blob);
       const size = blob.size;
 
@@ -73,9 +78,11 @@ const PDFToFiles = async (
           })
         );
       }
-    })
+    });
   } else {
-    PDFJS.GlobalWorkerOptions.workerSrc = '/assets/workers/pdf.worker.js';
+    PDFJS.GlobalWorkerOptions.workerSrc = `${
+      process.env.NEXT_PUBLIC_BASE_PATH || ""
+    }/assets/workers/pdf.worker.js`;
 
     const loadingTask = PDFJS.getDocument(blobURL);
     const pdf = await loadingTask.promise;
@@ -111,12 +118,12 @@ const PDFToFiles = async (
           smoothing,
           units,
           targetWidth,
-          targetHeight,
+          targetHeight
         );
       }
 
       if (mergeToOne) {
-        collection.push(canvas)
+        collection.push(canvas);
       } else {
         const encoded = await encode(
           canvas,
@@ -144,6 +151,5 @@ const PDFToFiles = async (
     }
   }
 };
-
 
 export default PDFToFiles;

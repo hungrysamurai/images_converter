@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Конвертёр изображений",
+  title:
+    "Конвертёр изображений | JPEG в PDF | PDF в JPEG | HEIC в JPEG | JPEG в один PDF",
   description:
     "Конвертируем в PDF, JPEG, WEBP, GIF, TIFF, BMP, PNG. Конвертёр из HEIC в JPEG. Конвертировать без регистрации и смс.",
   keywords:

@@ -13,9 +13,8 @@ import DownloadPanel from "./components/DownloadPanel";
 import SettingsPanelWrapper from "./components/settingsPanel/SettingsPanelWrapper";
 
 import { getNavigatorLang } from "./utils/getNavigatorLang";
-import { Provider } from "react-redux";
-import { persistor, store } from "./store/store";
-import { PersistGate } from "redux-persist/integration/react";
+
+import StoreProvider from "./StoreProvider";
 
 const ubuntu = Ubuntu_Mono({ weight: "400", subsets: ["latin", "cyrillic"] });
 
@@ -31,26 +30,24 @@ function App() {
         }
       `}</style>
 
-      <Provider store={store}>
-        <PersistGate persistor={persistor}>
-          <GlobalStyles />
+      <StoreProvider>
+        <GlobalStyles />
 
-          <SettingsPanelWrapper
-            settingsPanelVisibility={settingsPanelVisibility}
+        <SettingsPanelWrapper
+          settingsPanelVisibility={settingsPanelVisibility}
+          setSettingsPanelVisibility={setSettingsPanelVisibility}
+          lang={lang}
+        />
+
+        <StyledMainContainer>
+          <UploadContainer lang={lang} />
+          <ActionsPanel
             setSettingsPanelVisibility={setSettingsPanelVisibility}
-            lang={lang}
           />
-
-          <StyledMainContainer>
-            <UploadContainer lang={lang} />
-            <ActionsPanel
-              setSettingsPanelVisibility={setSettingsPanelVisibility}
-            />
-            <DownloadContainer lang={lang} />
-            <DownloadPanel />
-          </StyledMainContainer>
-        </PersistGate>
-      </Provider>
+          <DownloadContainer lang={lang} />
+          <DownloadPanel />
+        </StyledMainContainer>
+      </StoreProvider>
     </>
   );
 }

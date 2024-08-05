@@ -6,6 +6,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:convert-it": "cross-env BUILD_DIR=./dist/convert-it.ru TARGET_DOMAIN=https://convert-it.ru next build ",
+    "build:jpegvpdf": "cross-env BUILD_DIR=./dist/jpegvpdf.ru TARGET_DOMAIN=https://jpegvpdf.ru next build ",
+    "build:heictojpeg": "cross-env BUILD_DIR=./dist/heictojpeg.ru TARGET_DOMAIN=https://heictojpeg.ru next build ",
+    "deploy": "cross-env BUILD_DIR=../../server/dist/public/projects/images_converter NEXT_PUBLIC_BASE_PATH=/projects/images_converter next build",
     "start": "next start",
     "lint": "eslint src/**/*.ts[x] --report-unused-disable-directives --max-warnings 0"
   },
@@ -36,6 +40,7 @@
     "@types/utif": "^3.0.5",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
+    "cross-env": "^7.0.3",
     "eslint": "^8.38.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
