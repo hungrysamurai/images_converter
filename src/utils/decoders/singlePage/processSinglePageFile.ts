@@ -1,7 +1,7 @@
 import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
 
 import BMPToFile from "./BMPToFile";
-import HEICToFile from "./HEICToFile";
+import HEICToFile from "./HEIICToFile";
 import JPEG_WEBP_PNG_ToFile from "./JPEG_WEBP_PNG_ToFile";
 
 const processSinglePageFile = async (
