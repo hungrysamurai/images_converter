@@ -112,7 +112,7 @@ const StyledDefaultButton = styled.button`
 `;
 
 const StyledSettingsPanelBackground = styled(motion.div)`
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   top: 0;
@@ -123,7 +123,7 @@ const StyledSettingsPanelBackground = styled(motion.div)`
 `;
 
 const StyledSettingsPanel = styled(motion.div)`
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   background-color: #e3e3e3c3;

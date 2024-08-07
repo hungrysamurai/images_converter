@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:convert-it": "cross-env BUILD_DIR=./dist/convert-it.ru TARGET_DOMAIN=https://convert-it.ru next build ",
-    "build:jpegvpdf": "cross-env BUILD_DIR=./dist/jpegvpdf.ru TARGET_DOMAIN=https://jpegvpdf.ru next build ",
-    "build:heictojpeg": "cross-env BUILD_DIR=./dist/heictojpeg.ru TARGET_DOMAIN=https://heictojpeg.ru next build ",
+    "build:convert-it": "cross-env BUILD_DIR=./dist/convert-it.ru TARGET_DOMAIN=https://convert-it.ru METRIKA_ID=97987870 next build ",
+    "build:jpegvpdf": "cross-env BUILD_DIR=./dist/jpegvpdf.ru TARGET_DOMAIN=https://jpegvpdf.ru METRIKA_ID=97987860 next build ",
+    "build:heictojpeg": "cross-env BUILD_DIR=./dist/heictojpeg.ru TARGET_DOMAIN=https://heictojpeg.ru METRIKA_ID=97998025 next build ",
+    "build:all": "pnpm run build:convert-it && pnpm run build:jpegvpdf && pnpm run build:heictojpeg",
     "deploy": "cross-env BUILD_DIR=../../server/dist/public/projects/images_converter NEXT_PUBLIC_BASE_PATH=/projects/images_converter next build",
     "start": "next start",
     "lint": "eslint src/**/*.ts[x] --report-unused-disable-directives --max-warnings 0"
@@ -29,6 +30,7 @@
     "react-dom": "^18.2.0",
     "react-redux": "^9.1.2",
     "redux-persist": "^6.0.0",
+    "sass": "^1.77.8",
     "styled-components": "^6.0.7",
     "utif": "^3.1.0"
   },

@@ -13,7 +13,6 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    /* font-family: 'Ubuntu Mono', monospace; */
     background-color: var(--bg-container-gray);
 
     --bg-container-gray: #E3E3E3;
@@ -48,8 +47,13 @@ const GlobalStyles = createGlobalStyle`
     --panel-thickness: 3rem;
     --panel-fit: var(--full);
 
-    --container-calc: calc((100% - (var(--panel-thickness) * 2 + 1rem)) / 2);
+    --container-calc: calc((100% - (var(--panel-thickness) * 2 + 3rem)) / 2);
     --container-fit: var(--full);
+
+    @media (min-aspect-ratio: 1/1) {
+      --container-calc: calc((100% - (var(--panel-thickness) * 2 + 1rem)) / 2);
+      --full: calc(95% - 1rem);
+    }
   }
 
   #root {
@@ -104,6 +108,43 @@ const GlobalStyles = createGlobalStyle`
   p {
     font-weight: 400;
   }
+
+  .heading {
+    width: 100%;
+    height: 2rem;
+    
+    h1 {
+       font-size: 1rem;
+       text-align: center;
+
+       @media screen and (max-width: 768px){
+        font-size: 0.75rem;
+       }
+    }
+
+    h2 {
+       font-size: 0.75rem;
+       text-align: center;
+
+      @media screen and (max-width: 768px){
+        font-size: 0.5rem;
+       }
+    }
+  }
+
+  
+    footer{
+      position: absolute;
+      z-index: 1;
+      bottom:0.1rem;
+      left:0.1rem;
+      font-size: 0.75rem;
+      color: var(--text-medium-gray);
+
+      a {
+        color: var(--text-medium-gray);
+      }
+    }
 `;
 
 export default GlobalStyles;

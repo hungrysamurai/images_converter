@@ -4,8 +4,6 @@ import { useState } from "react";
 
 import styled from "styled-components";
 
-import GlobalStyles from "./GlobalStyles";
-
 import UploadContainer from "./components/UploadContainer";
 import ActionsPanel from "./components/ActionsPanel";
 import DownloadContainer from "./components/DownloadContainer";
@@ -31,8 +29,6 @@ function App() {
       `}</style>
 
       <StoreProvider>
-        <GlobalStyles />
-
         <SettingsPanelWrapper
           settingsPanelVisibility={settingsPanelVisibility}
           setSettingsPanelVisibility={setSettingsPanelVisibility}
@@ -55,17 +51,20 @@ function App() {
 const StyledMainContainer = styled.div`
   width: 100vw;
   height: 100dvh;
+  margin-top: 0.25rem;
   background-color: var(--bg-container-gray);
   display: flex;
-  align-items: center;
-  justify-content: center;
 
   @media (max-aspect-ratio: 1/1) {
     flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   @media (min-aspect-ratio: 1/1) {
     flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
   }
 `;
 
