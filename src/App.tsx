@@ -1,5 +1,3 @@
-import { Ubuntu_Mono } from "next/font/google";
-
 import { useState } from "react";
 
 import styled from "styled-components";
@@ -14,41 +12,29 @@ import { getNavigatorLang } from "./utils/getNavigatorLang";
 
 import StoreProvider from "./StoreProvider";
 
-const ubuntu = Ubuntu_Mono({ weight: "400", subsets: ["latin", "cyrillic"] });
-
 function App() {
   const [settingsPanelVisibility, setSettingsPanelVisibility] = useState(false);
   const [lang] = useState(() => getNavigatorLang());
 
   return (
-    <>
-      <style jsx global>{`
-        html {
-          font-family: ${ubuntu.style.fontFamily};
-        }
-      `}</style>
+    <StoreProvider>
+      <SettingsPanelWrapper
+        settingsPanelVisibility={settingsPanelVisibility}
+        setSettingsPanelVisibility={setSettingsPanelVisibility}
+        lang={lang}
+      />
 
-      <StoreProvider>
-        <SettingsPanelWrapper
-          settingsPanelVisibility={settingsPanelVisibility}
-          setSettingsPanelVisibility={setSettingsPanelVisibility}
-          lang={lang}
-        />
-
-        <StyledMainContainer>
-          <UploadContainer lang={lang} />
-          <ActionsPanel
-            setSettingsPanelVisibility={setSettingsPanelVisibility}
-          />
-          <DownloadContainer lang={lang} />
-          <DownloadPanel />
-        </StyledMainContainer>
-      </StoreProvider>
-    </>
+      <StyledMainContainer>
+        <UploadContainer lang={lang} />
+        <ActionsPanel setSettingsPanelVisibility={setSettingsPanelVisibility} />
+        <DownloadContainer lang={lang} />
+        <DownloadPanel />
+      </StyledMainContainer>
+    </StoreProvider>
   );
 }
 
-const StyledMainContainer = styled.div`
+const StyledMainContainer = styled.main`
   width: 100vw;
   height: 100dvh;
   margin-top: 0.25rem;

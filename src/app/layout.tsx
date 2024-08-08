@@ -24,8 +24,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <div className={`${ubuntu.className} heading`}>
+      <body className={`${ubuntu.className}`}>
+        <div className={`heading`}>
           <h1 className="main-heading">
             Конвертация изображений и документов PDF
           </h1>
