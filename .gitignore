@@ -13,6 +13,7 @@ dist-ssr
 *.local
 build
 /temp
+vite_build
 
 # Editor directories and files
 .vscode/*

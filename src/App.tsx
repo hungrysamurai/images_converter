@@ -41,15 +41,18 @@ const StyledMainContainer = styled.div`
   height: 100dvh;
   background-color: var(--bg-container-gray);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  margin-top: 0.25rem;
 
   @media (max-aspect-ratio: 1/1) {
     flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   @media (min-aspect-ratio: 1/1) {
     flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
   }
 `;
 

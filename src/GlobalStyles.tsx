@@ -48,8 +48,13 @@ const GlobalStyles = createGlobalStyle`
     --panel-thickness: 3rem;
     --panel-fit: var(--full);
 
-    --container-calc: calc((100% - (var(--panel-thickness) * 2 + 1rem)) / 2);
+    --container-calc: calc((100% - (var(--panel-thickness) * 2 + 3rem)) / 2);
     --container-fit: var(--full);
+
+      @media (min-aspect-ratio: 1/1) {
+   --container-calc: calc((100% - (var(--panel-thickness) * 2 + 1rem)) / 2);
+   --full: calc(95% - 1rem);
+  }
   }
 
   #root {
