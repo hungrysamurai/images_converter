@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import YandexMetrika from "../components/YandexMetrika";
 import { Suspense } from "react";
+
+import YandexMetrika from "../components/YandexMetrika";
+import GoogleAnalyticsLoader from "../components/GoogleAnalyticsLoader";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 import "./global.scss";
 import { Ubuntu_Mono } from "next/font/google";
@@ -60,6 +63,8 @@ export default function RootLayout({
           </a>
         </footer>
       </body>
+      <GoogleAnalytics gaId={`G-${process.env.ANALYTICS_ID}`} />
+      <GoogleAnalyticsLoader />
     </html>
   );
 }

@@ -8,7 +8,7 @@ import DownloadContainer from "./components/DownloadContainer";
 import DownloadPanel from "./components/DownloadPanel";
 import SettingsPanelWrapper from "./components/settingsPanel/SettingsPanelWrapper";
 
-import { getNavigatorLang } from "./utils/getNavigatorLang";
+import { getNavigatorLang } from "./lib/getNavigatorLang";
 
 import StoreProvider from "./StoreProvider";
 

@@ -7,12 +7,12 @@ import {
 
 import { AppDispatch, RootState } from "../../store";
 
-import processFile from "../../../utils/converter";
-import merge from "../../../utils/merge";
+import processFile from "../../../lib/converter";
+import merge from "../../../lib/merge";
 
-import { zipAndSave } from "../../../utils/zipAndSave";
-import { getFileFormat } from "../../../utils/helpers/getFileFormat";
-import { isMergeSetting } from "../../../utils/typeGuards";
+import { zipAndSave } from "../../../lib/zipAndSave";
+import { getFileFormat } from "../../../lib/helpers/getFileFormat";
+import { isMergeSetting } from "../../../lib/typeGuards";
 
 const createProcessFilesSlice = buildCreateSlice({
   creators: { asyncThunk: asyncThunkCreator },

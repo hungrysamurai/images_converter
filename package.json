@@ -6,15 +6,16 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:convert-it": "cross-env BUILD_DIR=./dist/convert-it.ru TARGET_DOMAIN=https://convert-it.ru METRIKA_ID=97987870 next build ",
-    "build:jpegvpdf": "cross-env BUILD_DIR=./dist/jpegvpdf.ru TARGET_DOMAIN=https://jpegvpdf.ru METRIKA_ID=97987860 next build ",
-    "build:heictojpeg": "cross-env BUILD_DIR=./dist/heictojpeg.ru TARGET_DOMAIN=https://heictojpeg.ru METRIKA_ID=97998025 next build ",
+    "build:convert-it": "cross-env BUILD_DIR=./dist/convert-it.ru TARGET_DOMAIN=https://convert-it.ru METRIKA_ID=97987870 ANALYTICS_ID=ZRGWVW2TNB next build",
+    "build:jpegvpdf": "cross-env BUILD_DIR=./dist/jpegvpdf.ru TARGET_DOMAIN=https://jpegvpdf.ru METRIKA_ID=97987860 ANALYTICS_ID=ZKZ4EVP2LW next build",
+    "build:heictojpeg": "cross-env BUILD_DIR=./dist/heictojpeg.ru TARGET_DOMAIN=https://heictojpeg.ru METRIKA_ID=97998025 ANALYTICS_ID=2Z21H49VVJ next build",
     "build:all": "pnpm run build:convert-it && pnpm run build:jpegvpdf && pnpm run build:heictojpeg",
     "deploy": "cross-env BUILD_DIR=../../server/dist/public/projects/images_converter NEXT_PUBLIC_BASE_PATH=/projects/images_converter next build",
     "start": "next start",
     "lint": "eslint src/**/*.ts[x] --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@next/third-parties": "^14.2.5",
     "@reduxjs/toolkit": "^2.2.3",
     "file-saver": "^2.0.5",
     "framer-motion": "^10.15.1",

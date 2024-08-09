@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { getConvertedValue } from "../../../utils/getConvertedValue";
+import { getConvertedValue } from "../../../lib/getConvertedValue";
 
 import { useAppDispatch } from "../../../store/hooks";
 

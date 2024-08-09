@@ -9,7 +9,7 @@ export default function YandexMetrika() {
 
   useEffect(() => {
     const url = `${pathname}?${searchParams}`;
-    // @ts-expect-error - 'ym'  defined in <Script/> in root layout
+
     window.ym(process.env.METRIKA_ID, "hit", url);
   }, [pathname, searchParams]);
 
