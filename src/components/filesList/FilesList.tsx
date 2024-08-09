@@ -3,9 +3,9 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import FileElement from "./FileElement";
 
-import { getFileFormat } from "../../utils/helpers/getFileFormat";
-import { getFileSize } from "../../utils/helpers/getFileSize";
-import { isProcessedFile } from "../../utils/typeGuards";
+import { getFileFormat } from "../../lib/helpers/getFileFormat";
+import { getFileSize } from "../../lib/helpers/getFileSize";
+import { isProcessedFile } from "../../lib/typeGuards";
 import { memo } from "react";
 
 type FilesListProps = {

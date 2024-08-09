@@ -6,7 +6,7 @@ import { Units } from "../../../types/types";
 import { useAppDispatch } from "../../../store/hooks";
 import { updateActiveTargetFormatNumericSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
 import { updateInputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-import getClosestMatchedValue from "../../../utils/helpers/getClosestMatchesValue";
+import getClosestMatchedValue from "../../../lib/helpers/getClosestMatchesValue";
 
 type NumberInputProps = {
   caption: string;

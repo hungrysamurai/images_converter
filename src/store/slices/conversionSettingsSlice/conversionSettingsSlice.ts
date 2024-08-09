@@ -11,7 +11,7 @@ import {
   isSmoothingOption,
   isDitherOption,
   isCompressionOption,
-} from "../../../utils/typeGuards";
+} from "../../../lib/typeGuards";
 
 export const conversionSettingsSlice = createSlice({
   name: "conversionSettings",

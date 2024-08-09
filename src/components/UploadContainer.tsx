@@ -17,8 +17,8 @@ import StyledInnerShadow from "./StyledInnerShadow";
 
 import { fadeAnimation } from "../animations";
 
-import { isHEIC } from "../utils/helpers/isHEIC";
-import { checkFileType } from "../utils/helpers/checkFileType";
+import { isHEIC } from "../lib/helpers/isHEIC";
+import { checkFileType } from "../lib/helpers/checkFileType";
 
 type UploadContainerProps = {
   lang: Lang;

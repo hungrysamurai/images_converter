@@ -10,7 +10,7 @@ import DownloadContainer from "./components/DownloadContainer";
 import DownloadPanel from "./components/DownloadPanel";
 import SettingsPanelWrapper from "./components/settingsPanel/SettingsPanelWrapper";
 
-import { getNavigatorLang } from "./utils/getNavigatorLang";
+import { getNavigatorLang } from "./lib/getNavigatorLang";
 
 function App() {
   const [settingsPanelVisibility, setSettingsPanelVisibility] = useState(false);
@@ -41,18 +41,15 @@ const StyledMainContainer = styled.div`
   height: 100dvh;
   background-color: var(--bg-container-gray);
   display: flex;
-  margin-top: 0.25rem;
+  align-items: center;
+  justify-content: center;
 
   @media (max-aspect-ratio: 1/1) {
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
   }
 
   @media (min-aspect-ratio: 1/1) {
     flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
   }
 `;
 

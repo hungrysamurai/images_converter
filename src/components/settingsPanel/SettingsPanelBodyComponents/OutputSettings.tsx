@@ -22,7 +22,7 @@ import {
   isDitherSetting,
   isCompressionSetting,
   isQualitySetting,
-} from "../../../utils/typeGuards";
+} from "../../../lib/typeGuards";
 
 type OutputSettingsType = {
   lang: Lang;
