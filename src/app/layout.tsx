@@ -53,7 +53,7 @@ export default function RootLayout({
               });`}
         </Script>
         <Suspense fallback={<></>}>
-          <YandexMetrika />
+          <YandexMetrika id={process.env.METRIKA_ID} />
         </Suspense>
         <div id="root">{children}</div>
         <footer className={`${ubuntu.className}`}>

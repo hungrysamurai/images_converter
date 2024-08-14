@@ -3,15 +3,13 @@
 import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
-export default function YandexMetrika() {
+export default function YandexMetrika({ id }: { id?: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const url = `${pathname}?${searchParams}`;
-
-    window.ym(process.env.METRIKA_ID, "hit", url);
-  }, [pathname, searchParams]);
+    window.ym(id, "hit", window.location.href);
+  }, [pathname, searchParams, id]);
 
   return null;
 }
