@@ -12,7 +12,7 @@ const StyledInnerShadow = styled.div.attrs<{
   height: var(--container-calc);
   background-color: transparent;
   border-radius: ${(props) => props.$brVertical};
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
   box-shadow: var(--container-inner-shadow);
 

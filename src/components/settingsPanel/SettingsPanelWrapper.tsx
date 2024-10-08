@@ -120,7 +120,7 @@ const StyledSettingsPanelBackground = styled(motion.div)`
   left: 0;
   background-color: rgba(0, 0, 0, 0.25);
   opacity: 1;
-  z-index: 2;
+  z-index: 3;
 `;
 
 const StyledSettingsPanel = styled(motion.div)`
@@ -136,7 +136,7 @@ const StyledSettingsPanel = styled(motion.div)`
   flex-direction: column;
   align-items: center;
   padding: 2rem;
-  z-index: 3;
+  z-index: 4;
   box-shadow: var(--container-shadow);
   overflow: hidden;
   overflow-y: scroll;

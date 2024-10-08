@@ -240,16 +240,20 @@ const StyledUploadedFilesListWrapper = styled(motion.div)`
 `;
 
 const StyledDragPlaceholder = styled(motion.div)`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
+  position: fixed;
+  width: var(--container-fit);
+  height: var(--container-calc);
   z-index: 2;
   backdrop-filter: blur(24px);
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: var(--round-corner) 0rem 0rem var(--round-corner);
+
+  @media (min-aspect-ratio: 1/1) {
+    width: var(--container-calc);
+    height: var(--container-fit);
+  }
 `;
 
 export default UploadContainer;

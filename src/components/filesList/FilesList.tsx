@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 import FileElement from "./FileElement";
 
@@ -15,22 +15,18 @@ type FilesListProps = {
 const FilesList: React.FC<FilesListProps> = memo(({ files }) => {
   return (
     <StyledFilesList layout layoutRoot>
-      <AnimatePresence>
-        {files.map((file) => {
-          return (
-            <FileElement
-              key={file.id}
-              id={file.id}
-              format={getFileFormat(file.type)}
-              name={file.name}
-              size={getFileSize(file.size)}
-              downloadLink={
-                isProcessedFile(file) ? file.downloadLink : undefined
-              }
-            />
-          );
-        })}
-      </AnimatePresence>
+      {files.map((file) => {
+        return (
+          <FileElement
+            key={file.id}
+            id={file.id}
+            format={getFileFormat(file.type)}
+            name={file.name}
+            size={getFileSize(file.size)}
+            downloadLink={isProcessedFile(file) ? file.downloadLink : undefined}
+          />
+        );
+      })}
     </StyledFilesList>
   );
 });
