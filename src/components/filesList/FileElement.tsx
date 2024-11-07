@@ -38,6 +38,7 @@ const elementsColor = {
   webp: ElementColorMode.Light,
   tiff: ElementColorMode.Light,
   heic: ElementColorMode.Light,
+  svg: ElementColorMode.Light,
 };
 
 const ubuntu_mono = Ubuntu_Mono({

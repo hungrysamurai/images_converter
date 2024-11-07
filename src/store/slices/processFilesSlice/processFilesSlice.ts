@@ -66,7 +66,9 @@ const processFilesSlice = createProcessFilesSlice({
 
         if (mergeToOne) {
           try {
-            await merge(collection, targetFormatSettings, activeTargetFormatName, dispatch)
+            if (collection.length > 0) {
+              await merge(collection, targetFormatSettings, activeTargetFormatName, dispatch)
+            }
           } catch (err) {
             console.error('Error merging file:', err)
           }
