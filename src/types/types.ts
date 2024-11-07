@@ -7,6 +7,7 @@ export enum MIMETypes {
   TIFF = "image/tiff",
   HEIC = "image/heic",
   PDF = "application/pdf",
+  SVG = "image/svg+xml"
 }
 
 export enum InputFileFormatsNames {
@@ -18,6 +19,7 @@ export enum InputFileFormatsNames {
   TIFF = "tiff",
   HEIC = "heic",
   PDF = "pdf",
+  SVG = "svg"
 }
 
 export enum OutputFileFormatsNames {

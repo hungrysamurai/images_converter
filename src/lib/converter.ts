@@ -25,6 +25,7 @@ const processFile = async (
     case MIMETypes.WEBP:
     case MIMETypes.BMP:
     case MIMETypes.HEIC:
+    case MIMETypes.SVG:
       {
         try {
           const processed = await processSinglePageFile(

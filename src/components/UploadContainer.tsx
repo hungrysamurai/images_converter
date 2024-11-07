@@ -146,7 +146,7 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
                 </>
               )}
               <span className="formats">
-                (JPEG, PNG, GIF, WEBP, BMP, TIFF, PDF, HEIC)
+                (JPEG, PNG, GIF, WEBP, BMP, TIFF, PDF, HEIC, SVG)
               </span>
             </h3>
           </div>

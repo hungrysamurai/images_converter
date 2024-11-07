@@ -36,6 +36,7 @@ const elementsColor = {
   webp: ElementColorMode.Light,
   tiff: ElementColorMode.Light,
   heic: ElementColorMode.Light,
+  svg: ElementColorMode.Light,
 };
 
 const FileElement: React.FC<FileElementProps> = memo(

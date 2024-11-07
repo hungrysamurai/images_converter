@@ -1,8 +1,9 @@
 import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
 
 import BMPToFile from "./BMPToFile";
-import HEICToFile from "./HEIICToFile";
+import HEICToFile from "./HEICToFile";
 import JPEG_WEBP_PNG_ToFile from "./JPEG_WEBP_PNG_ToFile";
+import SVGToFile from "./SVGToFile";
 
 const processSinglePageFile = async (
   source: SourceFile,
@@ -50,6 +51,22 @@ const processSinglePageFile = async (
 
     case MIMETypes.HEIC: {
       const processed = await HEICToFile(
+        blobURL,
+        targetFormatSettings,
+        activeTargetFormatName,
+        mergeToOne
+      );
+
+      if (processed instanceof HTMLCanvasElement) {
+        collection.push(processed)
+      } else {
+        return processed
+      }
+    }
+      break;
+
+    case MIMETypes.SVG: {
+      const processed = await SVGToFile(
         blobURL,
         targetFormatSettings,
         activeTargetFormatName,
