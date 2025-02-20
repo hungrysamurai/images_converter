@@ -9,6 +9,7 @@ import {
   downloadAllFiles,
   isProcessingLoading,
 } from "../store/slices/processFilesSlice/processFilesSlice";
+import { ScreenOrientations } from "../types/types";
 
 const DownloadPanel: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -55,7 +56,7 @@ const StyledDownloadPanel = styled.div`
   justify-content: center;
   gap: 1.5rem;
 
-  @media (min-aspect-ratio: 1/1) {
+  @media (${ScreenOrientations.Horizontal}) {
     flex-direction: column;
     width: var(--panel-thickness);
     height: var(--full);
@@ -86,7 +87,7 @@ const StyledDownloadButton = styled.button`
     filter: brightness(0.9);
   }
 
-  @media (min-aspect-ratio: 1/1) {
+  @media (${ScreenOrientations.Horizontal}) {
     width: 100%;
     height: 3rem;
   }

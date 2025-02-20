@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 import { fadeAnimation } from "../animations";
 
-import { Lang } from "../types/types";
+import { Lang, ScreenOrientations } from "../types/types";
 
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
@@ -113,7 +113,7 @@ const StyledDownloadContainer = styled.div`
     }
   }
 
-  @media (min-aspect-ratio: 1/1) {
+  @media (${ScreenOrientations.Horizontal}) {
     width: var(--container-calc);
     height: var(--container-fit);
     border-radius: 0rem var(--round-corner) var(--round-corner) 0rem;

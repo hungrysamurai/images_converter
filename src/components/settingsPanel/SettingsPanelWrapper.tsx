@@ -17,7 +17,6 @@ import {
 import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
 import SettingsPanelBody from "./SettingsPanelBody";
 import useOutsideClick from "../../hooks/useOutsideClick";
-import { StyledDivider } from "./SettingsPanelBodyComponents/OutputSettings";
 
 type SettingsPanelWrapperType = {
   setSettingsPanelVisibility: React.Dispatch<React.SetStateAction<boolean>>;
@@ -90,28 +89,6 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
   );
 };
 
-const StyledDefaultButton = styled.button`
-  margin-top: 1rem;
-  padding: 0.75rem;
-  font-family: inherit;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--text-dark-gray);
-  border: 0.25rem solid var(--element-medium-gray);
-  border-radius: 0.5rem;
-  background-color: var(--bg-container-gray);
-  cursor: pointer;
-  box-shadow: 4px 4px 12px 0px rgba(0, 0, 0, 0.11);
-
-  &:hover {
-    background-color: var(--bg-light-gray);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-`;
-
 const StyledSettingsPanelBackground = styled(motion.div)`
   position: fixed;
   width: 100%;
@@ -125,21 +102,21 @@ const StyledSettingsPanelBackground = styled(motion.div)`
 
 const StyledSettingsPanel = styled(motion.div)`
   position: fixed;
-  top: 0;
-  right: 0;
-  background-color: #e3e3e3c3;
-  backdrop-filter: blur(36px);
   width: 30rem;
   height: 100dvh;
-  border-radius: var(--round-corner) 0 0 var(--round-corner);
+  top: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 2rem;
   z-index: 4;
-  box-shadow: var(--container-shadow);
   overflow: hidden;
   overflow-y: scroll;
+  background-color: var(--bg-container-gray);
+  backdrop-filter: blur(36px);
+  border-radius: var(--round-corner) 0 0 var(--round-corner);
+  box-shadow: var(--container-shadow);
 
   &::-webkit-scrollbar {
     width: 0.35rem;
@@ -172,6 +149,28 @@ const StyledCloseSettingsPanelHeader = styled.div`
     h1 {
       font-size: 1.5rem;
     }
+  }
+`;
+
+const StyledDefaultButton = styled.button`
+  margin-top: 1rem;
+  padding: 0.75rem;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-dark-gray);
+  border: 0.25rem solid var(--element-medium-gray);
+  border-radius: 0.5rem;
+  background-color: var(--bg-container-gray);
+  cursor: pointer;
+  box-shadow: 4px 4px 12px 0px rgba(0, 0, 0, 0.11);
+
+  &:hover {
+    background-color: var(--bg-light-gray);
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 `;
 

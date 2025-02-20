@@ -1,3 +1,4 @@
+import { ScreenOrientations } from "./types/types";
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
@@ -18,9 +19,11 @@ const GlobalStyles = createGlobalStyle`
 
     --bg-container-gray: #E3E3E3;
     --bg-light-gray: #F8F8F8;
+
     --icon-medium-gray: #9F9F9F;
     --icon-dark-gray: #373737;
     --icon-light-gray: #F8F8F8;
+    
     --text-dark-gray: #373737;
     --text-medium-gray: #9f9f9f;
     --text-light-gray: #f8f8f8;
@@ -58,12 +61,12 @@ const GlobalStyles = createGlobalStyle`
     overflow: hidden;
     background-color: var(--bg-container-gray);
    
-    @media (max-aspect-ratio: 1/1) {
+    @media (${ScreenOrientations.Vertical}) {
       padding-top: 0.5rem;
       padding-left: 0;
     }
 
-    @media (min-aspect-ratio: 1/1) {
+    @media (${ScreenOrientations.Horizontal}) {
       padding-top: 0;
       padding-left: 0.5rem;
     }

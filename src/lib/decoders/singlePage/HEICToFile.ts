@@ -1,4 +1,4 @@
-import heic2any from "heic2any";
+import libheif from 'libheif-js/wasm-bundle';
 
 import { OutputFileFormatsNames } from "../../../types/types";
 
@@ -12,120 +12,70 @@ const HEICToFile = async (
   mergeToOne: boolean
 ): Promise<Blob | HTMLCanvasElement | void> => {
   const file = await fetch(blobURL);
-  const blob = await file.blob();
+  const arrayBuffer = await file.arrayBuffer();
 
   const { resize, units, smoothing, targetHeight, targetWidth } =
     targetFormatSettings;
 
   try {
-    const result = (await heic2any({
-      blob,
-      toType: `image/png`,
-    })) as Blob;
+    const decoder = new libheif.HeifDecoder();
+    const data = await decoder.decode(arrayBuffer);
+
+    if (data.length === 0) {
+      throw new Error('No images found in HEIC file');
+    }
+
+    const srcImage = data[0];
+    const srcWidth = srcImage.get_width();
+    const srcHeight = srcImage.get_height();
 
     return new Promise((resolve, reject) => {
-      const url = window.URL.createObjectURL(result);
-      const img = new Image();
-      img.src = url;
+      let canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-      img.onload = () => {
-        try {
-          let canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+      const imageData = ctx.createImageData(srcWidth, srcHeight);
 
-          canvas.width = img.width;
-          canvas.height = img.height;
+      canvas.width = srcWidth;
+      canvas.height = srcHeight;
 
-          ctx.drawImage(img, 0, 0);
+      srcImage.display(imageData, (displayData) => {
 
-          if (resize) {
-            canvas = getResizedCanvas(
-              canvas,
-              smoothing,
-              units,
-              targetWidth,
-              targetHeight,
-            );
-          }
-
-          if (mergeToOne) {
-            resolve(canvas)
-          } else {
-            const encoded = encode(
-              canvas,
-              targetFormatSettings,
-              activeTargetFormatName
-            );
-
-            if (encoded) {
-              resolve(encoded);
-            }
-          }
-        } catch (err) {
-          reject(err);
+        if (!displayData) {
+          canvas.remove();
+          return reject(new Error('HEIF processing error'));
         }
-      };
 
-      // If image not valid
-      img.onerror = () => {
-        reject(new Error("Error while parsing HEIC image"));
-      };
+        ctx.putImageData(imageData, 0, 0);
+
+        if (resize) {
+          canvas = getResizedCanvas(
+            canvas,
+            smoothing,
+            units,
+            targetWidth,
+            targetHeight,
+          );
+        }
+
+        if (mergeToOne) {
+          resolve(canvas)
+        } else {
+          const encoded = encode(
+            canvas,
+            targetFormatSettings,
+            activeTargetFormatName
+          );
+
+          if (encoded) {
+            resolve(encoded);
+          } else {
+            return reject(new Error("Encoding failed"));
+          }
+        }
+      });
     });
   } catch (err) {
-    // "different" jpeg-like HEIC case
-    if ((err as { code: number; message: string }).code === 1) {
-      return new Promise((resolve, reject) => {
-        const url = window.URL.createObjectURL(blob);
-        const img = new Image();
-        img.src = url;
-
-        img.onload = () => {
-          try {
-            let canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-
-            canvas.width = img.width;
-            canvas.height = img.height;
-
-            ctx.drawImage(img, 0, 0);
-
-            if (resize) {
-              canvas = getResizedCanvas(
-                canvas,
-                smoothing,
-                units,
-                targetWidth,
-                targetHeight,
-              );
-            }
-
-            if (mergeToOne) {
-              resolve(canvas)
-            } else {
-              const encoded = encode(
-                canvas,
-                targetFormatSettings,
-                activeTargetFormatName
-              );
-
-              if (encoded) {
-                resolve(encoded);
-              }
-            }
-          } catch (err) {
-            console.log(3);
-            reject(err);
-          }
-        };
-
-        // If image not valid
-        img.onerror = () => {
-          reject(new Error("Error while parsing HEIC image"));
-        };
-      });
-    } else {
-      throw err;
-    }
+    throw err;
   }
 };
 

@@ -3,7 +3,7 @@ import { useState, useRef, DragEvent, ChangeEvent, MouseEvent } from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { Lang, MIMETypes } from "../types/types";
+import { Lang, MIMETypes, ScreenOrientations } from "../types/types";
 
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
@@ -189,7 +189,7 @@ const StyledUploadContainer = styled.div`
     display: none;
   }
 
-  @media (min-aspect-ratio: 1/1) {
+  @media (${ScreenOrientations.Horizontal}) {
     width: var(--container-calc);
     height: var(--container-fit);
     border-radius: var(--round-corner) 0rem 0rem var(--round-corner);
@@ -250,7 +250,7 @@ const StyledDragPlaceholder = styled(motion.div)`
   justify-content: center;
   border-radius: var(--round-corner) var(--round-corner) 0rem 0rem;
 
-  @media (min-aspect-ratio: 1/1) {
+  @media (${ScreenOrientations.Horizontal}) {
     width: var(--container-calc);
     height: var(--container-fit);
     border-radius: var(--round-corner) 0rem 0rem var(--round-corner);

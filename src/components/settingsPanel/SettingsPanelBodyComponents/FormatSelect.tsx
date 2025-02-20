@@ -56,15 +56,15 @@ const StyledFormatSelect = styled.div`
 `;
 
 const StyledLabel = styled.label`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-dark-gray);
-  height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
   width: 100%;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark-gray);
+  height: 3rem;
 
   @media screen and (max-width: 768px), screen and (max-height: 500px) {
     font-size: 1rem;
