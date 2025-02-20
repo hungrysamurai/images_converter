@@ -3,7 +3,7 @@ import { Ubuntu_Mono, Ubuntu_Condensed } from "next/font/google";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
-import { memo, useState } from "react";
+import { memo } from "react";
 
 import { InputFileFormatsNames } from "../../types/types";
 
