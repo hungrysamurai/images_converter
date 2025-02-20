@@ -31,6 +31,7 @@ type OutputSettingsType = {
 
 const OutputSettings: React.FC<OutputSettingsType> = memo(
   function OutputSettings({ lang, activeTargetFormatName }) {
+    // Current format settings
     const activeTargetFromatOutputSettings = useAppSelector(
       getActiveFormatOutputSettings
     );
@@ -201,11 +202,11 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(
 
 const StyledOutputSettingsContainer = styled.div`
   width: 100%;
-  margin-top: 1rem;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
+  margin-top: 1rem;
 
   @media screen and (max-width: 768px), screen and (max-height: 500px) {
     margin-top: 0.5rem;

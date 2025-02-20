@@ -76,6 +76,11 @@ export enum SliderConvertModes {
   GifState = "gifState",
 }
 
+export enum ScreenOrientations {
+  Vertical = "max-aspect-ratio: 1/1",
+  Horizontal = "min-aspect-ratio: 1/1"
+}
+
 declare global {
   type SourceFile = {
     blobURL: string;

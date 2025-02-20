@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { ScreenOrientations } from "../types/types";
 
 const StyledInnerShadow = styled.div.attrs<{
   $brVertical: string;
@@ -16,7 +17,7 @@ const StyledInnerShadow = styled.div.attrs<{
   pointer-events: none;
   box-shadow: var(--container-inner-shadow);
 
-  @media (min-aspect-ratio: 1/1) {
+  @media (${ScreenOrientations.Horizontal}) {
     width: var(--container-calc);
     height: var(--container-fit);
     border-radius: ${(props) => props.$brHorizontal};

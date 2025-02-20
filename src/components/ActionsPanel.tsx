@@ -12,6 +12,7 @@ import {
 } from "../store/slices/processFilesSlice/processFilesSlice";
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
+import { ScreenOrientations } from "../types/types";
 
 type ActionsPanelProps = {
   setSettingsPanelVisibility: React.Dispatch<React.SetStateAction<boolean>>;
@@ -58,7 +59,7 @@ const StyledActionPanel = styled.div`
   justify-content: center;
   gap: 1.5rem;
 
-  @media (min-aspect-ratio: 1/1) {
+  @media (${ScreenOrientations.Horizontal}) {
     flex-direction: column;
     width: var(--panel-thickness);
     height: var(--full);
@@ -89,7 +90,7 @@ const StyledActionButton = styled(motion.div)`
     filter: brightness(0.9);
   }
 
-  @media (min-aspect-ratio: 1/1) {
+  @media (${ScreenOrientations.Horizontal}) {
     width: 100%;
     height: 3rem;
   }

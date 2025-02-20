@@ -1,3 +1,4 @@
+import { ScreenOrientations } from "./types/types";
 import { useState } from "react";
 
 import styled from "styled-components";
@@ -34,20 +35,21 @@ function App() {
   );
 }
 
-const StyledMainContainer = styled.main`
-  width: 100vw;
+const StyledMainContainer = styled.div`
+  width: 100dvw;
   height: 100dvh;
-  margin-top: 0.25rem;
-  background-color: var(--bg-container-gray);
   display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-container-gray);
 
-  @media (max-aspect-ratio: 1/1) {
+  @media (${ScreenOrientations.Vertical}) {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
   }
 
-  @media (min-aspect-ratio: 1/1) {
+  @media (${ScreenOrientations.Horizontal}) {
     flex-direction: row;
     align-items: flex-start;
     justify-content: center;
