@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
-import { memo, useState } from "react";
+import { memo } from "react";
 
 import { InputFileFormatsNames } from "../../types/types";
 
@@ -43,8 +43,6 @@ const FileElement: React.FC<FileElementProps> = memo(
   ({ id, format, size, name, downloadLink }) => {
     const dispatch = useAppDispatch();
 
-    const [overlay, setOverlay] = useState(false);
-
     const removeElement = (id: string) => {
       if (downloadLink) {
         dispatch(removeConvertedFile(id));
@@ -64,14 +62,6 @@ const FileElement: React.FC<FileElementProps> = memo(
         layout
         $bg={format}
         $color={elementsColor[format]}
-        onMouseEnter={() => {
-          setOverlay(() => true);
-          console.log(overlay);
-        }}
-        onMouseLeave={() => {
-          setOverlay(() => false);
-          console.log(overlay);
-        }}
       >
         <StyledRemoveElementButton onClick={() => removeElement(id)}>
           <IconRemoveElement bg={elementsColor[format]} />
