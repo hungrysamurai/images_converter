@@ -1,5 +1,5 @@
-import { ScreenOrientations } from "./types/types";
-import { createGlobalStyle } from "styled-components";
+import { ScreenOrientations } from './types/types';
+import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
 

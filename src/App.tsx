@@ -1,17 +1,17 @@
-import { ScreenOrientations } from "./types/types";
-import { useState } from "react";
+import { ScreenOrientations } from './types/types';
+import { useState } from 'react';
 
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import GlobalStyles from "./GlobalStyles";
+import GlobalStyles from './GlobalStyles';
 
-import UploadContainer from "./components/UploadContainer";
-import ActionsPanel from "./components/ActionsPanel";
-import DownloadContainer from "./components/DownloadContainer";
-import DownloadPanel from "./components/DownloadPanel";
-import SettingsPanelWrapper from "./components/settingsPanel/SettingsPanelWrapper";
+import UploadContainer from './components/UploadContainer';
+import ActionsPanel from './components/ActionsPanel';
+import DownloadContainer from './components/DownloadContainer';
+import DownloadPanel from './components/DownloadPanel';
+import SettingsPanelWrapper from './components/settingsPanel/SettingsPanelWrapper';
 
-import { getNavigatorLang } from "./lib/getNavigatorLang";
+import { getNavigatorLang } from './lib/getNavigatorLang';
 
 function App() {
   const [settingsPanelVisibility, setSettingsPanelVisibility] = useState(false);
