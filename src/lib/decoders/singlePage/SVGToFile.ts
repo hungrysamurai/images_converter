@@ -93,7 +93,7 @@ export const SVGToFile = async (
 
   img.onload = async () => {
    try {
-    let canvas = document.createElement("canvas");
+    const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     canvas.width = currentWidth;
