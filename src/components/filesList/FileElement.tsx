@@ -95,6 +95,7 @@ const FileElement: React.FC<FileElementProps> = memo(function FileElement({
       onMouseLeave={() => {
         setPreviewBtn(() => false);
       }}
+      className={ubuntu_condensed.className}
     >
       <StyledRemoveElementButton onClick={() => removeElement(id)}>
         <IconRemoveElement bg={elementsColor[format]} />
@@ -138,7 +139,9 @@ const FileElement: React.FC<FileElementProps> = memo(function FileElement({
         )}
       </AnimatePresence>
 
-      <div className="format-caption">{format.toUpperCase()}</div>
+      <div className={`${ubuntu_mono.className} format-caption`}>
+        {format.toUpperCase()}
+      </div>
     </StyledFileElement>
   );
 });
@@ -167,14 +170,11 @@ const StyledFileElement = styled(motion.div).attrs<StyledFileElementProps>(
   box-shadow: var(--image-element-shadow);
   overflow: hidden;
 
-  font-family: "Ubuntu Condensed", sans-serif;
-
   .format-caption {
     position: absolute;
     bottom: 0.5rem;
     right: 50%;
     transform: translateX(50%);
-    font-family: "Ubuntu Mono", monospace;
     font-weight: 700;
     font-size: 0.75rem;
     color: var(--text-${(props) => props.$color}-gray);
