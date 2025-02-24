@@ -81,6 +81,16 @@ export enum ScreenOrientations {
   Horizontal = "min-aspect-ratio: 1/1"
 }
 
+export enum FormatsWithPreview {
+  JPG = "jpeg",
+  PNG = "png",
+  GIF = "gif",
+  WEBP = "webp",
+  BMP = "bmp",
+  PDF = "pdf",
+  SVG = "svg",
+}
+
 declare global {
   type SourceFile = {
     blobURL: string;

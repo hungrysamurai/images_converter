@@ -1,24 +1,24 @@
-import { useState, useRef, DragEvent, ChangeEvent, MouseEvent } from "react";
+import { useState, useRef, DragEvent, ChangeEvent, MouseEvent } from 'react';
 
-import styled from "styled-components";
-import { AnimatePresence, motion } from "framer-motion";
+import styled from 'styled-components';
+import { AnimatePresence, motion } from 'framer-motion';
 
-import { Lang, MIMETypes, ScreenOrientations } from "../types/types";
+import { Lang, MIMETypes, ScreenOrientations } from '../types/types';
 
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   addSourceFile,
   getAllSourceFiles,
-} from "../store/slices/sourceFilesSlice/sourceFilesSlice";
+} from '../store/slices/sourceFilesSlice/sourceFilesSlice';
 
-import IconUpload from "./icons/IconUpload";
-import FilesList from "./filesList/FilesList";
-import StyledInnerShadow from "./StyledInnerShadow";
+import IconUpload from './icons/IconUpload';
+import FilesList from './filesList/FilesList';
+import StyledInnerShadow from './StyledInnerShadow';
 
-import { fadeAnimation } from "../animations";
+import { fadeAnimation } from '../animations';
 
-import { isHEIC } from "../lib/helpers/isHEIC";
-import { checkFileType } from "../lib/helpers/checkFileType";
+import { isHEIC } from '../lib/helpers/isHEIC';
+import { checkFileType } from '../lib/helpers/checkFileType';
 
 type UploadContainerProps = {
   lang: Lang;
@@ -39,9 +39,9 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
+    } else if (e.type === 'dragleave') {
       setDragActive(false);
     }
   };
@@ -126,7 +126,7 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
         <label
           htmlFor="input-file-upload"
           className={`file-upload-label ${
-            sourceFiles.length !== 0 ? "files-added" : ""
+            sourceFiles.length !== 0 ? 'files-added' : ''
           }`}
           ref={inputLabelRef}
         >
@@ -134,13 +134,13 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
             <h3>
               {lang === Lang.EN ? (
                 <>
-                  Drop your images here or{" "}
+                  Drop your images here or{' '}
                   <span className="upload-click">click</span>
                   <br />
                 </>
               ) : (
                 <>
-                  Перетащите файл в эту область или{" "}
+                  Перетащите файл в эту область или{' '}
                   <span className="upload-click">нажмите</span>
                   <br />
                 </>
@@ -164,6 +164,7 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
+            key="drag-placeholder"
           >
             <IconUpload />
           </StyledDragPlaceholder>
