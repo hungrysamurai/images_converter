@@ -3,6 +3,7 @@ import {
   PDFCompressionTypes,
   Units,
   SmoothingPresets,
+  FormatsWithPreview,
 } from "../types/types";
 
 // Type checkers for conversion setting store slice
@@ -63,4 +64,12 @@ export function isProcessedFile(
   toCheck: ProcessedFile | SourceFile
 ): toCheck is ProcessedFile {
   return (toCheck as ProcessedFile).downloadLink !== undefined;
+}
+
+// Type checker for preview enum
+
+export function isPreviewFormat(
+  toCheck: string
+): toCheck is FormatsWithPreview {
+  return Object.values(FormatsWithPreview).includes(toCheck as FormatsWithPreview)
 }

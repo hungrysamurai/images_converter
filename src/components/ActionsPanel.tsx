@@ -1,18 +1,18 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 
-import IconPlay from "./icons/IconPlay";
-import IconSettings from "./icons/IconSettings";
-import IconLoadingSpinner from "./icons/IconLoadingSpinner";
+import IconPlay from './icons/IconPlay';
+import IconSettings from './icons/IconSettings';
+import IconLoadingSpinner from './icons/IconLoadingSpinner';
 
 import {
   convertFiles,
   isProcessingLoading,
-} from "../store/slices/processFilesSlice/processFilesSlice";
-import { AnimatePresence, motion } from "framer-motion";
-import React from "react";
-import { ScreenOrientations } from "../types/types";
+} from '../store/slices/processFilesSlice/processFilesSlice';
+import { motion } from 'framer-motion';
+import React from 'react';
+import { ScreenOrientations } from '../types/types';
 
 type ActionsPanelProps = {
   setSettingsPanelVisibility: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,7 +27,7 @@ const ActionsPanel: React.FC<ActionsPanelProps> = ({
   return (
     <StyledActionPanel>
       <StyledActionButton
-        className={isLoading ? "disabled" : ""}
+        className={isLoading ? 'disabled' : ''}
         onClick={
           isLoading ? () => null : () => setSettingsPanelVisibility(true)
         }
@@ -35,17 +35,15 @@ const ActionsPanel: React.FC<ActionsPanelProps> = ({
         <IconSettings />
       </StyledActionButton>
 
-      <AnimatePresence>
-        {isLoading ? (
-          <StyledActionButton className="disabled">
-            <IconLoadingSpinner />
-          </StyledActionButton>
-        ) : (
-          <StyledActionButton onClick={() => dispatch(convertFiles())}>
-            <IconPlay />
-          </StyledActionButton>
-        )}
-      </AnimatePresence>
+      {isLoading ? (
+        <StyledActionButton className="disabled">
+          <IconLoadingSpinner />
+        </StyledActionButton>
+      ) : (
+        <StyledActionButton onClick={() => dispatch(convertFiles())}>
+          <IconPlay />
+        </StyledActionButton>
+      )}
     </StyledActionPanel>
   );
 };

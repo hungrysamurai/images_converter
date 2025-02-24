@@ -1,12 +1,12 @@
-import styled from "styled-components";
-import { motion } from "framer-motion";
+import styled from 'styled-components';
+import { AnimatePresence, motion } from 'framer-motion';
 
-import FileElement from "./FileElement";
+import FileElement from './FileElement';
 
-import { getFileFormat } from "../../lib/helpers/getFileFormat";
-import { getFileSize } from "../../lib/helpers/getFileSize";
-import { isProcessedFile } from "../../lib/typeGuards";
-import { memo } from "react";
+import { getFileFormat } from '../../lib/helpers/getFileFormat';
+import { getFileSize } from '../../lib/helpers/getFileSize';
+import { isProcessedFile } from '../../lib/typeGuards';
+import { memo } from 'react';
 
 type FilesListProps = {
   files: ProcessedFile[] | SourceFile[];
@@ -15,18 +15,23 @@ type FilesListProps = {
 const FilesList: React.FC<FilesListProps> = memo(({ files }) => {
   return (
     <StyledFilesList layout layoutRoot>
-      {files.map((file) => {
-        return (
-          <FileElement
-            key={file.id}
-            id={file.id}
-            format={getFileFormat(file.type)}
-            name={file.name}
-            size={getFileSize(file.size)}
-            downloadLink={isProcessedFile(file) ? file.downloadLink : undefined}
-          />
-        );
-      })}
+      <AnimatePresence>
+        {files.map((file) => {
+          return (
+            <FileElement
+              key={file.id}
+              id={file.id}
+              format={getFileFormat(file.type)}
+              name={file.name}
+              size={getFileSize(file.size)}
+              downloadLink={
+                isProcessedFile(file) ? file.downloadLink : undefined
+              }
+              souceFileLink={file.blobURL}
+            />
+          );
+        })}
+      </AnimatePresence>
     </StyledFilesList>
   );
 });

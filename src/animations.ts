@@ -59,6 +59,56 @@ export const fileElementAnimation = {
   },
 };
 
+export const filePreviewIconAnimation = {
+  hidden: {
+    y: 20,
+    opacity: 0,
+  },
+  show: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "easeIn",
+      duration: 0.1,
+      delay: 0.1
+    },
+  },
+  exit: {
+    y: 20,
+    opacity: 0,
+    transition: {
+      type: "easeOut",
+      duration: 0.1,
+    },
+  },
+};
+
+export const fileInfoContainerAnimation = {
+  hidden: {
+    y: -20,
+    opacity: 0,
+  },
+  show: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "easeIn",
+      duration: 0.1,
+      delay: 0.1
+    },
+
+  },
+  exit: {
+    y: -20,
+    opacity: 0,
+    transition: {
+      type: "easeOut",
+      duration: 0.1,
+    },
+
+  },
+};
+
 export const fadeAnimation = {
   hidden: {
     opacity: 0,
