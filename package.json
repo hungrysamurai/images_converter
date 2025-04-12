@@ -8,7 +8,8 @@
     "build": "vite build --base=./",
     "deploy": "vite build --outDir ../../server/dist/public/projects/images_converter --base=/projects/images_converter",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.3",
@@ -40,7 +41,11 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "only-allow": "^1.2.1",
     "typescript": "^5.3.3",
     "vite": "^6.1.1"
+  },
+  "engines": {
+    "pnpm": "^10.0.0"
   }
 }

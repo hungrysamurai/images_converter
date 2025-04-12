@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 build
-/temp
+/___temp
 vite_build
 
 # Editor directories and files
