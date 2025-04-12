@@ -3,13 +3,19 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0",
+    "npm": "please-use-pnpm"
+  },
   "scripts": {
     "dev": "vite --host --base=/projects/images_converter",
     "build": "vite build --base=./",
     "deploy": "vite build --outDir ../../server/dist/public/projects/images_converter --base=/projects/images_converter",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "postinstall": "node -e \"if(process.env.npm_execpath.indexOf('pnpm') === -1) { console.error('\\n\\x1b[31m✖ Please use pnpm to install dependencies\\x1b[0m\\n'); process.exit(1); }\""
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.3",
@@ -44,8 +50,5 @@
     "only-allow": "^1.2.1",
     "typescript": "^5.3.3",
     "vite": "^6.1.1"
-  },
-  "engines": {
-    "pnpm": "^10.0.0"
   }
 }
