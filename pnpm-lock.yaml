@@ -99,6 +99,9 @@ importers:
       vite:
         specifier: ^6.1.1
         version: 6.1.1(@types/node@22.1.0)(sass@1.77.8)
+      vite-bundle-analyzer:
+        specifier: ^0.20.1
+        version: 0.20.1
 
 packages:
 
@@ -959,6 +962,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -1897,6 +1901,10 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  vite-bundle-analyzer@0.20.1:
+    resolution: {integrity: sha512-0uGcukPglrNUM5/0gPMQSLOaq2YXeyt+YCHfpZZJxnfl0oucx7zdZmVxVL4c0SlsBD0gNOPZd1GNYwg44MRTeQ==}
+    hasBin: true
 
   vite@6.1.1:
     resolution: {integrity: sha512-4GgM54XrwRfrOp297aIYspIti66k56v16ZnqHvrIM7mG+HjDlAwS7p+Srr7J6fGvEdOJ5JcQ/D9T7HhtdXDTzA==}
@@ -4005,6 +4013,8 @@ snapshots:
       pako: 1.0.11
 
   util-deprecate@1.0.2: {}
+
+  vite-bundle-analyzer@0.20.1: {}
 
   vite@6.1.1(@types/node@22.1.0)(sass@1.77.8):
     dependencies:
