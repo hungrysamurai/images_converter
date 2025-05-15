@@ -12,8 +12,8 @@ dist
 dist-ssr
 *.local
 build
-/___temp
-vite_build
+___temp
+convert-it.ru
 
 # Editor directories and files
 .vscode/*

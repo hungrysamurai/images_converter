@@ -215,8 +215,13 @@ const StyledFilePreview = styled(motion.div)`
   align-items: center;
   justify-content: center;
 
+  svg {
+    margin-top: 0.125rem;
+  }
+
   @media (max-width: 768px) {
     svg {
+      margin-top: 0.075rem;
       width: 1.5rem;
       height: 1.5rem;
     }
