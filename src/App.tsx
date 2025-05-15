@@ -33,6 +33,14 @@ function App() {
         <DownloadContainer lang={lang} />
         <DownloadPanel />
       </StyledMainContainer>
+      {import.meta.env.VITE_TARGET_DOMAIN && (
+        <StyledFooter>
+          Автор -{' '}
+          <a href="https://hungrysamurai.ru" target="blank">
+            hungrysamurai
+          </a>
+        </StyledFooter>
+      )}
     </>
   );
 }
@@ -51,6 +59,27 @@ const StyledMainContainer = styled.div`
 
   @media (${ScreenOrientations.Horizontal}) {
     flex-direction: row;
+  }
+`;
+
+const StyledFooter = styled.footer`
+  position: absolute;
+  z-index: 1;
+
+  left: 0.1rem;
+  font-size: 0.75rem;
+  color: var(--text-medium-gray);
+
+  a {
+    color: var(--text-medium-gray);
+  }
+
+  @media (${ScreenOrientations.Vertical}) {
+    bottom: 0.75rem;
+  }
+
+  @media (${ScreenOrientations.Horizontal}) {
+    bottom: 0.1rem;
   }
 `;
 

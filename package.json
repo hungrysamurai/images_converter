@@ -11,8 +11,8 @@
   "scripts": {
     "dev": "vite --host --base=/projects/images_converter",
     "build": "vite build --base=./",
-    "deploy": "vite build --outDir ../../server/dist/public/projects/images_converter --base=/projects/images_converter",
-    "deploy:convert-it.ru":"cross-env VITE_TARGET_DOMAIN=convert-it.ru vite build --outDir convert-it.ru --base=./",
+    "build:portfolio": "vite build --outDir ../../server/dist/public/projects/images_converter --base=/projects/images_converter",
+    "build:convert-it.ru":"cross-env VITE_TARGET_DOMAIN=convert-it.ru vite build --outDir convert-it.ru --base=./",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "analyze": "analyze --analyzerPort 5175",
