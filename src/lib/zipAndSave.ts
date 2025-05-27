@@ -1,12 +1,15 @@
-import JSZip from "jszip";
-import JSZipUtils from "jszip-utils";
+import JSZip from 'jszip';
+import JSZipUtils from 'jszip-utils';
 
-import { saveAs } from "file-saver";
+import { saveAs } from 'file-saver';
 
-import { OutputFileFormatsNames } from "../types/types";
-import { getFileFormat } from "./helpers/getFileFormat";
+import { OutputFileFormatsNames } from '../types/types';
+import { getFileFormat } from './helpers/getFileFormat';
 
-export const zipAndSave = async (files: ProcessedFile[], activeTargetFormatName: OutputFileFormatsNames): Promise<void> => {
+export const zipAndSave = async (
+  files: ProcessedFile[],
+  activeTargetFormatName: OutputFileFormatsNames,
+): Promise<void> => {
   return new Promise((resolve, reject) => {
     const zip = new JSZip();
     let count = 0;
@@ -23,15 +26,15 @@ export const zipAndSave = async (files: ProcessedFile[], activeTargetFormatName:
           count++;
 
           if (count == files.length) {
-            const zipFile = await zip.generateAsync({ type: "blob" });
+            const zipFile = await zip.generateAsync({ type: 'blob' });
             resolve(saveAs(zipFile, zipFilename));
           }
 
           if (err) {
-            throw err
+            throw err;
           }
         } catch (err) {
-          reject(err)
+          reject(err);
         }
       });
     }

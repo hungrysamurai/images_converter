@@ -1,17 +1,16 @@
-import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
-import { encode } from "../../encode";
-import { getScaledSVGDimensions } from "../../helpers/getScaledSVGDimensions";
+import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
+import { encode } from '../../encode';
+import { getScaledSVGDimensions } from '../../helpers/getScaledSVGDimensions';
 
 export const SVGToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-  mergeToOne: boolean
+  mergeToOne: boolean,
 ): Promise<Blob | HTMLCanvasElement | void> => {
   let svgBlobURL = blobURL;
 
-  const { resize, units, smoothing, targetHeight, targetWidth } =
-    targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
   // Parse SVG
   const file = await fetch(blobURL);
@@ -23,8 +22,8 @@ export const SVGToFile = async (
   // Figuring out dimensions of given SVG
   let currentWidth, currentHeight;
 
-  const widthAttribute = svgEl.getAttribute("width");
-  const heightAttribute = svgEl.getAttribute("height");
+  const widthAttribute = svgEl.getAttribute('width');
+  const heightAttribute = svgEl.getAttribute('height');
 
   if (widthAttribute) {
     currentWidth = parseInt(widthAttribute);
@@ -36,10 +35,10 @@ export const SVGToFile = async (
 
   if (!currentWidth || !currentHeight) {
     // Trying to get viewBox...
-    const viewBox = svgEl.getAttribute("viewBox");
+    const viewBox = svgEl.getAttribute('viewBox');
 
     if (viewBox) {
-      const viewBoxValues = viewBox.split(" ");
+      const viewBoxValues = viewBox.split(' ');
       const viewBoxWidth = viewBoxValues[2];
       const viewBoxHeight = viewBoxValues[3];
 
@@ -56,7 +55,7 @@ export const SVGToFile = async (
         currentHeight = Math.round(bbox.height);
       }
 
-      svgEl.setAttribute("viewBox", `0 0 ${currentWidth} ${currentHeight}`);
+      svgEl.setAttribute('viewBox', `0 0 ${currentWidth} ${currentHeight}`);
 
       // Cleanup
       document.body.removeChild(svgEl);
@@ -66,10 +65,10 @@ export const SVGToFile = async (
   if (
     !currentWidth ||
     !currentHeight ||
-    typeof currentHeight !== "number" ||
-    typeof currentWidth !== "number"
+    typeof currentHeight !== 'number' ||
+    typeof currentWidth !== 'number'
   ) {
-    throw new Error("Failed to load SVG dimensions!");
+    throw new Error('Failed to load SVG dimensions!');
   }
 
   if (resize && (targetWidth || targetHeight)) {
@@ -79,11 +78,11 @@ export const SVGToFile = async (
       currentWidth,
       units,
       targetWidth,
-      targetHeight
+      targetHeight,
     );
 
-    svgEl.setAttribute("width", targetDimensions.width);
-    svgEl.setAttribute("height", targetDimensions.height);
+    svgEl.setAttribute('width', targetDimensions.width);
+    svgEl.setAttribute('height', targetDimensions.height);
 
     currentWidth = parseInt(targetDimensions.width);
     currentHeight = parseInt(targetDimensions.height);
@@ -91,7 +90,7 @@ export const SVGToFile = async (
     // Convert SVG element to a data URL
     const svgData = new XMLSerializer().serializeToString(svgEl);
     const svgBlob = new Blob([svgData], {
-      type: "image/svg+xml;charset=utf-8",
+      type: 'image/svg+xml;charset=utf-8',
     });
 
     svgBlobURL = URL.createObjectURL(svgBlob);
@@ -103,8 +102,8 @@ export const SVGToFile = async (
 
     img.onload = async () => {
       try {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         canvas.width = currentWidth;
         canvas.height = currentHeight;
@@ -115,7 +114,7 @@ export const SVGToFile = async (
           activeTargetFormatName !== OutputFileFormatsNames.TIFF &&
           activeTargetFormatName !== OutputFileFormatsNames.WEBP
         ) {
-          ctx.fillStyle = "white";
+          ctx.fillStyle = 'white';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
@@ -136,11 +135,7 @@ export const SVGToFile = async (
         if (mergeToOne) {
           resolve(canvas);
         } else {
-          const encoded = await encode(
-            canvas,
-            targetFormatSettings,
-            activeTargetFormatName
-          );
+          const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
           if (encoded) {
             resolve(encoded);
           }
@@ -151,7 +146,7 @@ export const SVGToFile = async (
     };
     // If image not valid
     img.onerror = () => {
-      reject(new Error("Error while parsing image"));
+      reject(new Error('Error while parsing image'));
     };
   });
 };

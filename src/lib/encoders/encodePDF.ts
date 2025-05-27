@@ -1,13 +1,13 @@
-import { PDFDocument, PDFImage } from "pdf-lib";
+import { PDFDocument, PDFImage } from 'pdf-lib';
 
-import { PDFCompressionTypes } from "../../types/types";
-import { isCompressionSetting } from "../typeGuards";
+import { PDFCompressionTypes } from '../../types/types';
+import { isCompressionSetting } from '../typeGuards';
 
-import canvasToBlob from "./canvasToBlob";
+import canvasToBlob from './canvasToBlob';
 
 const encodePDF = async (
   canvas: HTMLCanvasElement,
-  targetFormatSettings: OutputConversionSettings
+  targetFormatSettings: OutputConversionSettings,
 ): Promise<Blob | void> => {
   if (isCompressionSetting(targetFormatSettings)) {
     const { compression, quality } = targetFormatSettings;
@@ -36,7 +36,7 @@ const encodePDF = async (
 
     const pdfBytes = await pdfDoc.save();
 
-    return new Blob([pdfBytes], { type: "application/pdf" });
+    return new Blob([pdfBytes], { type: 'application/pdf' });
   }
 };
 

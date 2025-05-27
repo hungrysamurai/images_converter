@@ -24,9 +24,7 @@ const FilesList: React.FC<FilesListProps> = memo(({ files }) => {
               format={getFileFormat(file.type)}
               name={file.name}
               size={getFileSize(file.size)}
-              downloadLink={
-                isProcessedFile(file) ? file.downloadLink : undefined
-              }
+              downloadLink={isProcessedFile(file) ? file.downloadLink : undefined}
               souceFileLink={file.blobURL}
             />
           );

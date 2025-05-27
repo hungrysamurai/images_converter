@@ -1,8 +1,8 @@
-import styled from "styled-components";
-import React, { ChangeEvent, memo } from "react";
+import styled from 'styled-components';
+import React, { ChangeEvent, memo } from 'react';
 
-import { useAppDispatch } from "../../../store/hooks";
-import { updateActiveTargetFormatToggleSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { useAppDispatch } from '../../../store/hooks';
+import { updateActiveTargetFormatToggleSetting } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
 type CheckboxInputProps = {
   currentValue: boolean;
@@ -20,7 +20,7 @@ const CheckboxInput: React.FC<CheckboxInputProps> = memo(
       dispatch(
         updateActiveTargetFormatToggleSetting({
           [name]: e.target.checked,
-        } as CheckboxOptions)
+        } as CheckboxOptions),
       );
     };
 
@@ -37,7 +37,7 @@ const CheckboxInput: React.FC<CheckboxInputProps> = memo(
               checked={currentValue}
             />
 
-            <StyledTogglerBall></StyledTogglerBall>
+            <StyledTogglerBall />
           </StyledToggler>
         </StyledToggleWrapper>
 
@@ -46,7 +46,7 @@ const CheckboxInput: React.FC<CheckboxInputProps> = memo(
         </StyledCheckboxDisplayValue>
       </StyledCheckboxContainer>
     );
-  }
+  },
 );
 
 const StyledCheckboxContainer = styled.div`
@@ -100,7 +100,7 @@ const StyledTogglerBall = styled.div`
   border-radius: 2rem;
 
   &::before {
-    content: "";
+    content: '';
     background: var(--element-light-gray);
     bottom: 0.25rem;
     height: 1.25rem;

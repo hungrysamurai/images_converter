@@ -1,9 +1,9 @@
 export const getFileSize = (bytes: number): string => {
-  if (!+bytes) return "0 Bytes";
+  if (!+bytes) return '0 Bytes';
 
   const k = 1024;
   const dm = 2;
-  const sizes = ["bytes", "kb", "mb", "gb"];
+  const sizes = ['bytes', 'kb', 'mb', 'gb'];
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 

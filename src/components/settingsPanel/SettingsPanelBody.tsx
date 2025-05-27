@@ -1,13 +1,11 @@
-import { memo } from "react";
+import { memo } from 'react';
 
-import { Lang } from "../../types/types";
-import { OutputFileFormatsNames } from "../../types/types";
+import { Lang } from '../../types/types';
+import { OutputFileFormatsNames } from '../../types/types';
 
-import FormatSelect from "./SettingsPanelBodyComponents/FormatSelect";
-import OutputSettings, {
-  StyledDivider,
-} from "./SettingsPanelBodyComponents/OutputSettings";
-import InputSettings from "./SettingsPanelBodyComponents/InputSettings";
+import FormatSelect from './SettingsPanelBodyComponents/FormatSelect';
+import OutputSettings, { StyledDivider } from './SettingsPanelBodyComponents/OutputSettings';
+import InputSettings from './SettingsPanelBodyComponents/InputSettings';
 
 type SettingsPanelBodyProps = {
   isPDF: boolean;
@@ -16,30 +14,26 @@ type SettingsPanelBodyProps = {
   activeTargetFormatName: OutputFileFormatsNames;
 };
 
-const SettingsPanelBody: React.FC<SettingsPanelBodyProps> = memo(
-  function SettingsPanelBody({ isPDF, lang, formats, activeTargetFormatName }) {
-    return (
-      <>
-        <FormatSelect
-          formats={formats}
-          lang={lang}
-          activeTargetFormatName={activeTargetFormatName}
-        />
+const SettingsPanelBody: React.FC<SettingsPanelBodyProps> = memo(function SettingsPanelBody({
+  isPDF,
+  lang,
+  formats,
+  activeTargetFormatName,
+}) {
+  return (
+    <>
+      <FormatSelect formats={formats} lang={lang} activeTargetFormatName={activeTargetFormatName} />
 
-        <OutputSettings
-          lang={lang}
-          activeTargetFormatName={activeTargetFormatName}
-        />
+      <OutputSettings lang={lang} activeTargetFormatName={activeTargetFormatName} />
 
-        {isPDF && (
-          <>
-            <InputSettings lang={lang} />
-            <StyledDivider />
-          </>
-        )}
-      </>
-    );
-  }
-);
+      {isPDF && (
+        <>
+          <InputSettings lang={lang} />
+          <StyledDivider />
+        </>
+      )}
+    </>
+  );
+});
 
 export default SettingsPanelBody;

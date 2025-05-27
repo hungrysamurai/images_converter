@@ -1,10 +1,9 @@
-declare module "jszip-utils" {
+declare module 'jszip-utils' {
+  type JSZipUtilsCallback = (err: Error, data: ArrayBuffer | string) => void;
 
- type JSZipUtilsCallback = (err: Error, data: ArrayBuffer | string) => void;
+  class JSZipUtils {
+    static getBinaryContent: (path: string, callback: JSZipUtilsCallback) => void;
+  }
 
- class JSZipUtils {
-  static getBinaryContent: (path: string, callback: JSZipUtilsCallback) => void
- }
-
- export = JSZipUtils
+  export = JSZipUtils;
 }

@@ -1,8 +1,8 @@
-import { ChangeEvent, memo } from "react";
-import styled from "styled-components";
+import { ChangeEvent, memo } from 'react';
+import styled from 'styled-components';
 
-import { useAppDispatch } from "../../../store/hooks";
-import { updateActiveTargetFormatSelectSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { useAppDispatch } from '../../../store/hooks';
+import { updateActiveTargetFormatSelectSetting } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
 type SelectInputProps = {
   options: SelectOptionsValues[];
@@ -20,19 +20,15 @@ const SelectInput: React.FC<SelectInputProps> = memo(
       dispatch(
         updateActiveTargetFormatSelectSetting({
           [name]: e.target.value,
-        } as SelectOptions)
+        } as SelectOptions),
       );
     };
 
     return (
-      <StyledInputContainer className={!active ? "inactive" : ""}>
+      <StyledInputContainer className={!active ? 'inactive' : ''}>
         <StyledLabel>
           {label}
-          <StyledSelect
-            onChange={handleChange}
-            name={name}
-            value={currentValue}
-          >
+          <StyledSelect onChange={handleChange} name={name} value={currentValue}>
             {options.map((optionName, i) => (
               <option key={i} value={optionName}>
                 {optionName}
@@ -42,7 +38,7 @@ const SelectInput: React.FC<SelectInputProps> = memo(
         </StyledLabel>
       </StyledInputContainer>
     );
-  }
+  },
 );
 
 const StyledInputContainer = styled.div`

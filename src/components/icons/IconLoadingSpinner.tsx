@@ -17,7 +17,7 @@ const IconLoadingSpinner: React.FC = () => {
           values="10;0"
           keySplines="0 0.5 0.5 1"
           begin="0s"
-        ></animate>
+        />
       </circle>
       <circle cx="16" cy="50" r="10" fill="var(--icon-medium-gray)">
         <animate
@@ -29,7 +29,7 @@ const IconLoadingSpinner: React.FC = () => {
           values="0;0;10;10;10"
           keySplines="0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1"
           begin="0s"
-        ></animate>
+        />
         <animate
           attributeName="cx"
           repeatCount="indefinite"
@@ -39,7 +39,7 @@ const IconLoadingSpinner: React.FC = () => {
           values="16;16;16;50;84"
           keySplines="0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1"
           begin="0s"
-        ></animate>
+        />
       </circle>
       <circle cx="50" cy="50" r="10" fill="var(--icon-medium-gray)">
         <animate
@@ -51,7 +51,7 @@ const IconLoadingSpinner: React.FC = () => {
           values="0;0;10;10;10"
           keySplines="0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1"
           begin="-0.5s"
-        ></animate>
+        />
         <animate
           attributeName="cx"
           repeatCount="indefinite"
@@ -61,7 +61,7 @@ const IconLoadingSpinner: React.FC = () => {
           values="16;16;16;50;84"
           keySplines="0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1"
           begin="-0.5s"
-        ></animate>
+        />
       </circle>
       <circle cx="84" cy="50" r="10" fill="var(--icon-medium-gray)">
         <animate
@@ -73,7 +73,7 @@ const IconLoadingSpinner: React.FC = () => {
           values="0;0;10;10;10"
           keySplines="0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1"
           begin="-1s"
-        ></animate>
+        />
         <animate
           attributeName="cx"
           repeatCount="indefinite"
@@ -83,7 +83,7 @@ const IconLoadingSpinner: React.FC = () => {
           values="16;16;16;50;84"
           keySplines="0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1"
           begin="-1s"
-        ></animate>
+        />
       </circle>
       <circle cx="16" cy="50" r="10" fill="var(--icon-medium-gray)">
         <animate
@@ -95,7 +95,7 @@ const IconLoadingSpinner: React.FC = () => {
           values="0;0;10;10;10"
           keySplines="0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1"
           begin="-1.5s"
-        ></animate>
+        />
         <animate
           attributeName="cx"
           repeatCount="indefinite"
@@ -105,7 +105,7 @@ const IconLoadingSpinner: React.FC = () => {
           values="16;16;16;50;84"
           keySplines="0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1;0 0.5 0.5 1"
           begin="-1.5s"
-        ></animate>
+        />
       </circle>
     </svg>
   );

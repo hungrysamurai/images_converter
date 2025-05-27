@@ -1,57 +1,55 @@
-import styled from "styled-components";
-import { memo } from "react";
+import styled from 'styled-components';
+import { memo } from 'react';
 
-import { Lang, Units } from "../../../types/types";
+import { Lang, Units } from '../../../types/types';
 
-import { getPDFInputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-import { useAppSelector } from "../../../store/hooks";
+import { getPDFInputSettings } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import { useAppSelector } from '../../../store/hooks';
 
-import NumberInput from "../InputComponents/NumberInput";
+import NumberInput from '../InputComponents/NumberInput';
 
 type InputSettingsProps = {
   lang: Lang;
 };
 
-const InputSettings: React.FC<InputSettingsProps> = memo(
-  function InputSettings({ lang }) {
-    const PDFInputSettings = useAppSelector(getPDFInputSettings);
+const InputSettings: React.FC<InputSettingsProps> = memo(function InputSettings({ lang }) {
+  const PDFInputSettings = useAppSelector(getPDFInputSettings);
 
-    const { resolution, rotation } = PDFInputSettings;
+  const { resolution, rotation } = PDFInputSettings;
 
-    return (
-      <StyledInputSettingsContainer>
-        {lang === Lang.EN ? (
-          <h2>PDF rasterization settings</h2>
-        ) : (
-          <h2>Настройки растрирования PDF</h2>
-        )}
-        <StyledPDFRasterizationSettingsContainer>
-          <NumberInput
-            caption={lang === Lang.EN ? "resolution" : "разрешение"}
-            units={Units.PPI}
-            active={true}
-            name="resolution"
-            currentValue={resolution}
-            min="8"
-            max="1200"
-            inputSetting={true}
-          />
-          <NumberInput
-            caption={lang === Lang.EN ? "rotation" : "поворот"}
-            units={Units.DEG}
-            active={true}
-            name="rotation"
-            currentValue={rotation}
-            min="0"
-            max="360"
-            inputSetting={true}
-            step="90"
-          />
-        </StyledPDFRasterizationSettingsContainer>
-      </StyledInputSettingsContainer>
-    );
-  }
-);
+  return (
+    <StyledInputSettingsContainer>
+      {lang === Lang.EN ? (
+        <h2>PDF rasterization settings</h2>
+      ) : (
+        <h2>Настройки растрирования PDF</h2>
+      )}
+      <StyledPDFRasterizationSettingsContainer>
+        <NumberInput
+          caption={lang === Lang.EN ? 'resolution' : 'разрешение'}
+          units={Units.PPI}
+          active={true}
+          name="resolution"
+          currentValue={resolution}
+          min="8"
+          max="1200"
+          inputSetting={true}
+        />
+        <NumberInput
+          caption={lang === Lang.EN ? 'rotation' : 'поворот'}
+          units={Units.DEG}
+          active={true}
+          name="rotation"
+          currentValue={rotation}
+          min="0"
+          max="360"
+          inputSetting={true}
+          step="90"
+        />
+      </StyledPDFRasterizationSettingsContainer>
+    </StyledInputSettingsContainer>
+  );
+});
 
 const StyledInputSettingsContainer = styled.div`
   width: 100%;

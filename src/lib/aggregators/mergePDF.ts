@@ -1,11 +1,11 @@
-import { PDFDocument, PDFImage } from "pdf-lib";
-import canvasToBlob from "../encoders/canvasToBlob";
-import { isCompressionSetting } from "../typeGuards";
-import { MIMETypes } from "../../types/types";
+import { PDFDocument, PDFImage } from 'pdf-lib';
+import canvasToBlob from '../encoders/canvasToBlob';
+import { isCompressionSetting } from '../typeGuards';
+import { MIMETypes } from '../../types/types';
 
 const mergePDF = async (
   collection: MergeCollection,
-  targetFormatSettings: OutputConversionSettings
+  targetFormatSettings: OutputConversionSettings,
 ): Promise<Blob | void> => {
   if (isCompressionSetting(targetFormatSettings)) {
     const { compression, quality } = targetFormatSettings;
@@ -46,7 +46,7 @@ const mergePDF = async (
 
     const arrayBuffer = await merged.save();
 
-    const blob = new Blob([arrayBuffer], { type: "application/pdf" });
+    const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
 
     return blob;
   }

@@ -1,10 +1,10 @@
-import styled from "styled-components";
-import { memo } from "react";
+import styled from 'styled-components';
+import { memo } from 'react';
 
-import { Lang, OutputFileFormatsNames } from "../../../types/types";
+import { Lang, OutputFileFormatsNames } from '../../../types/types';
 
-import { useAppDispatch } from "../../../store/hooks";
-import { selectTargetFormat } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+import { useAppDispatch } from '../../../store/hooks';
+import { selectTargetFormat } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
 type FormatSelectProps = {
   formats: OutputFileFormatsNames[];
@@ -22,12 +22,10 @@ const FormatSelect: React.FC<FormatSelectProps> = memo(function FormatSelect({
   return (
     <StyledFormatSelect>
       <StyledLabel>
-        {lang === "en" ? "Target format:" : "Конвертировать в:"}
+        {lang === 'en' ? 'Target format:' : 'Конвертировать в:'}
         <StyledSelect
           onChange={(e) => {
-            dispatch(
-              selectTargetFormat(e.target.value as OutputFileFormatsNames)
-            );
+            dispatch(selectTargetFormat(e.target.value as OutputFileFormatsNames));
           }}
           defaultValue={activeTargetFormatName}
         >

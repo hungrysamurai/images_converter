@@ -1,15 +1,15 @@
-import styled from "styled-components";
-import IconDownloadAll from "./icons/IconDownloadAll";
-import IconRemoveAll from "./icons/IconRemoveAll";
+import styled from 'styled-components';
+import IconDownloadAll from './icons/IconDownloadAll';
+import IconRemoveAll from './icons/IconRemoveAll';
 
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   getAllProcessedFiles,
   removeAllConvertedFiles,
   downloadAllFiles,
   isProcessingLoading,
-} from "../store/slices/processFilesSlice/processFilesSlice";
-import { ScreenOrientations } from "../types/types";
+} from '../store/slices/processFilesSlice/processFilesSlice';
+import { ScreenOrientations } from '../types/types';
 
 const DownloadPanel: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -30,13 +30,13 @@ const DownloadPanel: React.FC = () => {
       {processedFiles.length !== 0 && (
         <>
           <StyledDownloadButton
-            className={isLoading ? "disabled" : ""}
+            className={isLoading ? 'disabled' : ''}
             onClick={isLoading ? () => null : () => downloadAllProcessedFiles()}
           >
             <IconDownloadAll />
           </StyledDownloadButton>
           <StyledDownloadButton
-            className={isLoading ? "disabled" : ""}
+            className={isLoading ? 'disabled' : ''}
             onClick={isLoading ? () => null : () => removeAllProcessedFiles()}
           >
             <IconRemoveAll />

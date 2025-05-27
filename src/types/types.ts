@@ -1,94 +1,99 @@
 export enum MIMETypes {
-  JPG = "image/jpeg",
-  PNG = "image/png",
-  GIF = "image/gif",
-  WEBP = "image/webp",
-  BMP = "image/bmp",
-  TIFF = "image/tiff",
-  HEIC = "image/heic",
-  PDF = "application/pdf",
-  SVG = "image/svg+xml"
+  JPG = 'image/jpeg',
+  PNG = 'image/png',
+  GIF = 'image/gif',
+  WEBP = 'image/webp',
+  BMP = 'image/bmp',
+  TIFF = 'image/tiff',
+  HEIC = 'image/heic',
+  PDF = 'application/pdf',
+  SVG = 'image/svg+xml',
 }
 
 export enum InputFileFormatsNames {
-  JPG = "jpeg",
-  PNG = "png",
-  GIF = "gif",
-  WEBP = "webp",
-  BMP = "bmp",
-  TIFF = "tiff",
-  HEIC = "heic",
-  PDF = "pdf",
-  SVG = "svg"
+  JPG = 'jpeg',
+  PNG = 'png',
+  GIF = 'gif',
+  WEBP = 'webp',
+  BMP = 'bmp',
+  TIFF = 'tiff',
+  HEIC = 'heic',
+  PDF = 'pdf',
+  SVG = 'svg',
 }
 
 export enum OutputFileFormatsNames {
-  JPG = "jpeg",
-  PNG = "png",
-  GIF = "gif",
-  WEBP = "webp",
-  BMP = "bmp",
-  TIFF = "tiff",
-  PDF = "pdf",
+  JPG = 'jpeg',
+  PNG = 'png',
+  GIF = 'gif',
+  WEBP = 'webp',
+  BMP = 'bmp',
+  TIFF = 'tiff',
+  PDF = 'pdf',
 }
 
 export enum Lang {
-  EN = "en",
-  RU = "ru",
+  EN = 'en',
+  RU = 'ru',
 }
 
 export enum Units {
-  PIXELS = "pixels",
-  PERCENTAGES = "percentages",
-  PPI = "ppi",
-  DEG = "deg",
-  MS = "ms",
+  PIXELS = 'pixels',
+  PERCENTAGES = 'percentages',
+  PPI = 'ppi',
+  DEG = 'deg',
+  MS = 'ms',
 }
 
 export enum SmoothingPresets {
-  LOW = "low",
-  MEDIUM = "medium",
-  HIGH = "high",
-  OFF = "off",
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  OFF = 'off',
 }
 
 export enum GIFDitherOptions {
-  FloydSteinberg = "FloydSteinberg",
-  FloydSteinbergSerpentine = "FloydSteinberg-serpentine",
-  FalseFloydSteinberg = "FalseFloydSteinberg",
-  FalseFloydSteinbergSerpentine = "FalseFloydSteinberg-serpentine",
-  Stucki = "Stucki",
-  StuckiSerpentine = "Stucki-serpentine",
-  Atkinson = "Atkinson",
-  AtkinsonSerpentine = "Atkinson-serpentine",
-  OFF = "off",
+  FloydSteinberg = 'FloydSteinberg',
+  FloydSteinbergSerpentine = 'FloydSteinberg-serpentine',
+  FalseFloydSteinberg = 'FalseFloydSteinberg',
+  FalseFloydSteinbergSerpentine = 'FalseFloydSteinberg-serpentine',
+  Stucki = 'Stucki',
+  StuckiSerpentine = 'Stucki-serpentine',
+  Atkinson = 'Atkinson',
+  AtkinsonSerpentine = 'Atkinson-serpentine',
+  OFF = 'off',
 }
 
 export enum PDFCompressionTypes {
-  JPG = "jpeg",
-  PNG = "png",
+  JPG = 'jpeg',
+  PNG = 'png',
 }
 
 export enum SliderConvertModes {
-  DecimalsToPercentages = "decimalsToPercentages",
-  PercentagesToDecimals = "percentagesToDecimals",
-  GifDisplay = "gifDisplay",
-  GifState = "gifState",
+  DecimalsToPercentages = 'decimalsToPercentages',
+  PercentagesToDecimals = 'percentagesToDecimals',
+  GifDisplay = 'gifDisplay',
+  GifState = 'gifState',
 }
 
 export enum ScreenOrientations {
-  Vertical = "max-aspect-ratio: 1/1",
-  Horizontal = "min-aspect-ratio: 1/1"
+  Vertical = 'max-aspect-ratio: 1/1',
+  Horizontal = 'min-aspect-ratio: 1/1',
 }
 
 export enum FormatsWithPreview {
-  JPG = "jpeg",
-  PNG = "png",
-  GIF = "gif",
-  WEBP = "webp",
-  BMP = "bmp",
-  PDF = "pdf",
-  SVG = "svg",
+  JPG = 'jpeg',
+  PNG = 'png',
+  GIF = 'gif',
+  WEBP = 'webp',
+  BMP = 'bmp',
+  PDF = 'pdf',
+  SVG = 'svg',
+}
+
+export enum ElementColorMode {
+  Light = 'light',
+  Dark = 'dark',
 }
 
 declare global {
@@ -140,17 +145,9 @@ declare global {
     compression: PDFCompressionTypes;
   };
 
-  type SelectOptions =
-    | UnitsOption
-    | SmoothingOption
-    | DitherOption
-    | CompressionOption;
+  type SelectOptions = UnitsOption | SmoothingOption | DitherOption | CompressionOption;
 
-  type SelectOptionsValues =
-    | Units
-    | SmoothingPresets
-    | GIFDitherOptions
-    | PDFCompressionTypes;
+  type SelectOptionsValues = Units | SmoothingPresets | GIFDitherOptions | PDFCompressionTypes;
   type SelectOptionsKeys =
     | keyof UnitsOption
     | keyof SmoothingOption
@@ -195,8 +192,7 @@ declare global {
     TargetHeightOption &
     SmoothingOption;
 
-  type JPEG_WEBPOutputConversionSettings = BasicOutputConversionSettings &
-    QualityOption;
+  type JPEG_WEBPOutputConversionSettings = BasicOutputConversionSettings & QualityOption;
 
   type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings &
     DitherOption &

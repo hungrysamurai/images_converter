@@ -1,18 +1,13 @@
-import {
-  current,
-  PayloadAction,
-  asyncThunkCreator,
-  buildCreateSlice,
-} from "@reduxjs/toolkit";
+import { current, PayloadAction, asyncThunkCreator, buildCreateSlice } from '@reduxjs/toolkit';
 
-import { AppDispatch, RootState } from "../../store";
+import { AppDispatch, RootState } from '../../store';
 
-import processFile from "../../../lib/converter";
-import merge from "../../../lib/merge";
+import processFile from '../../../lib/converter';
+import merge from '../../../lib/merge';
 
-import { zipAndSave } from "../../../lib/zipAndSave";
-import { getFileFormat } from "../../../lib/helpers/getFileFormat";
-import { isMergeSetting } from "../../../lib/typeGuards";
+import { zipAndSave } from '../../../lib/zipAndSave';
+import { getFileFormat } from '../../../lib/helpers/getFileFormat';
+import { isMergeSetting } from '../../../lib/typeGuards';
 
 const createProcessFilesSlice = buildCreateSlice({
   creators: { asyncThunk: asyncThunkCreator },
@@ -24,11 +19,10 @@ const initialState: ProcessFilesState = {
 };
 
 const processFilesSlice = createProcessFilesSlice({
-  name: "processFiles",
+  name: 'processFiles',
   initialState,
 
   reducers: (create) => ({
-
     convertFiles: create.asyncThunk<void, void>(
       async (_: void, thunkApi) => {
         const state = thunkApi.getState() as RootState;
@@ -41,9 +35,11 @@ const processFilesSlice = createProcessFilesSlice({
         const { activeTargetFormatName } = outputSettings;
         const targetFormatSettings = outputSettings.settings[activeTargetFormatName];
 
-        const mergeToOne = isMergeSetting(targetFormatSettings) ? targetFormatSettings.merge : false
+        const mergeToOne = isMergeSetting(targetFormatSettings)
+          ? targetFormatSettings.merge
+          : false;
 
-        const collection: MergeCollection = []
+        const collection: MergeCollection = [];
 
         for (const source of sourceFiles) {
           try {
@@ -54,12 +50,12 @@ const processFilesSlice = createProcessFilesSlice({
               inputSettings,
               dispatch,
               mergeToOne,
-              collection
+              collection,
             );
           } catch (err) {
             console.error(
               `Error processing file ${source.name}.${getFileFormat(source.type)}:`,
-              (err as Error).message
+              (err as Error).message,
             );
           }
         }
@@ -67,10 +63,10 @@ const processFilesSlice = createProcessFilesSlice({
         if (mergeToOne) {
           try {
             if (collection.length > 0) {
-              await merge(collection, targetFormatSettings, activeTargetFormatName, dispatch)
+              await merge(collection, targetFormatSettings, activeTargetFormatName, dispatch);
             }
           } catch (err) {
-            console.error('Error merging file:', err)
+            console.error('Error merging file:', err);
           }
         }
       },
@@ -80,26 +76,26 @@ const processFilesSlice = createProcessFilesSlice({
         },
         fulfilled: (state) => {
           state.loading = false;
-        }
-      }
+        },
+      },
     ),
 
     addConvertedFile: create.reducer((state, action: PayloadAction<ProcessedFile>) => {
-      const isSameFileInState = current(state).files.some(file => file.name === action.payload.name)
+      const isSameFileInState = current(state).files.some(
+        (file) => file.name === action.payload.name,
+      );
 
       let name = action.payload.name;
 
       if (isSameFileInState) {
-        name = `${name}_${Date.now()}`
+        name = `${name}_${Date.now()}`;
       }
 
       state.files.push({ ...action.payload, name });
     }),
 
     removeConvertedFile: create.reducer((state, action: PayloadAction<string>) => {
-      const fileToRemove = current(state).files.find(
-        (el) => el.id === action.payload
-      );
+      const fileToRemove = current(state).files.find((el) => el.id === action.payload);
 
       if (fileToRemove) {
         URL.revokeObjectURL(fileToRemove.blobURL);
@@ -122,7 +118,6 @@ const processFilesSlice = createProcessFilesSlice({
       };
     }),
 
-
     downloadAllFiles: create.asyncThunk<void, void>(
       async (_: void, thunkApi) => {
         const state = thunkApi.getState() as RootState;
@@ -136,10 +131,7 @@ const processFilesSlice = createProcessFilesSlice({
         try {
           await zipAndSave(files, activeTargetFormatName);
         } catch (err) {
-          console.error(
-            `Error generating zip archive:`,
-            (err as Error).message
-          );
+          console.error(`Error generating zip archive:`, (err as Error).message);
         }
       },
       {
@@ -148,8 +140,8 @@ const processFilesSlice = createProcessFilesSlice({
         },
         fulfilled: (state) => {
           state.loading = false;
-        }
-      }
+        },
+      },
     ),
   }),
 });
@@ -159,12 +151,10 @@ export const {
   removeConvertedFile,
   removeAllConvertedFiles,
   convertFiles,
-  downloadAllFiles
+  downloadAllFiles,
 } = processFilesSlice.actions;
 
-export const getAllProcessedFiles = (state: RootState) =>
-  state.processFiles.files;
-export const isProcessingLoading = (state: RootState) =>
-  state.processFiles.loading;
+export const getAllProcessedFiles = (state: RootState) => state.processFiles.files;
+export const isProcessingLoading = (state: RootState) => state.processFiles.loading;
 
 export default processFilesSlice.reducer;

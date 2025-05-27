@@ -1,23 +1,23 @@
-import { MIMETypes, OutputFileFormatsNames } from "../types/types";
+import { MIMETypes, OutputFileFormatsNames } from '../types/types';
 
-import processSinglePageFile from "./decoders/singlePage/processSinglePageFile";
-import processMultiPagesFile from "./decoders/multiPage/processMultiPageFile";
+import processMultiPagesFile from './decoders/multiPage/processMultiPageFile';
+import processSinglePageFile from './decoders/singlePage/processSinglePageFile';
 
-import { addConvertedFile } from "../store/slices/processFilesSlice/processFilesSlice";
+import { addConvertedFile } from '../store/slices/processFilesSlice/processFilesSlice';
 
-import { nanoid } from "@reduxjs/toolkit";
-import { AppDispatch } from "../store/store";
+import { nanoid } from '@reduxjs/toolkit';
+import { AppDispatch } from '../store/store';
 
 const processFile = async (
   source: SourceFile,
   outputSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
   inputSettings: {
-    [OutputFileFormatsNames.PDF]: PDFInputSettings
+    [OutputFileFormatsNames.PDF]: PDFInputSettings;
   },
   dispatch: AppDispatch,
   mergeToOne: boolean,
-  collection: MergeCollection
+  collection: MergeCollection,
 ): Promise<void> => {
   switch (source.type) {
     case MIMETypes.JPG:
@@ -27,35 +27,31 @@ const processFile = async (
     case MIMETypes.HEIC:
     case MIMETypes.SVG:
       {
-        try {
-          const processed = await processSinglePageFile(
-            source,
-            outputSettings,
-            activeTargetFormatName,
-            mergeToOne,
-            collection
+        const processed = await processSinglePageFile(
+          source,
+          outputSettings,
+          activeTargetFormatName,
+          mergeToOne,
+          collection,
+        );
+
+        if (processed) {
+          const { name, id } = source;
+
+          const size = processed.size;
+          const URL = window.URL.createObjectURL(processed);
+
+          dispatch(
+            addConvertedFile({
+              blobURL: URL,
+              downloadLink: URL,
+              name,
+              size,
+              type: `image/${activeTargetFormatName}` as MIMETypes,
+              id: nanoid(),
+              sourceId: id,
+            }),
           );
-
-          if (processed) {
-            const { name, id } = source;
-
-            const size = processed.size;
-            const URL = window.URL.createObjectURL(processed);
-
-            dispatch(
-              addConvertedFile({
-                blobURL: URL,
-                downloadLink: URL,
-                name,
-                size,
-                type: `image/${activeTargetFormatName}` as MIMETypes,
-                id: nanoid(),
-                sourceId: id,
-              })
-            );
-          }
-        } catch (err) {
-          throw err;
         }
       }
       break;
@@ -64,19 +60,15 @@ const processFile = async (
     case MIMETypes.GIF:
     case MIMETypes.PDF:
       {
-        try {
-          await processMultiPagesFile(
-            source,
-            outputSettings,
-            activeTargetFormatName,
-            inputSettings,
-            dispatch,
-            mergeToOne,
-            collection
-          );
-        } catch (err) {
-          throw err;
-        }
+        await processMultiPagesFile(
+          source,
+          outputSettings,
+          activeTargetFormatName,
+          inputSettings,
+          dispatch,
+          mergeToOne,
+          collection,
+        );
       }
       break;
   }

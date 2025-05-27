@@ -6,9 +6,7 @@ export class CanvasToBMP {
     const w = canvas.width;
     const h = canvas.height;
     const w4 = w * 4;
-    const idata = (
-      canvas.getContext("2d") as CanvasRenderingContext2D
-    ).getImageData(0, 0, w, h);
+    const idata = (canvas.getContext('2d') as CanvasRenderingContext2D).getImageData(0, 0, w, h);
     const data32 = new Uint32Array(idata.data.buffer); // 32-bit representation of canvas
 
     const stride = Math.floor((32 * w + 31) / 32) * 4; // row length incl. padding

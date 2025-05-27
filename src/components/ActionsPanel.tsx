@@ -18,9 +18,7 @@ type ActionsPanelProps = {
   setSettingsPanelVisibility: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ActionsPanel: React.FC<ActionsPanelProps> = ({
-  setSettingsPanelVisibility,
-}) => {
+const ActionsPanel: React.FC<ActionsPanelProps> = ({ setSettingsPanelVisibility }) => {
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(isProcessingLoading);
 
@@ -28,9 +26,7 @@ const ActionsPanel: React.FC<ActionsPanelProps> = ({
     <StyledActionPanel>
       <StyledActionButton
         className={isLoading ? 'disabled' : ''}
-        onClick={
-          isLoading ? () => null : () => setSettingsPanelVisibility(true)
-        }
+        onClick={isLoading ? () => null : () => setSettingsPanelVisibility(true)}
       >
         <IconSettings />
       </StyledActionButton>

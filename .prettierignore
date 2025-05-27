@@ -1,5 +1,7 @@
 .yarn
 .next
-dist
+conver-it.ru
+___temp
 build
 node_modules
+public

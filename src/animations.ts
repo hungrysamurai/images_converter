@@ -18,19 +18,19 @@ export const settingsPanelBackgroundAnimation = {
 
 export const settingsPanelAnimation = {
   hidden: {
-    x: "100%",
+    x: '100%',
   },
   show: {
     x: 0,
     transition: {
-      type: "easeIn",
+      type: 'easeIn',
       duration: 0.2,
     },
   },
   exit: {
-    x: "100%",
+    x: '100%',
     transition: {
-      type: "easeOut",
+      type: 'easeOut',
       duration: 0.2,
     },
   },
@@ -45,7 +45,7 @@ export const fileElementAnimation = {
     y: 0,
     opacity: 1,
     transition: {
-      type: "easeIn",
+      type: 'easeIn',
       duration: 0.1,
     },
   },
@@ -53,7 +53,7 @@ export const fileElementAnimation = {
     y: 20,
     opacity: 0,
     transition: {
-      type: "easeOut",
+      type: 'easeOut',
       duration: 0.1,
     },
   },
@@ -68,16 +68,16 @@ export const filePreviewIconAnimation = {
     y: 0,
     opacity: 1,
     transition: {
-      type: "easeIn",
+      type: 'easeIn',
       duration: 0.1,
-      delay: 0.1
+      delay: 0.1,
     },
   },
   exit: {
     y: 20,
     opacity: 0,
     transition: {
-      type: "easeOut",
+      type: 'easeOut',
       duration: 0.1,
     },
   },
@@ -92,20 +92,18 @@ export const fileInfoContainerAnimation = {
     y: 0,
     opacity: 1,
     transition: {
-      type: "easeIn",
+      type: 'easeIn',
       duration: 0.1,
-      delay: 0.1
+      delay: 0.1,
     },
-
   },
   exit: {
     y: -20,
     opacity: 0,
     transition: {
-      type: "easeOut",
+      type: 'easeOut',
       duration: 0.1,
     },
-
   },
 };
 
@@ -116,14 +114,14 @@ export const fadeAnimation = {
   show: {
     opacity: 1,
     transition: {
-      type: "easeIn",
+      type: 'easeIn',
       duration: 0.2,
     },
   },
   exit: {
     opacity: 0,
     transition: {
-      type: "easeOut",
+      type: 'easeOut',
       duration: 0.2,
     },
   },

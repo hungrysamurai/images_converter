@@ -1,20 +1,16 @@
-import { PayloadAction, createSlice, current } from "@reduxjs/toolkit";
-import { initialState } from "./settings";
+import { PayloadAction, createSlice, current } from '@reduxjs/toolkit';
+import { initialState } from './settings';
 
-import {
-  GIFDitherOptions,
-  OutputFileFormatsNames,
-  SmoothingPresets,
-} from "../../../types/types";
+import { GIFDitherOptions, OutputFileFormatsNames, SmoothingPresets } from '../../../types/types';
 import {
   isUnits,
   isSmoothingOption,
   isDitherOption,
   isCompressionOption,
-} from "../../../lib/typeGuards";
+} from '../../../lib/typeGuards';
 
 export const conversionSettingsSlice = createSlice({
-  name: "conversionSettings",
+  name: 'conversionSettings',
   initialState,
   reducers: (create) => ({
     defaultActiveTargetFormat: create.reducer((state) => {
@@ -28,8 +24,7 @@ export const conversionSettingsSlice = createSlice({
       ] as CombinedOutputConversionSettings;
       const defaultInputSettings = initialState.inputSettings;
 
-      state.outputSettings.settings[activeTargetFormatName] =
-        defaultOutputSettings;
+      state.outputSettings.settings[activeTargetFormatName] = defaultOutputSettings;
       state.inputSettings = defaultInputSettings;
     }),
 
@@ -48,11 +43,9 @@ export const conversionSettingsSlice = createSlice({
       state.outputSettings.activeTargetFormatName = allFormats[newFormatIndex];
     }),
 
-    selectTargetFormat: create.reducer(
-      (state, action: PayloadAction<OutputFileFormatsNames>) => {
-        state.outputSettings.activeTargetFormatName = action.payload;
-      }
-    ),
+    selectTargetFormat: create.reducer((state, action: PayloadAction<OutputFileFormatsNames>) => {
+      state.outputSettings.activeTargetFormatName = action.payload;
+    }),
 
     updateActiveTargetFormatSliderSetting: create.reducer(
       (state, action: PayloadAction<QualityOption>) => {
@@ -67,10 +60,9 @@ export const conversionSettingsSlice = createSlice({
           activeTargetFormatName === OutputFileFormatsNames.GIF ||
           activeTargetFormatName === OutputFileFormatsNames.PDF
         ) {
-          state.outputSettings.settings[activeTargetFormatName].quality =
-            quality;
+          state.outputSettings.settings[activeTargetFormatName].quality = quality;
         }
-      }
+      },
     ),
 
     updateActiveTargetFormatSelectSetting: create.reducer(
@@ -82,16 +74,14 @@ export const conversionSettingsSlice = createSlice({
         const key = Object.keys(action.payload)[0] as SelectOptionsKeys;
         const value = Object.values(action.payload)[0] as SelectOptionsValues;
 
-        if (isUnits(value) && key === "units") {
-          state.outputSettings.settings[activeTargetFormatName].targetHeight =
-            null;
-          state.outputSettings.settings[activeTargetFormatName].targetWidth =
-            null;
+        if (isUnits(value) && key === 'units') {
+          state.outputSettings.settings[activeTargetFormatName].targetHeight = null;
+          state.outputSettings.settings[activeTargetFormatName].targetWidth = null;
 
           state.outputSettings.settings[activeTargetFormatName].units = value;
         }
 
-        if (isSmoothingOption(value) && key === "smoothing") {
+        if (isSmoothingOption(value) && key === 'smoothing') {
           state.outputSettings.settings[activeTargetFormatName].smoothing =
             value !== SmoothingPresets.OFF ? value : false;
         }
@@ -99,7 +89,7 @@ export const conversionSettingsSlice = createSlice({
         if (
           activeTargetFormatName === OutputFileFormatsNames.GIF &&
           isDitherOption(value) &&
-          key === "dither"
+          key === 'dither'
         ) {
           state.outputSettings.settings[activeTargetFormatName].dither =
             value !== GIFDitherOptions.OFF ? value : false;
@@ -108,12 +98,11 @@ export const conversionSettingsSlice = createSlice({
         if (
           activeTargetFormatName === OutputFileFormatsNames.PDF &&
           isCompressionOption(value) &&
-          key === "compression"
+          key === 'compression'
         ) {
-          state.outputSettings.settings[activeTargetFormatName].compression =
-            value;
+          state.outputSettings.settings[activeTargetFormatName].compression = value;
         }
-      }
+      },
     ),
 
     updateActiveTargetFormatNumericSetting: create.reducer(
@@ -125,18 +114,14 @@ export const conversionSettingsSlice = createSlice({
         const key = Object.keys(action.payload)[0] as NumericOptionsKeys;
         const value = Object.values(action.payload)[0] as number | null;
 
-        if (
-          key === "animationDelay" &&
-          activeTargetFormatName === OutputFileFormatsNames.GIF
-        ) {
-          state.outputSettings.settings[activeTargetFormatName].animationDelay =
-            value || 200;
+        if (key === 'animationDelay' && activeTargetFormatName === OutputFileFormatsNames.GIF) {
+          state.outputSettings.settings[activeTargetFormatName].animationDelay = value || 200;
         }
 
-        if (key === "targetHeight" || key === "targetWidth") {
+        if (key === 'targetHeight' || key === 'targetWidth') {
           state.outputSettings.settings[activeTargetFormatName][key] = value;
         }
-      }
+      },
     ),
 
     updateActiveTargetFormatToggleSetting: create.reducer(
@@ -149,38 +134,34 @@ export const conversionSettingsSlice = createSlice({
         const value = Object.values(action.payload)[0] as boolean;
 
         if (
-          key === "merge" &&
+          key === 'merge' &&
           (activeTargetFormatName === OutputFileFormatsNames.PDF ||
             activeTargetFormatName === OutputFileFormatsNames.GIF)
         ) {
           state.outputSettings.settings[activeTargetFormatName].merge = value;
         }
 
-        if (key === "resize") {
+        if (key === 'resize') {
           state.outputSettings.settings[activeTargetFormatName].resize = value;
         }
-      }
+      },
     ),
 
-    updateInputSettings: create.reducer(
-      (state, action: PayloadAction<NumericOptions>) => {
-        const key = Object.keys(action.payload)[0] as NumericOptionsKeys;
-        const value = Object.values(action.payload)[0] as number;
+    updateInputSettings: create.reducer((state, action: PayloadAction<NumericOptions>) => {
+      const key = Object.keys(action.payload)[0] as NumericOptionsKeys;
+      const value = Object.values(action.payload)[0] as number;
 
-        if (key === "resolution" || key === "rotation") {
-          state.inputSettings.pdf[key] = value;
-        }
+      if (key === 'resolution' || key === 'rotation') {
+        state.inputSettings.pdf[key] = value;
       }
-    ),
+    }),
   }),
 
   selectors: {
-    getActiveTargetFormatName: (state) =>
-      state.outputSettings.activeTargetFormatName,
+    getActiveTargetFormatName: (state) => state.outputSettings.activeTargetFormatName,
     getAllTargetFormats: (state) => state.outputSettings.allFormats,
     getActiveFormatOutputSettings: (state) => {
-      const activeTargetFormatName =
-        state.outputSettings.activeTargetFormatName;
+      const activeTargetFormatName = state.outputSettings.activeTargetFormatName;
 
       return state.outputSettings.settings[activeTargetFormatName];
     },

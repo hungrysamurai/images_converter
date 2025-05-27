@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
 const IconUpload: React.FC = () => {
   return (
@@ -18,7 +18,7 @@ const IconUpload: React.FC = () => {
       <motion.path
         animate={{ y: [0, -20, 0] }}
         transition={{
-          ease: "easeInOut",
+          ease: 'easeInOut',
           duration: 1,
           repeat: Infinity,
         }}

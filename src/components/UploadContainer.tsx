@@ -80,10 +80,7 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
 
   // handle click on upload container when some files already uploaded
   const handleContainerClick = (e: MouseEvent<HTMLDivElement>) => {
-    if (
-      filesListWrapperRef.current ===
-      (e.target as HTMLFormElement).parentElement
-    ) {
+    if (filesListWrapperRef.current === (e.target as HTMLFormElement).parentElement) {
       if (inputLabelRef.current) {
         inputLabelRef.current.click();
       }
@@ -91,13 +88,10 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
   };
 
   return (
-    <StyledUploadContainer
-      onDragEnter={handleDrag}
-      onClick={handleContainerClick}
-    >
+    <StyledUploadContainer onDragEnter={handleDrag} onClick={handleContainerClick}>
       <StyledInnerShadow
-        $brHorizontal={`var(--round-corner) 0rem 0rem var(--round-corner)`}
-        $brVertical={`var(--round-corner) var(--round-corner) 0rem 0rem`}
+        $brHorizontal="var(--round-corner) 0rem 0rem var(--round-corner)"
+        $brVertical="var(--round-corner) var(--round-corner) 0rem 0rem"
       />
       <AnimatePresence>
         {sourceFiles.length !== 0 && (
@@ -115,39 +109,27 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
       </AnimatePresence>
 
       <StyledImagesUploadForm id="form-file-upload">
-        <input
-          type="file"
-          id="input-file-upload"
-          multiple={true}
-          onChange={handleClick}
-          hidden
-        />
+        <input type="file" id="input-file-upload" multiple={true} onChange={handleClick} hidden />
 
         <label
           htmlFor="input-file-upload"
-          className={`file-upload-label ${
-            sourceFiles.length !== 0 ? 'files-added' : ''
-          }`}
+          className={`file-upload-label ${sourceFiles.length !== 0 ? 'files-added' : ''}`}
           ref={inputLabelRef}
         >
           <div>
             <h3>
               {lang === Lang.EN ? (
                 <>
-                  Drop your images here or{' '}
-                  <span className="upload-click">click</span>
+                  Drop your images here or <span className="upload-click">click</span>
                   <br />
                 </>
               ) : (
                 <>
-                  Перетащите файл в эту область или{' '}
-                  <span className="upload-click">нажмите</span>
+                  Перетащите файл в эту область или <span className="upload-click">нажмите</span>
                   <br />
                 </>
               )}
-              <span className="formats">
-                (JPEG, PNG, GIF, WEBP, BMP, TIFF, PDF, HEIC, SVG)
-              </span>
+              <span className="formats">(JPEG, PNG, GIF, WEBP, BMP, TIFF, PDF, HEIC, SVG)</span>
             </h3>
           </div>
         </label>

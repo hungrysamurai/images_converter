@@ -1,4 +1,4 @@
-import { Units, SmoothingPresets } from "../types/types";
+import { Units, SmoothingPresets } from '../types/types';
 
 export const getResizedCanvas = (
   canvas: HTMLCanvasElement,
@@ -12,8 +12,8 @@ export const getResizedCanvas = (
   const { width: srcWidth, height: srcHeight } = canvas;
   const srcAspectRatio = srcWidth / srcHeight;
 
-  const resultingCanvas = document.createElement("canvas");
-  const resultingCanvasContext = resultingCanvas.getContext("2d") as CanvasRenderingContext2D;
+  const resultingCanvas = document.createElement('canvas');
+  const resultingCanvasContext = resultingCanvas.getContext('2d') as CanvasRenderingContext2D;
 
   let resultWidth, resultHeight;
 
@@ -42,7 +42,6 @@ export const getResizedCanvas = (
   }
 
   if (resultWidth && resultHeight) {
-
     resultingCanvas.width = resultWidth;
     resultingCanvas.height = resultHeight;
 
@@ -53,7 +52,6 @@ export const getResizedCanvas = (
     }
 
     resultingCanvasContext.drawImage(canvas, 0, 0, resultWidth, resultHeight);
-
 
     return resultingCanvas;
   }

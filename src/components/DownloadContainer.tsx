@@ -1,18 +1,18 @@
-import styled from "styled-components";
-import { AnimatePresence, motion } from "framer-motion";
-import { fadeAnimation } from "../animations";
+import styled from 'styled-components';
+import { AnimatePresence, motion } from 'framer-motion';
+import { fadeAnimation } from '../animations';
 
-import { Lang, ScreenOrientations } from "../types/types";
+import { Lang, ScreenOrientations } from '../types/types';
 
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   getActiveTargetFormatName,
   switchTargetFormat,
-} from "../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-import { getAllProcessedFiles } from "../store/slices/processFilesSlice/processFilesSlice";
+} from '../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import { getAllProcessedFiles } from '../store/slices/processFilesSlice/processFilesSlice';
 
-import FilesList from "./filesList/FilesList";
-import StyledInnerShadow from "./StyledInnerShadow";
+import FilesList from './filesList/FilesList';
+import StyledInnerShadow from './StyledInnerShadow';
 
 type DownloadContainerProps = {
   lang: Lang;
@@ -27,22 +27,17 @@ const DownloadContainer: React.FC<DownloadContainerProps> = ({ lang }) => {
   return (
     <StyledDownloadContainer>
       <StyledInnerShadow
-        $brHorizontal={`0rem var(--round-corner) var(--round-corner) 0rem`}
-        $brVertical={`0rem 0rem var(--round-corner) var(--round-corner)`}
+        $brHorizontal="0rem var(--round-corner) var(--round-corner) 0rem"
+        $brVertical="0rem 0rem var(--round-corner) var(--round-corner)"
       />
       <AnimatePresence>
         {allProccecedFiles.length === 0 ? (
           <>
-            <div
-              className="placeholder"
-              onClick={() => dispatch(switchTargetFormat())}
-            >
+            <div className="placeholder" onClick={() => dispatch(switchTargetFormat())}>
               <span className="output-caption">
-                {lang === "en" ? "Output format:" : "Конвертировать в:"}
+                {lang === 'en' ? 'Output format:' : 'Конвертировать в:'}
               </span>
-              <span className="output-format">
-                {activeTargetFormatName.toUpperCase()}
-              </span>
+              <span className="output-format">{activeTargetFormatName.toUpperCase()}</span>
             </div>
           </>
         ) : (

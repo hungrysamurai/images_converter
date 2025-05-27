@@ -1,6 +1,6 @@
-import { OutputFileFormatsNames } from "../../../types/types";
-import { encode } from "../../encode";
-import { getResizedCanvas } from "../../getResizedCanvas";
+import { OutputFileFormatsNames } from '../../../types/types';
+import { encode } from '../../encode';
+import { getResizedCanvas } from '../../getResizedCanvas';
 
 interface Bitmap {
   stride: number;
@@ -31,13 +31,12 @@ const BMPToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-  mergeToOne: boolean
+  mergeToOne: boolean,
 ): Promise<Blob | HTMLCanvasElement | void> => {
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
 
-  const { resize, units, smoothing, targetHeight, targetWidth } =
-    targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
   const dataView = new DataView(arrayBuffer);
   const bitmap: Bitmap = {
@@ -85,13 +84,11 @@ const BMPToFile = async (
 
   const start = bitmap.fileheader.bfOffBits;
   bitmap.stride =
-    Math.floor(
-      (bitmap.infoheader.biBitCount * bitmap.infoheader.biWidth + 31) / 32
-    ) * 4;
+    Math.floor((bitmap.infoheader.biBitCount * bitmap.infoheader.biWidth + 31) / 32) * 4;
   bitmap.pixels = new Uint8ClampedArray(arrayBuffer, start);
 
-  let canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+  let canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
   const width = bitmap.infoheader.biWidth;
   const height = bitmap.infoheader.biHeight;
@@ -107,8 +104,8 @@ const BMPToFile = async (
 
   for (let y = 0; y < height; ++y) {
     for (let x = 0; x < width; ++x) {
-      let index1 = (x + width * (height - y)) * 4;
-      let index2 = x * 3 + stride * y;
+      const index1 = (x + width * (height - y)) * 4;
+      const index2 = x * 3 + stride * y;
       data[index1] = bmpdata[index2 + 2];
       data[index1 + 1] = bmpdata[index2 + 1];
       data[index1 + 2] = bmpdata[index2];
@@ -119,23 +116,13 @@ const BMPToFile = async (
   ctx.putImageData(imageData, 0, 0);
 
   if (resize) {
-    canvas = getResizedCanvas(
-      canvas,
-      smoothing,
-      units,
-      targetWidth,
-      targetHeight
-    );
+    canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
   }
 
   if (mergeToOne) {
     return canvas;
   } else {
-    const encoded = encode(
-      canvas,
-      targetFormatSettings,
-      activeTargetFormatName
-    );
+    const encoded = encode(canvas, targetFormatSettings, activeTargetFormatName);
     if (encoded) {
       return encoded;
     }

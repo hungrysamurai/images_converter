@@ -1,9 +1,9 @@
-import GIF from "gif.js";
-import { isDitherSetting } from "../typeGuards";
+import GIF from 'gif.js';
+import { isDitherSetting } from '../typeGuards';
 
 const encodeGIF = async (
   canvas: HTMLCanvasElement,
-  targetFormatSettings: OutputConversionSettings
+  targetFormatSettings: OutputConversionSettings,
 ): Promise<Blob | void> => {
   if (isDitherSetting(targetFormatSettings)) {
     const { quality, dither } = targetFormatSettings;
@@ -12,9 +12,7 @@ const encodeGIF = async (
       const options = {
         workers: 2,
         quality,
-        workerScript: `${
-          import.meta.env.BASE_URL
-        }/assets/workers/gif.worker.js`,
+        workerScript: `${import.meta.env.BASE_URL}/assets/workers/gif.worker.js`,
         dither,
       };
 
@@ -22,7 +20,7 @@ const encodeGIF = async (
 
       gif.addFrame(canvas);
 
-      gif.on("finished", function (blob: Blob) {
+      gif.on('finished', function (blob: Blob) {
         resolve(blob);
       });
 

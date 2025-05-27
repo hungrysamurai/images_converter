@@ -1,4 +1,4 @@
-import { ElementColorMode } from '../filesList/FileElement';
+import { ElementColorMode } from '../../types/types';
 
 type IconProp = {
   fillColor: ElementColorMode;
@@ -6,13 +6,7 @@ type IconProp = {
 
 const IconPreviewFile: React.FC<IconProp> = ({ fillColor }) => {
   return (
-    <svg
-      width="52"
-      height="38"
-      viewBox="0 0 52 38"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="52" height="38" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

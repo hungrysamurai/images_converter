@@ -14,8 +14,7 @@ const HEICToFile = async (
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
 
-  const { resize, units, smoothing, targetHeight, targetWidth } =
-    targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
   try {
     const decoder = new libheif.HeifDecoder();
@@ -47,23 +46,13 @@ const HEICToFile = async (
         ctx.putImageData(imageData, 0, 0);
 
         if (resize) {
-          canvas = getResizedCanvas(
-            canvas,
-            smoothing,
-            units,
-            targetWidth,
-            targetHeight,
-          );
+          canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
         }
 
         if (mergeToOne) {
           resolve(canvas);
         } else {
-          const encoded = encode(
-            canvas,
-            targetFormatSettings,
-            activeTargetFormatName,
-          );
+          const encoded = encode(canvas, targetFormatSettings, activeTargetFormatName);
 
           if (encoded) {
             resolve(encoded);
@@ -90,23 +79,13 @@ const HEICToFile = async (
             ctx.drawImage(img, 0, 0);
 
             if (resize) {
-              canvas = getResizedCanvas(
-                canvas,
-                smoothing,
-                units,
-                targetWidth,
-                targetHeight,
-              );
+              canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
             }
 
             if (mergeToOne) {
               resolve(canvas);
             } else {
-              const encoded = await encode(
-                canvas,
-                targetFormatSettings,
-                activeTargetFormatName,
-              );
+              const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
               if (encoded) {
                 resolve(encoded);
               }

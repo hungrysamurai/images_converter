@@ -1,15 +1,12 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import { getConvertedValue } from "../../../lib/getConvertedValue";
+import { getConvertedValue } from '../../../lib/getConvertedValue';
 
-import { useAppDispatch } from "../../../store/hooks";
+import { useAppDispatch } from '../../../store/hooks';
 
-import { updateActiveTargetFormatSliderSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-import {
-  OutputFileFormatsNames,
-  SliderConvertModes,
-} from "../../../types/types";
-import React, { ChangeEvent, memo } from "react";
+import { updateActiveTargetFormatSliderSetting } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import { OutputFileFormatsNames, SliderConvertModes } from '../../../types/types';
+import React, { ChangeEvent, memo } from 'react';
 
 type SliderInputProps = {
   label: string;
@@ -41,19 +38,13 @@ const SliderInput: React.FC<SliderInputProps> = memo(
         ? SliderConvertModes.PercentagesToDecimals
         : SliderConvertModes.GifState;
 
-    const convertedValue = getConvertedValue(
-      currentValue,
-      displayValuesConversionMode
-    );
+    const convertedValue = getConvertedValue(currentValue, displayValuesConversionMode);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
       dispatch(
         updateActiveTargetFormatSliderSetting({
-          [name]: getConvertedValue(
-            Number(e.target.value),
-            stateValuesConversionMode
-          ),
-        })
+          [name]: getConvertedValue(Number(e.target.value), stateValuesConversionMode),
+        }),
       );
     };
 
@@ -74,7 +65,7 @@ const SliderInput: React.FC<SliderInputProps> = memo(
         <StyledSliderDisplayValue>{convertedValue}</StyledSliderDisplayValue>
       </StyledSliderContainer>
     );
-  }
+  },
 );
 
 const StyledSliderContainer = styled.div`

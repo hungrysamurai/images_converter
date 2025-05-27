@@ -1,12 +1,12 @@
-import styled from "styled-components";
-import React, { ChangeEvent, memo } from "react";
+import styled from 'styled-components';
+import React, { ChangeEvent, memo } from 'react';
 
-import { Units } from "../../../types/types";
+import { Units } from '../../../types/types';
 
-import { useAppDispatch } from "../../../store/hooks";
-import { updateActiveTargetFormatNumericSetting } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-import { updateInputSettings } from "../../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
-import getClosestMatchedValue from "../../../lib/helpers/getClosestMatchesValue";
+import { useAppDispatch } from '../../../store/hooks';
+import { updateActiveTargetFormatNumericSetting } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import { updateInputSettings } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import getClosestMatchedValue from '../../../lib/helpers/getClosestMatchesValue';
 
 type NumberInputProps = {
   caption: string;
@@ -21,21 +21,11 @@ type NumberInputProps = {
 };
 
 const NumberInput: React.FC<NumberInputProps> = memo(
-  ({
-    caption,
-    units,
-    min,
-    max,
-    name,
-    active,
-    currentValue,
-    inputSetting,
-    step,
-  }) => {
+  ({ caption, units, min, max, name, active, currentValue, inputSetting, step }) => {
     const dispatch = useAppDispatch();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      let newValue = Number(e.target.value);
+      const newValue = Number(e.target.value);
       if (newValue < 0 || newValue > Number(max)) return;
 
       updateState(newValue);
@@ -43,11 +33,7 @@ const NumberInput: React.FC<NumberInputProps> = memo(
 
     const checkValue = () => {
       if (step) {
-        const newValue = getClosestMatchedValue(
-          currentValue as number,
-          Number(max),
-          Number(step)
-        );
+        const newValue = getClosestMatchedValue(currentValue as number, Number(max), Number(step));
 
         updateState(newValue);
       }
@@ -58,47 +44,41 @@ const NumberInput: React.FC<NumberInputProps> = memo(
         dispatch(
           updateInputSettings({
             [name]: value,
-          } as NumericOptions)
+          } as NumericOptions),
         );
       } else {
         dispatch(
           updateActiveTargetFormatNumericSetting({
             [name]: value,
-          } as NumericOptions)
+          } as NumericOptions),
         );
       }
     };
 
     return (
-      <StyledNumberContainer className={!active ? "inactive" : ""}>
+      <StyledNumberContainer className={!active ? 'inactive' : ''}>
         <StyledNumberInput
           type="number"
-          placeholder={currentValue ? currentValue.toString() : "auto"}
-          value={currentValue ? currentValue : ""}
+          placeholder={currentValue ? currentValue.toString() : 'auto'}
+          value={currentValue ? currentValue : ''}
           onChange={handleChange}
           onBlur={checkValue}
-          max={max ? max : ""}
-          min={min ? min : "1"}
+          max={max ? max : ''}
+          min={min ? min : '1'}
           name={name}
-          step={step ? step : ""}
+          step={step ? step : ''}
         />
 
-        {caption && (
-          <StyledNumberInputCaption>{caption}</StyledNumberInputCaption>
-        )}
+        {caption && <StyledNumberInputCaption>{caption}</StyledNumberInputCaption>}
 
         {units && (
           <StyledInputUnitsLabel>
-            {units === Units.PIXELS
-              ? "px"
-              : units === Units.PERCENTAGES
-              ? "%"
-              : units}
+            {units === Units.PIXELS ? 'px' : units === Units.PERCENTAGES ? '%' : units}
           </StyledInputUnitsLabel>
         )}
       </StyledNumberContainer>
     );
-  }
+  },
 );
 
 const StyledNumberContainer = styled.label`

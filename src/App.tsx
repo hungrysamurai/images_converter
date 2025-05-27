@@ -13,7 +13,7 @@ import SettingsPanelWrapper from './components/settingsPanel/SettingsPanelWrappe
 
 import { getNavigatorLang } from './lib/getNavigatorLang';
 
-function App() {
+const App = () => {
   const [settingsPanelVisibility, setSettingsPanelVisibility] = useState(false);
   const [lang] = useState(() => getNavigatorLang());
 
@@ -43,7 +43,7 @@ function App() {
       )}
     </>
   );
-}
+};
 
 const StyledMainContainer = styled.div`
   width: 100dvw;

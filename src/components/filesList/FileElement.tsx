@@ -1,9 +1,9 @@
-import styled from 'styled-components';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
+import styled from 'styled-components';
 
 import { memo, useState } from 'react';
 
-import { InputFileFormatsNames } from '../../types/types';
+import { ElementColorMode, InputFileFormatsNames } from '../../types/types';
 
 import {
   fileElementAnimation,
@@ -12,13 +12,13 @@ import {
 } from '../../animations';
 
 import { useAppDispatch } from '../../store/hooks';
-import { removeSourceFile } from '../../store/slices/sourceFilesSlice/sourceFilesSlice';
 import { removeConvertedFile } from '../../store/slices/processFilesSlice/processFilesSlice';
+import { removeSourceFile } from '../../store/slices/sourceFilesSlice/sourceFilesSlice';
 
-import IconRemoveElement from '../icons/IconRemoveElement';
-import IconDownloadElement from '../icons/IconDownloadElement';
 import { isPreviewFormat } from '../../lib/typeGuards';
+import IconDownloadElement from '../icons/IconDownloadElement';
 import IconPreviewFile from '../icons/IconPreviewFile';
+import IconRemoveElement from '../icons/IconRemoveElement';
 
 type FileElementProps = {
   id: string;
@@ -28,11 +28,6 @@ type FileElementProps = {
   downloadLink?: string;
   souceFileLink?: string;
 };
-
-export enum ElementColorMode {
-  Light = 'light',
-  Dark = 'dark',
-}
 
 const elementsColor = {
   pdf: ElementColorMode.Dark,
@@ -89,9 +84,7 @@ const FileElement: React.FC<FileElementProps> = memo(
         )}
 
         <AnimatePresence initial={false}>
-          {previewBtn &&
-          isPreviewFormat(format) &&
-          (downloadLink || souceFileLink) ? (
+          {previewBtn && isPreviewFormat(format) && (downloadLink || souceFileLink) ? (
             <StyledFilePreview
               variants={filePreviewIconAnimation}
               initial="hidden"
@@ -99,10 +92,7 @@ const FileElement: React.FC<FileElementProps> = memo(
               exit="exit"
               key="file-preview-icon"
             >
-              <a
-                href={downloadLink ? downloadLink : souceFileLink}
-                target="_blank"
-              >
+              <a href={downloadLink ? downloadLink : souceFileLink} target="_blank">
                 <IconPreviewFile fillColor={elementsColor[format]} />
               </a>
             </StyledFilePreview>
@@ -135,12 +125,10 @@ interface StyledFileInfoProps extends HTMLMotionProps<'div'> {
   $color: ElementColorMode;
 }
 
-const StyledFileElement = styled(motion.div).attrs<StyledFileElementProps>(
-  ({ $bg, $color }) => ({
-    $bg: $bg,
-    $color: $color,
-  }),
-)<StyledFileElementProps>`
+const StyledFileElement = styled(motion.div).attrs<StyledFileElementProps>(({ $bg, $color }) => ({
+  $bg: $bg,
+  $color: $color,
+}))<StyledFileElementProps>`
   width: 6rem;
   height: 6rem;
   padding: 0.125rem;
@@ -171,11 +159,9 @@ const StyledFileElement = styled(motion.div).attrs<StyledFileElementProps>(
   }
 `;
 
-const StyledFileInfo = styled(motion.div).attrs<StyledFileInfoProps>(
-  ({ $color }) => ({
-    $color: $color,
-  }),
-)<StyledFileInfoProps>`
+const StyledFileInfo = styled(motion.div).attrs<StyledFileInfoProps>(({ $color }) => ({
+  $color: $color,
+}))<StyledFileInfoProps>`
   height: 100%;
 
   display: flex;

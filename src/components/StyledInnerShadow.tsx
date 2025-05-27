@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { ScreenOrientations } from "../types/types";
+import styled from 'styled-components';
+import { ScreenOrientations } from '../types/types';
 
 const StyledInnerShadow = styled.div.attrs<{
   $brVertical: string;

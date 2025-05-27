@@ -1,14 +1,14 @@
 import { degrees, PDFDocument } from 'pdf-lib';
-import * as PDFJS from "pdfjs-dist";
+import * as PDFJS from 'pdfjs-dist';
 
-import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
+import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
 
-import { nanoid } from "@reduxjs/toolkit";
+import { nanoid } from '@reduxjs/toolkit';
 
-import { AppDispatch } from "../../../store/store";
-import { addConvertedFile } from "../../../store/slices/processFilesSlice/processFilesSlice";
+import { AppDispatch } from '../../../store/store';
+import { addConvertedFile } from '../../../store/slices/processFilesSlice/processFilesSlice';
 
-import { encode } from "../../encode";
+import { encode } from '../../encode';
 import { getResizedCanvas } from '../../getResizedCanvas';
 
 const PDFToFiles = async (
@@ -18,7 +18,7 @@ const PDFToFiles = async (
   inputSettings: { [OutputFileFormatsNames.PDF]: PDFInputSettings },
   dispatch: AppDispatch,
   mergeToOne: boolean,
-  collection: MergeCollection
+  collection: MergeCollection,
 ) => {
   const { blobURL, id, name } = source;
 
@@ -26,8 +26,7 @@ const PDFToFiles = async (
     pdf: { resolution, rotation },
   } = inputSettings;
 
-  const { resize, units, smoothing, targetHeight, targetWidth } =
-    targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
   // Don't rasterize PDF Source, just split it!
   if (activeTargetFormatName === OutputFileFormatsNames.PDF && !targetFormatSettings.resize) {
@@ -37,24 +36,26 @@ const PDFToFiles = async (
     const pdfDoc = await PDFDocument.load(arrayBuffer);
     const pages = pdfDoc.getPages();
 
-    const arrays = await Promise.all(pages.map(async (_, index) => {
-      const newDocument = await PDFDocument.create();
-      const [copiedPage] = await newDocument.copyPages(pdfDoc, [index]);
+    const arrays = await Promise.all(
+      pages.map(async (_, index) => {
+        const newDocument = await PDFDocument.create();
+        const [copiedPage] = await newDocument.copyPages(pdfDoc, [index]);
 
-      copiedPage.setRotation(degrees(rotation))
+        copiedPage.setRotation(degrees(rotation));
 
-      // if (targetFormatSettings.resize) {
-      //   const mediaBox = copiedPage.getCropBox()
-      //   copiedPage.setHeight(targetFormatSettings.targetHeight)
-      //   copiedPage.setWidth(targetFormatSettings.targetWidth)
-      // }
-      newDocument.addPage(copiedPage);
+        // if (targetFormatSettings.resize) {
+        //   const mediaBox = copiedPage.getCropBox()
+        //   copiedPage.setHeight(targetFormatSettings.targetHeight)
+        //   copiedPage.setWidth(targetFormatSettings.targetWidth)
+        // }
+        newDocument.addPage(copiedPage);
 
-      return await newDocument.save();
-    }));
+        return await newDocument.save();
+      }),
+    );
 
     arrays.forEach((arr, i) => {
-      const blob = new Blob([arr], { type: 'application/pdf' })
+      const blob = new Blob([arr], { type: 'application/pdf' });
       const URL = window.URL.createObjectURL(blob);
       const size = blob.size;
 
@@ -70,10 +71,10 @@ const PDFToFiles = async (
             type: `image/${activeTargetFormatName}` as MIMETypes,
             id: nanoid(),
             sourceId: id,
-          })
+          }),
         );
       }
-    })
+    });
   } else {
     PDFJS.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}/assets/workers/pdf.worker.js`;
 
@@ -92,8 +93,8 @@ const PDFToFiles = async (
         dontFlip: false,
       });
 
-      let canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+      let canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
       canvas.height = viewport.height;
       canvas.width = viewport.width;
@@ -106,23 +107,13 @@ const PDFToFiles = async (
       await page.render(renderContext).promise;
 
       if (resize) {
-        canvas = getResizedCanvas(
-          canvas,
-          smoothing,
-          units,
-          targetWidth,
-          targetHeight,
-        );
+        canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
       }
 
       if (mergeToOne) {
-        collection.push(canvas)
+        collection.push(canvas);
       } else {
-        const encoded = await encode(
-          canvas,
-          targetFormatSettings,
-          activeTargetFormatName
-        );
+        const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
 
         if (encoded) {
           const size = encoded.size;
@@ -137,13 +128,12 @@ const PDFToFiles = async (
               type: `image/${activeTargetFormatName}` as MIMETypes,
               id: nanoid(),
               sourceId: id,
-            })
+            }),
           );
         }
       }
     }
   }
 };
-
 
 export default PDFToFiles;

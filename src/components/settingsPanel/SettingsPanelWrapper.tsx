@@ -1,22 +1,22 @@
-import styled from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
-import { MutableRefObject, useRef } from "react";
+import styled from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MutableRefObject, useRef } from 'react';
 
-import { Lang } from "../../types/types";
+import { Lang } from '../../types/types';
 
-import { fadeAnimation, settingsPanelAnimation } from "../../animations";
+import { fadeAnimation, settingsPanelAnimation } from '../../animations';
 
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { checkPDFInSourceFiles } from "../../store/slices/sourceFilesSlice/sourceFilesSlice";
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { checkPDFInSourceFiles } from '../../store/slices/sourceFilesSlice/sourceFilesSlice';
 import {
   getAllTargetFormats,
   getActiveTargetFormatName,
   defaultActiveTargetFormat,
-} from "../../store/slices/conversionSettingsSlice/conversionSettingsSlice";
+} from '../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
-import IconCloseSettingsPanel from "../icons/IconCloseSettingsPanel";
-import SettingsPanelBody from "./SettingsPanelBody";
-import useOutsideClick from "../../hooks/useOutsideClick";
+import IconCloseSettingsPanel from '../icons/IconCloseSettingsPanel';
+import SettingsPanelBody from './SettingsPanelBody';
+import useOutsideClick from '../../hooks/useOutsideClick';
 
 type SettingsPanelWrapperType = {
   setSettingsPanelVisibility: React.Dispatch<React.SetStateAction<boolean>>;
@@ -62,9 +62,7 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
             ref={panelRef}
           >
             <StyledCloseSettingsPanelHeader>
-              <StyledCloseSettingsPanelButton
-                onClick={() => setSettingsPanelVisibility(false)}
-              >
+              <StyledCloseSettingsPanelButton onClick={() => setSettingsPanelVisibility(false)}>
                 <IconCloseSettingsPanel />
               </StyledCloseSettingsPanelButton>
               {lang === Lang.EN ? <h1>Output settings</h1> : <h1>Настройки</h1>}
@@ -77,10 +75,8 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
               activeTargetFormatName={activeTargetFormatName}
             />
 
-            <StyledDefaultButton
-              onClick={() => dispatch(defaultActiveTargetFormat())}
-            >
-              {lang === Lang.EN ? "Default Settings" : "Сбросить настройки"}
+            <StyledDefaultButton onClick={() => dispatch(defaultActiveTargetFormat())}>
+              {lang === Lang.EN ? 'Default Settings' : 'Сбросить настройки'}
             </StyledDefaultButton>
           </StyledSettingsPanel>
         </>

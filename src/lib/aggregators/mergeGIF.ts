@@ -1,9 +1,9 @@
-import GIF from "gif.js";
-import { isDitherSetting } from "../typeGuards";
+import GIF from 'gif.js';
+import { isDitherSetting } from '../typeGuards';
 
 const mergeGIF = async (
   collection: MergeCollection,
-  targetFormatSettings: OutputConversionSettings
+  targetFormatSettings: OutputConversionSettings,
 ): Promise<Blob | void> => {
   if (isDitherSetting(targetFormatSettings)) {
     return new Promise((resolve) => {
@@ -12,9 +12,7 @@ const mergeGIF = async (
       const options = {
         workers: 4,
         quality,
-        workerScript: `${
-          import.meta.env.BASE_URL
-        }/assets/workers/gif.worker.js`,
+        workerScript: `${import.meta.env.BASE_URL}/assets/workers/gif.worker.js`,
         dither,
         repeat: 0,
       };
@@ -27,7 +25,7 @@ const mergeGIF = async (
         }
       });
 
-      gif.on("finished", function (blob: Blob) {
+      gif.on('finished', function (blob: Blob) {
         resolve(blob);
       });
 

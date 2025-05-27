@@ -1,8 +1,8 @@
-import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
-import { AppDispatch } from "../../../store/store";
+import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
+import { AppDispatch } from '../../../store/store';
 
-import TIFFToFiles from "./TIFFToFiles";
-import GIFToFiles from "./GIFToFiles";
+import TIFFToFiles from './TIFFToFiles';
+import GIFToFiles from './GIFToFiles';
 import PDFToFiles from './PDFToFiles';
 
 const processMultiPagesFile = async (
@@ -10,11 +10,11 @@ const processMultiPagesFile = async (
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
   inputSettings: {
-    [OutputFileFormatsNames.PDF]: PDFInputSettings
+    [OutputFileFormatsNames.PDF]: PDFInputSettings;
   },
   dispatch: AppDispatch,
   mergeToOne: boolean,
-  collection: MergeCollection
+  collection: MergeCollection,
 ) => {
   const { type: srcType } = source;
 
@@ -27,7 +27,7 @@ const processMultiPagesFile = async (
           activeTargetFormatName,
           dispatch,
           mergeToOne,
-          collection
+          collection,
         );
       }
       break;
@@ -39,7 +39,7 @@ const processMultiPagesFile = async (
           activeTargetFormatName,
           dispatch,
           mergeToOne,
-          collection
+          collection,
         );
       }
       break;
@@ -52,7 +52,7 @@ const processMultiPagesFile = async (
         inputSettings,
         dispatch,
         mergeToOne,
-        collection
+        collection,
       );
     }
   }

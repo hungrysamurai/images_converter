@@ -1,13 +1,13 @@
-import { parseGIF, decompressFrames } from "gifuct-js";
-import { nanoid } from "@reduxjs/toolkit";
+import { parseGIF, decompressFrames } from 'gifuct-js';
+import { nanoid } from '@reduxjs/toolkit';
 
-import { MIMETypes, OutputFileFormatsNames } from "../../../types/types";
+import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
 
-import { AppDispatch } from "../../../store/store";
-import { addConvertedFile } from "../../../store/slices/processFilesSlice/processFilesSlice";
+import { AppDispatch } from '../../../store/store';
+import { addConvertedFile } from '../../../store/slices/processFilesSlice/processFilesSlice';
 
-import { encode } from "../../encode";
-import { getResizedCanvas } from "../../getResizedCanvas";
+import { encode } from '../../encode';
+import { getResizedCanvas } from '../../getResizedCanvas';
 
 const GIFToFiles = async (
   source: SourceFile,
@@ -15,15 +15,14 @@ const GIFToFiles = async (
   activeTargetFormatName: OutputFileFormatsNames,
   dispatch: AppDispatch,
   mergeToOne: boolean,
-  collection: MergeCollection
+  collection: MergeCollection,
 ): Promise<void> => {
   const { blobURL, id, name } = source;
 
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
 
-  const { resize, units, smoothing, targetHeight, targetWidth } =
-    targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
   const gif = parseGIF(arrayBuffer);
   const frames = decompressFrames(gif, true);
@@ -36,14 +35,10 @@ const GIFToFiles = async (
   for (const [index, frame] of frames.entries()) {
     const { width: frameWidth, height: frameHeight, top, left } = frame.dims;
 
-    const imageData = new ImageData(
-      new Uint8ClampedArray(frame.patch),
-      frameWidth,
-      frameHeight
-    );
+    const imageData = new ImageData(new Uint8ClampedArray(frame.patch), frameWidth, frameHeight);
 
-    let canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    let canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
     canvas.width = width;
     canvas.height = height;
@@ -51,23 +46,13 @@ const GIFToFiles = async (
     ctx.putImageData(imageData, top, left);
 
     if (resize) {
-      canvas = getResizedCanvas(
-        canvas,
-        smoothing,
-        units,
-        targetWidth,
-        targetHeight,
-      );
+      canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
     }
 
     if (mergeToOne) {
-      collection.push(canvas)
+      collection.push(canvas);
     } else {
-      const encoded = await encode(
-        canvas,
-        targetFormatSettings,
-        activeTargetFormatName
-      );
+      const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
 
       if (encoded) {
         const size = encoded.size;
@@ -82,12 +67,11 @@ const GIFToFiles = async (
             type: `image/${activeTargetFormatName}` as MIMETypes,
             id: nanoid(),
             sourceId: id,
-          })
+          }),
         );
       }
     }
   }
 };
 
-
-export default GIFToFiles
+export default GIFToFiles;

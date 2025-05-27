@@ -1,38 +1,35 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import {
-  persistStore,
-  persistReducer,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
+  persistReducer,
+  persistStore,
   PURGE,
   REGISTER,
-} from "redux-persist";
-import storage from "redux-persist/lib/storage";
+  REHYDRATE,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-import sourceFilesReducer from "./slices/sourceFilesSlice/sourceFilesSlice";
-import conversionSettingsReducer from "./slices/conversionSettingsSlice/conversionSettingsSlice";
-import processFilesReducer from "./slices/processFilesSlice/processFilesSlice";
+import conversionSettingsReducer from './slices/conversionSettingsSlice/conversionSettingsSlice';
+import processFilesReducer from './slices/processFilesSlice/processFilesSlice';
+import sourceFilesReducer from './slices/sourceFilesSlice/sourceFilesSlice';
 
 const persistConfig = {
-  key: "root",
+  key: 'root',
   storage,
-  blacklist: ["sourceFiles", "processFiles"],
+  blacklist: ['sourceFiles', 'processFiles'],
 };
 
 const conversionSettingsPersistConfig = {
-  key: "conversionSettings",
+  key: 'conversionSettings',
   storage,
 };
 
 const rootReducer = combineReducers({
   sourceFiles: sourceFilesReducer,
-  conversionSettings: persistReducer(
-    conversionSettingsPersistConfig,
-    conversionSettingsReducer
-  ),
+  conversionSettings: persistReducer(conversionSettingsPersistConfig, conversionSettingsReducer),
   processFiles: processFilesReducer,
 });
 
