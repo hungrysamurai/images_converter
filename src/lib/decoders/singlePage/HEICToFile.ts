@@ -3,7 +3,7 @@ import libheif from 'libheif-js/wasm-bundle';
 import { OutputFileFormatsNames } from '../../../types/types';
 
 import { encode } from '../../encode';
-import { getResizedCanvas } from '../../getResizedCanvas';
+import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
 const HEICToFile = async (
   blobURL: string,

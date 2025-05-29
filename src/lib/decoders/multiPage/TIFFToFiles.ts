@@ -3,11 +3,11 @@ import UTIF from 'utif';
 import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
 
 import { nanoid } from '@reduxjs/toolkit';
-import { AppDispatch } from '../../../store/store';
 import { addConvertedFile } from '../../../store/slices/processFilesSlice/processFilesSlice';
+import { AppDispatch } from '../../../store/store';
 
 import { encode } from '../../encode';
-import { getResizedCanvas } from '../../getResizedCanvas';
+import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
 const TIFFToFiles = async (
   source: SourceFile,

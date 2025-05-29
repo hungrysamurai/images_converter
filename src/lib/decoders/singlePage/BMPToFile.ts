@@ -1,6 +1,6 @@
 import { OutputFileFormatsNames } from '../../../types/types';
 import { encode } from '../../encode';
-import { getResizedCanvas } from '../../getResizedCanvas';
+import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
 interface Bitmap {
   stride: number;

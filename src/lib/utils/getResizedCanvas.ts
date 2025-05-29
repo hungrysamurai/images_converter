@@ -1,4 +1,4 @@
-import { Units, SmoothingPresets } from '../types/types';
+import { SmoothingPresets, Units } from '../../types/types';
 
 export const getResizedCanvas = (
   canvas: HTMLCanvasElement,

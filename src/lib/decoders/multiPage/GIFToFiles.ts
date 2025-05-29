@@ -1,13 +1,13 @@
-import { parseGIF, decompressFrames } from 'gifuct-js';
 import { nanoid } from '@reduxjs/toolkit';
+import { decompressFrames, parseGIF } from 'gifuct-js';
 
 import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
 
-import { AppDispatch } from '../../../store/store';
 import { addConvertedFile } from '../../../store/slices/processFilesSlice/processFilesSlice';
+import { AppDispatch } from '../../../store/store';
 
 import { encode } from '../../encode';
-import { getResizedCanvas } from '../../getResizedCanvas';
+import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
 const GIFToFiles = async (
   source: SourceFile,

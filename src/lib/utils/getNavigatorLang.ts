@@ -1,4 +1,4 @@
-import { Lang } from '../types/types';
+import { Lang } from '../../types/types';
 
 export const getNavigatorLang = (): Lang => {
   const navigatorLang = navigator.language.split('-')[0];

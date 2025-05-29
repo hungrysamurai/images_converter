@@ -1,6 +1,6 @@
 import { OutputFileFormatsNames } from '../../../types/types';
 import { encode } from '../../encode';
-import { getResizedCanvas } from '../../getResizedCanvas';
+import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
 export const JPEG_WEBP_PNG_ToFile = async (
   blobURL: string,
