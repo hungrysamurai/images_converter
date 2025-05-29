@@ -1,24 +1,24 @@
-import styled from 'styled-components';
 import React, { memo } from 'react';
+import styled from 'styled-components';
 
 import {
-  Lang,
   GIFDitherOptions,
+  Lang,
   OutputFileFormatsNames,
   PDFCompressionTypes,
-  Units,
   SmoothingPresets,
+  Units,
 } from '../../../types/types';
 
 import { useAppSelector } from '../../../store/hooks';
 import { getActiveFormatOutputSettings } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
 import CheckboxInput from '../InputComponents/CheckboxInput';
-import SelectInput from '../InputComponents/SelectInput';
 import NumberInput from '../InputComponents/NumberInput';
+import SelectInput from '../InputComponents/SelectInput';
 import SliderInput from '../InputComponents/SliderInput';
 
-import { isDitherSetting, isCompressionSetting, isQualitySetting } from '../../../lib/typeGuards';
+import { isCompressionSetting, isDitherSetting, isQualitySetting } from '../../../types/typeGuards';
 
 type OutputSettingsType = {
   lang: Lang;

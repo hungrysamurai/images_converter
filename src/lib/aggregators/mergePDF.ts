@@ -1,7 +1,7 @@
 import { PDFDocument, PDFImage } from 'pdf-lib';
-import canvasToBlob from '../encoders/canvasToBlob';
-import { isCompressionSetting } from '../typeGuards';
+import { isCompressionSetting } from '../../types/typeGuards';
 import { MIMETypes } from '../../types/types';
+import canvasToBlob from '../encoders/canvasToBlob';
 
 const mergePDF = async (
   collection: MergeCollection,

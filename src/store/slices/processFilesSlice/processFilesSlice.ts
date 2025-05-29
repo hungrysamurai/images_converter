@@ -1,13 +1,13 @@
-import { current, PayloadAction, asyncThunkCreator, buildCreateSlice } from '@reduxjs/toolkit';
+import { asyncThunkCreator, buildCreateSlice, current, PayloadAction } from '@reduxjs/toolkit';
 
 import { AppDispatch, RootState } from '../../store';
 
 import processFile from '../../../lib/converter';
 import merge from '../../../lib/merge';
 
-import { zipAndSave } from '../../../lib/zipAndSave';
-import { getFileFormat } from '../../../lib/helpers/getFileFormat';
-import { isMergeSetting } from '../../../lib/typeGuards';
+import { getFileFormat } from '../../../lib/utils/getFileFormat';
+import { zipAndSave } from '../../../lib/utils/zipAndSave';
+import { isMergeSetting } from '../../../types/typeGuards';
 
 const createProcessFilesSlice = buildCreateSlice({
   creators: { asyncThunk: asyncThunkCreator },

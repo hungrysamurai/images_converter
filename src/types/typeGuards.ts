@@ -1,10 +1,10 @@
 import {
+  FormatsWithPreview,
   GIFDitherOptions,
   PDFCompressionTypes,
-  Units,
   SmoothingPresets,
-  FormatsWithPreview,
-} from '../types/types';
+  Units,
+} from './types';
 
 // Type checkers for conversion setting store slice
 

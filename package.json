@@ -15,6 +15,7 @@
     "build:convert-it.ru": "cross-env VITE_TARGET_DOMAIN=convert-it.ru vite build --outDir convert-it.ru --base=./",
     "lint": "eslint src --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format:fix": "prettier --write .",
+    "format:check": "prettier --check .",
     "preview": "vite preview",
     "analyze": "analyze --analyzerPort 5175",
     "preinstall": "npx only-allow pnpm",

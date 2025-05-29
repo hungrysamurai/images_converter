@@ -3,8 +3,8 @@ import JSZipUtils from 'jszip-utils';
 
 import { saveAs } from 'file-saver';
 
-import { OutputFileFormatsNames } from '../types/types';
-import { getFileFormat } from './helpers/getFileFormat';
+import { OutputFileFormatsNames } from '../../types/types';
+import { getFileFormat } from './getFileFormat';
 
 export const zipAndSave = async (
   files: ProcessedFile[],

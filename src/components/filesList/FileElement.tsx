@@ -15,7 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { removeConvertedFile } from '../../store/slices/processFilesSlice/processFilesSlice';
 import { removeSourceFile } from '../../store/slices/sourceFilesSlice/sourceFilesSlice';
 
-import { isPreviewFormat } from '../../lib/typeGuards';
+import { isPreviewFormat } from '../../types/typeGuards';
 import IconDownloadElement from '../icons/IconDownloadElement';
 import IconPreviewFile from '../icons/IconPreviewFile';
 import IconRemoveElement from '../icons/IconRemoveElement';

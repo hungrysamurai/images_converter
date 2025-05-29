@@ -1,6 +1,6 @@
 import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
 import { encode } from '../../encode';
-import { getScaledSVGDimensions } from '../../helpers/getScaledSVGDimensions';
+import { getScaledSVGDimensions } from '../../utils/getScaledSVGDimensions';
 
 export const SVGToFile = async (
   blobURL: string,

@@ -1,5 +1,5 @@
 import GIF from 'gif.js';
-import { isDitherSetting } from '../typeGuards';
+import { isDitherSetting } from '../../types/typeGuards';
 
 const mergeGIF = async (
   collection: MergeCollection,

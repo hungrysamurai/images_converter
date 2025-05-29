@@ -1,13 +1,13 @@
 import { PayloadAction, createSlice, current } from '@reduxjs/toolkit';
 import { initialState } from './settings';
 
-import { GIFDitherOptions, OutputFileFormatsNames, SmoothingPresets } from '../../../types/types';
 import {
-  isUnits,
-  isSmoothingOption,
-  isDitherOption,
   isCompressionOption,
-} from '../../../lib/typeGuards';
+  isDitherOption,
+  isSmoothingOption,
+  isUnits,
+} from '../../../types/typeGuards';
+import { GIFDitherOptions, OutputFileFormatsNames, SmoothingPresets } from '../../../types/types';
 
 export const conversionSettingsSlice = createSlice({
   name: 'conversionSettings',

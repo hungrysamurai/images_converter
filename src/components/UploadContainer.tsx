@@ -1,7 +1,7 @@
-import { useState, useRef, DragEvent, ChangeEvent, MouseEvent } from 'react';
+import { ChangeEvent, DragEvent, MouseEvent, useRef, useState } from 'react';
 
-import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
+import styled from 'styled-components';
 
 import { Lang, MIMETypes, ScreenOrientations } from '../types/types';
 
@@ -11,14 +11,14 @@ import {
   getAllSourceFiles,
 } from '../store/slices/sourceFilesSlice/sourceFilesSlice';
 
-import IconUpload from './icons/IconUpload';
 import FilesList from './filesList/FilesList';
+import IconUpload from './icons/IconUpload';
 import StyledInnerShadow from './StyledInnerShadow';
 
 import { fadeAnimation } from '../animations';
 
-import { isHEIC } from '../lib/helpers/isHEIC';
-import { checkFileType } from '../lib/helpers/checkFileType';
+import { checkFileType } from '../lib/utils/checkFileType';
+import { isHEIC } from '../lib/utils/isHEIC';
 
 type UploadContainerProps = {
   lang: Lang;

@@ -1,12 +1,12 @@
-import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
+import styled from 'styled-components';
 
 import FileElement from './FileElement';
 
-import { getFileFormat } from '../../lib/helpers/getFileFormat';
-import { getFileSize } from '../../lib/helpers/getFileSize';
-import { isProcessedFile } from '../../lib/typeGuards';
 import { memo } from 'react';
+import { getFileFormat } from '../../lib/utils/getFileFormat';
+import { getFileSize } from '../../lib/utils/getFileSize';
+import { isProcessedFile } from '../../types/typeGuards';
 
 type FilesListProps = {
   files: ProcessedFile[] | SourceFile[];

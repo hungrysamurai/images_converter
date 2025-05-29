@@ -1,7 +1,7 @@
 import { PDFDocument, PDFImage } from 'pdf-lib';
 
+import { isCompressionSetting } from '../../types/typeGuards';
 import { PDFCompressionTypes } from '../../types/types';
-import { isCompressionSetting } from '../typeGuards';
 
 import canvasToBlob from './canvasToBlob';
 

@@ -19,7 +19,7 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['build', 'node_modules', 'eslint.config.js', '___temp', 'convert-it.ru', 'public',],
+    ignores: ['build', 'node_modules', 'eslint.config.js', '___temp', 'convert-it.ru', 'public'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -45,7 +45,7 @@ export default tseslint.config(
       'react/jsx-curly-brace-presence': ['warn', { props: 'never', children: 'never' }],
       'react/function-component-definition': ['warn', { namedComponents: 'arrow-function' }],
       'react/self-closing-comp': ['error', { component: true, html: true }],
-      'no-unreachable': 'warn'
+      'no-unreachable': 'warn',
     },
   },
   {
@@ -54,5 +54,5 @@ export default tseslint.config(
         version: 'detect',
       },
     },
-  }
+  },
 );

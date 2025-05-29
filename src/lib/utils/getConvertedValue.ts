@@ -1,4 +1,4 @@
-import { SliderConvertModes } from '../types/types';
+import { SliderConvertModes } from '../../types/types';
 
 export const getConvertedValue = (value: number, mode: SliderConvertModes): number => {
   if (mode === SliderConvertModes.DecimalsToPercentages) {

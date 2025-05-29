@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import { getConvertedValue } from '../../../lib/getConvertedValue';
+import { getConvertedValue } from '../../../lib/utils/getConvertedValue';
 
 import { useAppDispatch } from '../../../store/hooks';
 
+import React, { ChangeEvent, memo } from 'react';
 import { updateActiveTargetFormatSliderSetting } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
 import { OutputFileFormatsNames, SliderConvertModes } from '../../../types/types';
-import React, { ChangeEvent, memo } from 'react';
 
 type SliderInputProps = {
   label: string;
