@@ -27,7 +27,7 @@ const processFile = async (
     case MIMETypes.HEIC:
     case MIMETypes.SVG:
       {
-        const processed = await processSinglePageFile(
+        const processed = processSinglePageFile(
           source,
           outputSettings,
           activeTargetFormatName,
@@ -35,11 +35,11 @@ const processFile = async (
           collection,
         );
 
-        if (processed) {
+        processed.then((blob) => {
           const { name, id } = source;
 
-          const size = processed.size;
-          const URL = window.URL.createObjectURL(processed);
+          const size = blob.size;
+          const URL = window.URL.createObjectURL(blob);
 
           dispatch(
             addConvertedFile({
@@ -52,7 +52,26 @@ const processFile = async (
               sourceId: id,
             }),
           );
-        }
+        });
+
+        // if (processed) {
+        //   const { name, id } = source;
+
+        //   const size = processed.size;
+        //   const URL = window.URL.createObjectURL(processed);
+
+        //   dispatch(
+        //     addConvertedFile({
+        //       blobURL: URL,
+        //       downloadLink: URL,
+        //       name,
+        //       size,
+        //       type: `image/${activeTargetFormatName}` as MIMETypes,
+        //       id: nanoid(),
+        //       sourceId: id,
+        //     }),
+        //   );
+        // }
       }
       break;
 

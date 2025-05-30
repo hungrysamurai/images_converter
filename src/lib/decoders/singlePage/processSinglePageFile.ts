@@ -53,7 +53,7 @@ const processSinglePageFile = async (
 
     case MIMETypes.HEIC:
       {
-        const processed = await HEICToFile(
+        const processed = HEICToFile(
           blobURL,
           targetFormatSettings,
           activeTargetFormatName,

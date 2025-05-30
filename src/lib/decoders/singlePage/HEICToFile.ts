@@ -4,6 +4,9 @@ import { OutputFileFormatsNames } from '../../../types/types';
 
 import { encode } from '../../encode';
 import { getResizedCanvas } from '../../utils/getResizedCanvas';
+import WorkerPool from '../../utils/WorkerPool/WorkerPool';
+
+const workerPool = new WorkerPool();
 
 const HEICToFile = async (
   blobURL: string,
@@ -11,12 +14,18 @@ const HEICToFile = async (
   activeTargetFormatName: OutputFileFormatsNames,
   mergeToOne: boolean,
 ): Promise<Blob | HTMLCanvasElement | void> => {
+  console.log('file!');
+
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
 
   const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
   try {
+    const res = await workerPool.addWork({ arrayBuffer });
+    console.log(res);
+
+    return res;
     const decoder = new libheif.HeifDecoder();
     const data = await decoder.decode(arrayBuffer);
 
