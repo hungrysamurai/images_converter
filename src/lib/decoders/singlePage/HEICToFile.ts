@@ -6,74 +6,76 @@ import { encode } from '../../encode';
 import { getResizedCanvas } from '../../utils/getResizedCanvas';
 import WorkerPool from '../../utils/WorkerPool/WorkerPool';
 
-const workerPool = new WorkerPool();
-
 const HEICToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
   mergeToOne: boolean,
+  workerPool?: WorkerPool,
 ): Promise<Blob | HTMLCanvasElement | void> => {
-  console.log('file!');
-
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
 
   const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
   try {
-    const res = await workerPool.addWork({ arrayBuffer });
-    console.log(res);
-
-    return res;
-    const decoder = new libheif.HeifDecoder();
-    const data = await decoder.decode(arrayBuffer);
-
-    if (data.length === 0) {
-      throw new Error('No images found in HEIC file');
-    }
-
-    const srcImage = data[0];
-    const srcWidth = srcImage.get_width();
-    const srcHeight = srcImage.get_height();
-
-    return new Promise((resolve, reject) => {
-      let canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-
-      const imageData = ctx.createImageData(srcWidth, srcHeight);
-
-      canvas.width = srcWidth;
-      canvas.height = srcHeight;
-
-      srcImage.display(imageData, (displayData) => {
-        if (!displayData) {
-          canvas.remove();
-          return reject(new Error('HEIF processing error'));
-        }
-
-        ctx.putImageData(imageData, 0, 0);
-
-        if (resize) {
-          canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
-        }
-
-        if (mergeToOne) {
-          resolve(canvas);
-        } else {
-          const encoded = encode(canvas, targetFormatSettings, activeTargetFormatName);
-
-          if (encoded) {
-            resolve(encoded);
-          } else {
-            return reject(new Error('Encoding failed'));
-          }
-        }
-      });
+    const blob = await workerPool?.addWork({
+      type: 'decode_heic',
+      payload: arrayBuffer,
     });
+
+    if (blob) {
+      return blob;
+    } else {
+      const decoder = new libheif.HeifDecoder();
+      const data = await decoder.decode(arrayBuffer);
+
+      if (data.length === 0) {
+        throw new Error('No images found in HEIC file');
+      }
+
+      const srcImage = data[0];
+      const srcWidth = srcImage.get_width();
+      const srcHeight = srcImage.get_height();
+
+      return new Promise((resolve, reject) => {
+        let canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        const imageData = ctx.createImageData(srcWidth, srcHeight);
+
+        canvas.width = srcWidth;
+        canvas.height = srcHeight;
+
+        srcImage.display(imageData, (displayData) => {
+          if (!displayData) {
+            canvas.remove();
+            return reject(new Error('HEIF processing error'));
+          }
+
+          ctx.putImageData(imageData, 0, 0);
+
+          if (resize) {
+            canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
+          }
+
+          if (mergeToOne) {
+            resolve(canvas);
+          } else {
+            const encoded = encode(canvas, targetFormatSettings, activeTargetFormatName);
+
+            if (encoded) {
+              resolve(encoded);
+            } else {
+              return reject(new Error('Encoding failed'));
+            }
+          }
+        });
+      });
+    }
   } catch (err) {
     // "different" jpeg-like HEIC case
-    if ((err as Error).message === 'No images found in HEIC file') {
+    if ((err as Error).message.includes('No images found in HEIC file')) {
       return new Promise((resolve, reject) => {
         const img = new Image();
         img.src = blobURL;
@@ -108,6 +110,8 @@ const HEICToFile = async (
           reject(new Error('Error while parsing image'));
         };
       });
+    } else {
+      throw err;
     }
   }
 };

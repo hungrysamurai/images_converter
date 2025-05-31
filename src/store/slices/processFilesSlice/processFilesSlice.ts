@@ -3,9 +3,10 @@ import { asyncThunkCreator, buildCreateSlice, current, PayloadAction } from '@re
 import { AppDispatch, RootState } from '../../store';
 
 import processFile from '../../../lib/converter';
-import merge from '../../../lib/merge';
 
+import merge from '../../../lib/merge';
 import { getFileFormat } from '../../../lib/utils/getFileFormat';
+import WorkerPool from '../../../lib/utils/WorkerPool/WorkerPool';
 import { zipAndSave } from '../../../lib/utils/zipAndSave';
 import { isMergeSetting } from '../../../types/typeGuards';
 
@@ -41,26 +42,49 @@ const processFilesSlice = createProcessFilesSlice({
 
         const collection: MergeCollection = [];
 
-        for (const source of sourceFiles) {
-          try {
-            await processFile(
-              source,
-              targetFormatSettings,
-              activeTargetFormatName,
-              inputSettings,
-              dispatch,
-              mergeToOne,
-              collection,
-            );
-          } catch (err) {
-            console.error(
-              `Error processing file ${source.name}.${getFileFormat(source.type)}:`,
-              (err as Error).message,
+        if (!mergeToOne) {
+          // With workers
+          const processTasks: Promise<void>[] = [];
+          const workerPool = new WorkerPool();
+
+          for (const source of sourceFiles) {
+            processTasks.push(
+              processFile(
+                source,
+                targetFormatSettings,
+                activeTargetFormatName,
+                inputSettings,
+                dispatch,
+                mergeToOne,
+                collection,
+                workerPool,
+              ),
             );
           }
-        }
 
-        if (mergeToOne) {
+          await Promise.allSettled(processTasks);
+
+          // workerPool.dispose();
+        } else {
+          for (const source of sourceFiles) {
+            try {
+              await processFile(
+                source,
+                targetFormatSettings,
+                activeTargetFormatName,
+                inputSettings,
+                dispatch,
+                mergeToOne,
+                collection,
+              );
+            } catch (err) {
+              console.error(
+                `Error processing file ${source.name}.${getFileFormat(source.type)}:`,
+                (err as Error).message,
+              );
+            }
+          }
+
           try {
             if (collection.length > 0) {
               await merge(collection, targetFormatSettings, activeTargetFormatName, dispatch);

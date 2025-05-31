@@ -7,6 +7,7 @@ import { addConvertedFile } from '../store/slices/processFilesSlice/processFiles
 
 import { nanoid } from '@reduxjs/toolkit';
 import { AppDispatch } from '../store/store';
+import WorkerPool from './utils/WorkerPool/WorkerPool';
 
 const processFile = async (
   source: SourceFile,
@@ -18,6 +19,7 @@ const processFile = async (
   dispatch: AppDispatch,
   mergeToOne: boolean,
   collection: MergeCollection,
+  workerPool?: WorkerPool,
 ): Promise<void> => {
   switch (source.type) {
     case MIMETypes.JPG:
@@ -27,19 +29,20 @@ const processFile = async (
     case MIMETypes.HEIC:
     case MIMETypes.SVG:
       {
-        const processed = processSinglePageFile(
+        const processed = await processSinglePageFile(
           source,
           outputSettings,
           activeTargetFormatName,
           mergeToOne,
           collection,
+          workerPool,
         );
 
-        processed.then((blob) => {
+        if (processed) {
           const { name, id } = source;
 
-          const size = blob.size;
-          const URL = window.URL.createObjectURL(blob);
+          const size = processed.size;
+          const URL = window.URL.createObjectURL(processed);
 
           dispatch(
             addConvertedFile({
@@ -52,26 +55,7 @@ const processFile = async (
               sourceId: id,
             }),
           );
-        });
-
-        // if (processed) {
-        //   const { name, id } = source;
-
-        //   const size = processed.size;
-        //   const URL = window.URL.createObjectURL(processed);
-
-        //   dispatch(
-        //     addConvertedFile({
-        //       blobURL: URL,
-        //       downloadLink: URL,
-        //       name,
-        //       size,
-        //       type: `image/${activeTargetFormatName}` as MIMETypes,
-        //       id: nanoid(),
-        //       sourceId: id,
-        //     }),
-        //   );
-        // }
+        }
       }
       break;
 

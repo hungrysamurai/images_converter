@@ -1,4 +1,5 @@
 import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
+import WorkerPool from '../../utils/WorkerPool/WorkerPool';
 
 import BMPToFile from './BMPToFile';
 import HEICToFile from './HEICToFile';
@@ -11,6 +12,7 @@ const processSinglePageFile = async (
   activeTargetFormatName: OutputFileFormatsNames,
   mergeToOne: boolean,
   collection: MergeCollection,
+  workerPool?: WorkerPool,
 ): Promise<Blob | void> => {
   const { blobURL, type: srcType } = source;
 
@@ -53,11 +55,12 @@ const processSinglePageFile = async (
 
     case MIMETypes.HEIC:
       {
-        const processed = HEICToFile(
+        const processed = await HEICToFile(
           blobURL,
           targetFormatSettings,
           activeTargetFormatName,
           mergeToOne,
+          workerPool,
         );
 
         if (processed instanceof HTMLCanvasElement) {
