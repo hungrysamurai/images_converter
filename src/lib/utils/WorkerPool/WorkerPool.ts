@@ -52,7 +52,7 @@ export default class WorkerPool {
   }
 
   addWork(work): Promise<Blob> {
-    const { type, payload, outputSettings, targetFormatName } = work;
+    const { type, payload, outputSettings, targetFormatName, blobURL } = work;
 
     return new Promise((resolve, reject) => {
       if (this.idleWorkers.length > 0) {
@@ -61,12 +61,13 @@ export default class WorkerPool {
 
         worker.postMessage(
           {
+            blobURL,
             type,
             outputSettings,
             targetFormatName,
             payload,
           },
-          [payload],
+          payload ? [payload] : [],
         );
       } else {
         this.workQueue.push([work, resolve, reject]);
