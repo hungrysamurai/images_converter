@@ -52,14 +52,22 @@ export default class WorkerPool {
   }
 
   addWork(work): Promise<Blob> {
-    const { type, payload } = work;
+    const { type, payload, outputSettings, targetFormatName } = work;
 
     return new Promise((resolve, reject) => {
       if (this.idleWorkers.length > 0) {
         const worker = this.idleWorkers.pop() as Worker;
         this.workerMap.set(worker, [resolve, reject]);
 
-        worker.postMessage({ type, payload }, [payload]);
+        worker.postMessage(
+          {
+            type,
+            outputSettings,
+            targetFormatName,
+            payload,
+          },
+          [payload],
+        );
       } else {
         this.workQueue.push([work, resolve, reject]);
       }

@@ -1,8 +1,14 @@
 import libheif from 'libheif-js/wasm-bundle';
 
-export default async function HEICToBlob(payload: ArrayBuffer): Promise<Blob> {
+export default async function HEICToBlob(
+  payload: ArrayBuffer,
+  outputSettings,
+  targetFormatName,
+): Promise<Blob> {
   const decoder = new libheif.HeifDecoder();
   const data = await decoder.decode(payload);
+
+  console.log(targetFormatName, outputSettings);
 
   if (data.length === 0) {
     throw new Error('No images found in HEIC file');

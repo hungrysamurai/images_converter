@@ -2,11 +2,8 @@ import { asyncThunkCreator, buildCreateSlice, current, PayloadAction } from '@re
 
 import { AppDispatch, RootState } from '../../store';
 
-import processFile from '../../../lib/converter';
 
-import merge from '../../../lib/merge';
-import { getFileFormat } from '../../../lib/utils/getFileFormat';
-import WorkerPool from '../../../lib/utils/WorkerPool/WorkerPool';
+import Converter from '../../../lib/Converter/Converter';
 import { zipAndSave } from '../../../lib/utils/zipAndSave';
 import { isMergeSetting } from '../../../types/typeGuards';
 
@@ -40,59 +37,69 @@ const processFilesSlice = createProcessFilesSlice({
           ? targetFormatSettings.merge
           : false;
 
-        const collection: MergeCollection = [];
+        const converter = new Converter(
+          targetFormatSettings,
+          activeTargetFormatName,
+          inputSettings,
+          dispatch,
+          mergeToOne,
+        );
 
-        if (!mergeToOne) {
-          // With workers
-          const processTasks: Promise<void>[] = [];
-          const workerPool = new WorkerPool();
+        await converter.convert(sourceFiles);
 
-          for (const source of sourceFiles) {
-            processTasks.push(
-              processFile(
-                source,
-                targetFormatSettings,
-                activeTargetFormatName,
-                inputSettings,
-                dispatch,
-                mergeToOne,
-                collection,
-                workerPool,
-              ),
-            );
-          }
+        // const collection: MergeCollection = [];
 
-          await Promise.allSettled(processTasks);
+        // if (!mergeToOne) {
+        //   // With workers
+        //   const processTasks: Promise<void>[] = [];
+        //   const workerPool = new WorkerPool();
 
-          // workerPool.dispose();
-        } else {
-          for (const source of sourceFiles) {
-            try {
-              await processFile(
-                source,
-                targetFormatSettings,
-                activeTargetFormatName,
-                inputSettings,
-                dispatch,
-                mergeToOne,
-                collection,
-              );
-            } catch (err) {
-              console.error(
-                `Error processing file ${source.name}.${getFileFormat(source.type)}:`,
-                (err as Error).message,
-              );
-            }
-          }
+        //   for (const source of sourceFiles) {
+        //     processTasks.push(
+        //       processFile(
+        //         source,
+        //         targetFormatSettings,
+        //         activeTargetFormatName,
+        //         inputSettings,
+        //         dispatch,
+        //         mergeToOne,
+        //         collection,
+        //         workerPool,
+        //       ),
+        //     );
+        //   }
 
-          try {
-            if (collection.length > 0) {
-              await merge(collection, targetFormatSettings, activeTargetFormatName, dispatch);
-            }
-          } catch (err) {
-            console.error('Error merging file:', err);
-          }
-        }
+        //   await Promise.allSettled(processTasks);
+
+        //   // workerPool.dispose();
+        // } else {
+        //   for (const source of sourceFiles) {
+        //     try {
+        //       await processFile(
+        //         source,
+        //         targetFormatSettings,
+        //         activeTargetFormatName,
+        //         inputSettings,
+        //         dispatch,
+        //         mergeToOne,
+        //         collection,
+        //       );
+        //     } catch (err) {
+        //       console.error(
+        //         `Error processing file ${source.name}.${getFileFormat(source.type)}:`,
+        //         (err as Error).message,
+        //       );
+        //     }
+        //   }
+
+        //   try {
+        //     if (collection.length > 0) {
+        //       await merge(collection, targetFormatSettings, activeTargetFormatName, dispatch);
+        //     }
+        //   } catch (err) {
+        //     console.error('Error merging file:', err);
+        //   }
+        // }
       },
       {
         pending: (state) => {
