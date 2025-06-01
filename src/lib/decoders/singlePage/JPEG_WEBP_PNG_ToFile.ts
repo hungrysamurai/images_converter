@@ -6,8 +6,7 @@ export const JPEG_WEBP_PNG_ToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-  mergeToOne: boolean,
-): Promise<Blob | HTMLCanvasElement | void> => {
+): Promise<Blob> => {
   return new Promise((resolve, reject) => {
     const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
@@ -27,13 +26,9 @@ export const JPEG_WEBP_PNG_ToFile = async (
           canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
         }
 
-        if (mergeToOne) {
-          resolve(canvas);
-        } else {
-          const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
-          if (encoded) {
-            resolve(encoded);
-          }
+        const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
+        if (encoded) {
+          resolve(encoded);
         }
       } catch (err) {
         reject(err);

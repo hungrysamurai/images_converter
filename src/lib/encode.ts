@@ -1,16 +1,16 @@
 import { OutputFileFormatsNames } from '../types/types';
 
-import encodeJPEG_PNG_WEBP from './encoders/encodeJPEG_PNG_WEBP';
 import encodeBMP from './encoders/encodeBMP';
-import encodeTIFF from './encoders/encodeTIFF';
 import encodeGIF from './encoders/encodeGIF';
+import encodeJPEG_PNG_WEBP from './encoders/encodeJPEG_PNG_WEBP';
 import encodePDF from './encoders/encodePDF';
+import encodeTIFF from './encoders/encodeTIFF';
 
 export const encode = (
   canvas: HTMLCanvasElement,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-): Promise<Blob | void> => {
+): Promise<Blob> => {
   switch (activeTargetFormatName) {
     case OutputFileFormatsNames.JPG:
     case OutputFileFormatsNames.WEBP:

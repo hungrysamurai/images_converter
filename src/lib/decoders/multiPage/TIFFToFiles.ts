@@ -1,24 +1,15 @@
 import UTIF from 'utif';
 
-import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
-
-import { nanoid } from '@reduxjs/toolkit';
-import { addConvertedFile } from '../../../store/slices/processFilesSlice/processFilesSlice';
-import { AppDispatch } from '../../../store/store';
+import { OutputFileFormatsNames } from '../../../types/types';
 
 import { encode } from '../../encode';
 import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
 const TIFFToFiles = async (
-  source: SourceFile,
+  blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-  dispatch: AppDispatch,
-  mergeToOne: boolean,
-  collection: MergeCollection,
-): Promise<void> => {
-  const { blobURL, id, name } = source;
-
+): Promise<Blob[]> => {
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
 
@@ -26,7 +17,9 @@ const TIFFToFiles = async (
 
   const pages = UTIF.decode(arrayBuffer);
 
-  for (const [index, page] of pages.entries()) {
+  const pagesBlobs = [];
+
+  for (const page of pages) {
     UTIF.decodeImage(arrayBuffer, page);
     const rgba = UTIF.toRGBA8(page);
 
@@ -46,29 +39,31 @@ const TIFFToFiles = async (
       canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
     }
 
-    if (mergeToOne) {
-      collection.push(canvas);
-    } else {
-      const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
+    const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
 
-      if (encoded) {
-        const size = encoded.size;
-        const URL = window.URL.createObjectURL(encoded);
-
-        dispatch(
-          addConvertedFile({
-            blobURL: URL,
-            downloadLink: URL,
-            name: `${name}_${index + 1}`,
-            size,
-            type: `image/${activeTargetFormatName}` as MIMETypes,
-            id: nanoid(),
-            sourceId: id,
-          }),
-        );
-      }
+    if (encoded) {
+      pagesBlobs.push(encoded);
     }
+
+    // if (encoded) {
+    //   const size = encoded.size;
+    //   const URL = window.URL.createObjectURL(encoded);
+
+    //   dispatch(
+    //     addConvertedFile({
+    //       blobURL: URL,
+    //       downloadLink: URL,
+    //       name: `${name}_${index + 1}`,
+    //       size,
+    //       type: `image/${activeTargetFormatName}` as MIMETypes,
+    //       id: nanoid(),
+    //       sourceId: id,
+    //     }),
+    //   );
+    // }
   }
+
+  return pagesBlobs;
 };
 
 export default TIFFToFiles;

@@ -2,12 +2,13 @@ import { OutputFileFormatsNames } from '../../../../types/types';
 import encodeCanvas from '../worker_encoders/encodeCanvas';
 import { getResizedCanvas } from '../worker_utils/getResizedCanvas';
 
-export const JPEG_WEBP_PNG_ToBlob = async (
+const JPEG_WEBP_PNG_ToBlob = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-): Promise<Blob | void> => {
+): Promise<Blob> => {
   const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
+
   const response = await fetch(blobURL);
   const srcBlob = await response.blob();
 
@@ -24,9 +25,7 @@ export const JPEG_WEBP_PNG_ToBlob = async (
 
   const encoded = await encodeCanvas(canvas, targetFormatSettings, activeTargetFormatName);
 
-  if (encoded) {
-    return encoded;
-  }
+  return encoded;
 };
 
 export default JPEG_WEBP_PNG_ToBlob;

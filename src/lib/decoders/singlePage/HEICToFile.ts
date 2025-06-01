@@ -72,48 +72,47 @@ const HEICToFile = async (
         }
       });
     });
-  }
   } catch (err) {
-  // "different" jpeg-like HEIC case
-  if ((err as Error).message.includes('No images found in HEIC file')) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.src = blobURL;
+    // "different" jpeg-like HEIC case
+    if ((err as Error).message.includes('No images found in HEIC file')) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = blobURL;
 
-      img.onload = async () => {
-        try {
-          let canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-          canvas.width = img.width;
-          canvas.height = img.height;
+        img.onload = async () => {
+          try {
+            let canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+            canvas.width = img.width;
+            canvas.height = img.height;
 
-          ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, 0);
 
-          if (resize) {
-            canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
-          }
-
-          if (mergeToOne) {
-            resolve(canvas);
-          } else {
-            const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
-            if (encoded) {
-              resolve(encoded);
+            if (resize) {
+              canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
             }
+
+            if (mergeToOne) {
+              resolve(canvas);
+            } else {
+              const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
+              if (encoded) {
+                resolve(encoded);
+              }
+            }
+          } catch (err) {
+            reject(err);
           }
-        } catch (err) {
-          reject(err);
-        }
-      };
-      // If image not valid
-      img.onerror = () => {
-        reject(new Error('Error while parsing image'));
-      };
-    });
-  } else {
-    throw err;
+        };
+        // If image not valid
+        img.onerror = () => {
+          reject(new Error('Error while parsing image'));
+        };
+      });
+    } else {
+      throw err;
+    }
   }
-}
 };
 
 export default HEICToFile;

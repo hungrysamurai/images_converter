@@ -31,8 +31,7 @@ const BMPToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-  mergeToOne: boolean,
-): Promise<Blob | HTMLCanvasElement | void> => {
+): Promise<Blob> => {
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
 
@@ -119,14 +118,9 @@ const BMPToFile = async (
     canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
   }
 
-  if (mergeToOne) {
-    return canvas;
-  } else {
-    const encoded = encode(canvas, targetFormatSettings, activeTargetFormatName);
-    if (encoded) {
-      return encoded;
-    }
-  }
+  const encoded = encode(canvas, targetFormatSettings, activeTargetFormatName);
+
+  return encoded;
 };
 
 export default BMPToFile;

@@ -31,7 +31,7 @@ const BMPToBlob = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-): Promise<Blob | void> => {
+): Promise<Blob> => {
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
 
@@ -115,6 +115,7 @@ const BMPToBlob = async (
   }
 
   const encoded = await encodeCanvas(canvas, targetFormatSettings, activeTargetFormatName);
+
   return encoded;
 };
 

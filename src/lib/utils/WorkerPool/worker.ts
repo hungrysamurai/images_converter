@@ -1,6 +1,7 @@
 import { MIMETypes } from '../../../types/types';
 import BMPToBlob from './worker_decoders/BMPToBlob';
 import JPEG_WEBP_PNG_ToBlob from './worker_decoders/JPEG_WEBP_PNG_ToBlob';
+import TIFFPagesToBlobs from './worker_decoders/TIFFPagesToBlobs';
 
 addEventListener('message', async (e) => {
   const { type, outputSettings, targetFormatName, blobURL } = e.data;
@@ -24,23 +25,18 @@ addEventListener('message', async (e) => {
           postMessage(blob);
         }
         break;
+
+      case MIMETypes.TIFF:
+        {
+          const blobs = await TIFFPagesToBlobs(blobURL, outputSettings, targetFormatName);
+
+          postMessage(blobs);
+        }
+        break;
     }
   } catch (err) {
     setTimeout(() => {
       throw err;
     });
   }
-
-  // try {
-  //   switch (type) {
-  //     case 'decode_heic': {
-  //       const blob = await HEICToBlob(payload, outputSettings, targetFormatName);
-  //       postMessage(blob);
-  //     }
-  //   }
-  // } catch (err) {
-  //   setTimeout(() => {
-  //     throw err;
-  //   });
-  // }
 });

@@ -6,7 +6,7 @@ export default async function encodeCanvas(
   canvas: OffscreenCanvas,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-) {
+): Promise<Blob> {
   switch (activeTargetFormatName) {
     case OutputFileFormatsNames.JPG:
     case OutputFileFormatsNames.WEBP:

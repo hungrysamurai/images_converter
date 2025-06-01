@@ -239,5 +239,5 @@ declare global {
     files: ProcessedFile[];
   }
 
-  type MergeCollection = (HTMLCanvasElement | Blob)[];
+  type MergeCollection = Blob[];
 }
