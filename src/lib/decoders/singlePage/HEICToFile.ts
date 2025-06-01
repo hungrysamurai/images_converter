@@ -4,14 +4,11 @@ import { OutputFileFormatsNames } from '../../../types/types';
 
 import { encode } from '../../encode';
 import { getResizedCanvas } from '../../utils/getResizedCanvas';
-import WorkerPool from '../../utils/WorkerPool/WorkerPool';
 
 const HEICToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-  mergeToOne: boolean,
-  workerPool?: WorkerPool,
 ): Promise<Blob | HTMLCanvasElement | void> => {
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
@@ -19,14 +16,6 @@ const HEICToFile = async (
   const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
   try {
-    // const blob = await workerPool?.addWork({
-    //   type: 'decode_heic',
-    //   payload: arrayBuffer,
-    // });
-
-    // if (blob) {
-    //   return blob;
-    // } else {
     const decoder = new libheif.HeifDecoder();
     const data = await decoder.decode(arrayBuffer);
 
@@ -59,16 +48,12 @@ const HEICToFile = async (
           canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
         }
 
-        if (mergeToOne) {
-          resolve(canvas);
-        } else {
-          const encoded = encode(canvas, targetFormatSettings, activeTargetFormatName);
+        const encoded = encode(canvas, targetFormatSettings, activeTargetFormatName);
 
-          if (encoded) {
-            resolve(encoded);
-          } else {
-            return reject(new Error('Encoding failed'));
-          }
+        if (encoded) {
+          resolve(encoded);
+        } else {
+          return reject(new Error('Encoding failed'));
         }
       });
     });
@@ -92,14 +77,8 @@ const HEICToFile = async (
               canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
             }
 
-            if (mergeToOne) {
-              resolve(canvas);
-            } else {
-              const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
-              if (encoded) {
-                resolve(encoded);
-              }
-            }
+            const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
+            resolve(encoded);
           } catch (err) {
             reject(err);
           }

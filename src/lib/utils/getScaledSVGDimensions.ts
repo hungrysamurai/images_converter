@@ -10,18 +10,45 @@ export const getScaledSVGDimensions = (
   width: string;
   height: string;
 } => {
-  if (targetWidth && !targetHeight) {
-    // Calculate targetHeight based on the aspect ratio
-    targetHeight = (currentHeight / currentWidth) * targetWidth;
-  } else if (!targetWidth && targetHeight) {
-    // Calculate targetWidth based on the aspect ratio
-    targetWidth = (currentWidth / currentHeight) * targetHeight;
+  let width: number;
+  let height: number;
+
+  if (units === Units.PIXELS) {
+    if (targetWidth && !targetHeight) {
+      width = targetWidth;
+      height = (currentHeight / currentWidth) * width;
+    } else if (!targetWidth && targetHeight) {
+      height = targetHeight;
+      width = (currentWidth / currentHeight) * height;
+    } else if (targetWidth && targetHeight) {
+      width = targetWidth;
+      height = targetHeight;
+    } else {
+      width = currentWidth;
+      height = currentHeight;
+    }
+  } else if (units === Units.PERCENTAGES) {
+    if (targetWidth && !targetHeight) {
+      width = (targetWidth / 100) * currentWidth;
+      height = (currentHeight / currentWidth) * width;
+    } else if (!targetWidth && targetHeight) {
+      height = (targetHeight / 100) * currentHeight;
+      width = (currentWidth / currentHeight) * height;
+    } else if (targetWidth && targetHeight) {
+      width = (targetWidth / 100) * currentWidth;
+      height = (targetHeight / 100) * currentHeight;
+    } else {
+      width = currentWidth;
+      height = currentHeight;
+    }
+  } else {
+    // fallback
+    width = currentWidth;
+    height = currentHeight;
   }
 
-  const unitsName = units === Units.PERCENTAGES ? '%' : 'px';
-
   return {
-    width: `${targetWidth}${unitsName}`,
-    height: `${targetHeight}${unitsName}`,
+    width: `${width}px`,
+    height: `${height}px`,
   };
 };

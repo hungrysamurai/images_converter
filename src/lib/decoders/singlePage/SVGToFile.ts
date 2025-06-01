@@ -6,8 +6,7 @@ export const SVGToFile = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-  mergeToOne: boolean,
-): Promise<Blob | HTMLCanvasElement | void> => {
+): Promise<Blob> => {
   let svgBlobURL = blobURL;
 
   const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
@@ -132,14 +131,9 @@ export const SVGToFile = async (
           URL.revokeObjectURL(svgBlobURL);
         }
 
-        if (mergeToOne) {
-          resolve(canvas);
-        } else {
-          const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
-          if (encoded) {
-            resolve(encoded);
-          }
-        }
+        const encoded = await encode(canvas, targetFormatSettings, activeTargetFormatName);
+
+        resolve(encoded);
       } catch (err) {
         reject(err);
       }
