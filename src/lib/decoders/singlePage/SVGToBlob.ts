@@ -1,5 +1,5 @@
-import { OutputFileFormatsNames } from '../../../../types/types';
-import encodeCanvas from '../worker_encoders/encodeCanvas';
+import { OutputFileFormatsNames } from '../../../types/types';
+import encodeCanvas from '../../utils/WorkerPool/worker_encoders/encodeCanvas';
 
 const SVGToBlob = async (
   targetFormatSettings: OutputConversionSettings,
@@ -8,8 +8,6 @@ const SVGToBlob = async (
 ): Promise<Blob> => {
   const { smoothing } = targetFormatSettings;
   const { width, height } = bmp;
-
-  console.log(bmp);
 
   const canvas = new OffscreenCanvas(width, height);
   const ctx = canvas.getContext('2d');

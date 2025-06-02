@@ -1,7 +1,7 @@
 import libheif from 'libheif-js/wasm-bundle';
-import { OutputFileFormatsNames } from '../../../../types/types';
-import encodeCanvas from '../worker_encoders/encodeCanvas';
-import { getResizedCanvas } from '../worker_utils/getResizedCanvas';
+import { OutputFileFormatsNames } from '../../../types/types';
+import encodeCanvas from '../../utils/WorkerPool/worker_encoders/encodeCanvas';
+import { getResizedCanvas } from '../../utils/WorkerPool/worker_utils/getResizedCanvas';
 
 export default async function HEICToBlob(
   blobURL: string,

@@ -45,6 +45,7 @@ const processFilesSlice = createProcessFilesSlice({
         );
 
         await converter.convert(sourceFiles);
+        // converter.dispose();
 
         // const collection: MergeCollection = [];
 

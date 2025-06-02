@@ -1,6 +1,6 @@
 import { OutputFileFormatsNames } from '../../../types/types';
-import { encode } from '../../encode';
-import { getResizedCanvas } from '../../utils/getResizedCanvas';
+import encodeCanvas from '../../utils/WorkerPool/worker_encoders/encodeCanvas';
+import { getResizedCanvas } from '../../utils/WorkerPool/worker_utils/getResizedCanvas';
 
 interface Bitmap {
   stride: number;
@@ -27,7 +27,7 @@ interface Bitmap {
   };
 }
 
-const BMPToFile = async (
+const BMPToBlob = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
@@ -86,29 +86,25 @@ const BMPToFile = async (
     Math.floor((bitmap.infoheader.biBitCount * bitmap.infoheader.biWidth + 31) / 32) * 4;
   bitmap.pixels = new Uint8ClampedArray(arrayBuffer, start);
 
-  let canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-
   const width = bitmap.infoheader.biWidth;
   const height = bitmap.infoheader.biHeight;
 
-  canvas.width = width;
-  canvas.height = height;
+  let canvas = new OffscreenCanvas(width, height);
+  const ctx = canvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
 
   const imageData = ctx.createImageData(width, height);
-
   const data = imageData.data;
   const bmpdata = bitmap.pixels;
   const stride = bitmap.stride;
 
   for (let y = 0; y < height; ++y) {
     for (let x = 0; x < width; ++x) {
-      const index1 = (x + width * (height - y)) * 4;
+      const index1 = (x + width * (height - y - 1)) * 4;
       const index2 = x * 3 + stride * y;
-      data[index1] = bmpdata[index2 + 2];
-      data[index1 + 1] = bmpdata[index2 + 1];
-      data[index1 + 2] = bmpdata[index2];
-      data[index1 + 3] = 255;
+      data[index1] = bmpdata![index2 + 2]; // R
+      data[index1 + 1] = bmpdata![index2 + 1]; // G
+      data[index1 + 2] = bmpdata![index2]; // B
+      data[index1 + 3] = 255; // A
     }
   }
 
@@ -118,9 +114,9 @@ const BMPToFile = async (
     canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
   }
 
-  const encoded = encode(canvas, targetFormatSettings, activeTargetFormatName);
+  const encoded = await encodeCanvas(canvas, targetFormatSettings, activeTargetFormatName);
 
   return encoded;
 };
 
-export default BMPToFile;
+export default BMPToBlob;

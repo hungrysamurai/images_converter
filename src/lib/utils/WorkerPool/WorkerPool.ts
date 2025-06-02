@@ -52,7 +52,7 @@ export default class WorkerPool {
   }
 
   addWork(work): Promise<Blob | Blob[]> {
-    const { type, outputSettings, targetFormatName, blobURL, transferable } = work;
+    const { type, outputSettings, targetFormatName, blobURL, transferable, inputSettings } = work;
 
     return new Promise((resolve, reject) => {
       if (this.idleWorkers.length > 0) {
@@ -65,6 +65,7 @@ export default class WorkerPool {
             type,
             outputSettings,
             targetFormatName,
+            inputSettings,
             transferable,
           },
           transferable ? [transferable] : [],

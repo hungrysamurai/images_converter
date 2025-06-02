@@ -2,27 +2,29 @@ import { nanoid } from '@reduxjs/toolkit';
 import { addConvertedFile } from '../../store/slices/processFilesSlice/processFilesSlice';
 import { AppDispatch } from '../../store/store';
 import { MIMETypes, OutputFileFormatsNames } from '../../types/types';
-import TIFFToFiles from '../decoders/multiPage/TIFFToFiles';
-import WorkerPool from '../utils/WorkerPool/WorkerPool';
-import BMPToBlob from '../utils/WorkerPool/worker_decoders/BMPToBlob';
-import HEICToBlob from '../utils/WorkerPool/worker_decoders/HEICToBlob';
-import JPEG_WEBP_PNG_ToBlob from '../utils/WorkerPool/worker_decoders/JPEG_WEBP_PNG_ToBlob';
+import GIFPagesToBlobs from '../decoders/multiPage/GIFPagesToBlobs';
+import PDFPagesToBlobs from '../decoders/multiPage/PDFPagesToBlobs';
+import TIFFPagesToBlobs from '../decoders/multiPage/TIFFPagesToBlobs';
+import BMPToBlob from '../decoders/singlePage/BMPToBlob';
+import HEICToBlob from '../decoders/singlePage/HEICToBlob';
+import JPEG_WEBP_PNG_ToBlob from '../decoders/singlePage/JPEG_WEBP_PNG_ToBlob';
+import SVGToBlob from '../decoders/singlePage/SVGToBlob';
 import { getScaledSVGDimensions } from '../utils/getScaledSVGDimensions';
+import WorkerPool from '../utils/WorkerPool/WorkerPool';
 
 export default class Converter {
-  collection: Blob[] = [];
-
-  workerPool = new WorkerPool();
-  processTasks: Promise<Blob | Blob[] | void>[] = [];
+  private collection: Blob[] = [];
+  private workerPool = new WorkerPool();
+  private processTasks: Promise<Blob | Blob[] | void>[] = [];
 
   constructor(
-    public outputSettings: OutputConversionSettings,
-    public activeTargetFormatName: OutputFileFormatsNames,
-    public inputSettings: {
+    private outputSettings: OutputConversionSettings,
+    private activeTargetFormatName: OutputFileFormatsNames,
+    private inputSettings: {
       [OutputFileFormatsNames.PDF]: PDFInputSettings;
     },
-    public dispatch: AppDispatch,
-    public mergeToOne: boolean,
+    private UIDispatcher: AppDispatch,
+    private mergeToOne: boolean,
   ) {}
 
   public async convert(sourceFiles: SourceFile[]): Promise<void> {
@@ -68,7 +70,7 @@ export default class Converter {
             const size = processed.size;
             const URL = window.URL.createObjectURL(processed);
 
-            this.dispatch(
+            this.UIDispatcher(
               addConvertedFile({
                 blobURL: URL,
                 downloadLink: URL,
@@ -96,7 +98,7 @@ export default class Converter {
           const size = blobPage.size;
           const URL = window.URL.createObjectURL(blobPage);
 
-          this.dispatch(
+          this.UIDispatcher(
             addConvertedFile({
               blobURL: URL,
               downloadLink: URL,
@@ -219,9 +221,9 @@ export default class Converter {
     } catch (err) {
       console.error(`Failed to process SVG in worker: ${(err as ErrorEvent).message}`);
 
-      // const processed = await SVGToFile(blobURL, this.outputSettings, this.activeTargetFormatName);
+      const processed = await SVGToBlob(this.outputSettings, this.activeTargetFormatName, bitmap);
 
-      // return processed;
+      return processed;
     }
   }
 
@@ -349,6 +351,14 @@ export default class Converter {
         const pagesBlobs = await this.convertTIFF(blobURL, type);
         return pagesBlobs;
       }
+      case MIMETypes.PDF: {
+        const pagesBlobs = await this.convertPDF(blobURL, type);
+        return pagesBlobs;
+      }
+      case MIMETypes.GIF: {
+        const pagesBlobs = await this.convertGIF(blobURL, type);
+        return pagesBlobs;
+      }
 
       default: {
         throw new Error(`Unknown file format: ${type}`);
@@ -367,9 +377,9 @@ export default class Converter {
 
       return pagesBlobsProcessedInWorker as Blob[];
     } catch (err) {
-      console.error((err as ErrorEvent).message);
+      console.error(`Failed to process TIFF in worker: ${(err as ErrorEvent).message}`);
 
-      const pagesBlobs = await TIFFToFiles(
+      const pagesBlobs = await TIFFPagesToBlobs(
         blobURL,
         this.outputSettings,
         this.activeTargetFormatName,
@@ -377,5 +387,56 @@ export default class Converter {
 
       return pagesBlobs;
     }
+  }
+
+  private async convertPDF(blobURL: string, type: MIMETypes): Promise<Blob[]> {
+    try {
+      const pagesBlobsProcessedInWorker = await this.workerPool.addWork({
+        type,
+        blobURL,
+        outputSettings: this.outputSettings,
+        targetFormatName: this.activeTargetFormatName,
+        inputSettings: this.inputSettings,
+      });
+
+      return pagesBlobsProcessedInWorker as Blob[];
+    } catch (err) {
+      console.error(`Failed to process PDF in worker: ${(err as ErrorEvent).message}`);
+
+      const pagesBlobs = await PDFPagesToBlobs(
+        blobURL,
+        this.outputSettings,
+        this.activeTargetFormatName,
+        this.inputSettings,
+      );
+      return pagesBlobs;
+    }
+  }
+
+  private async convertGIF(blobURL: string, type: MIMETypes): Promise<Blob[]> {
+    try {
+      const pagesBlobsProcessedInWorker = await this.workerPool.addWork({
+        type,
+        blobURL,
+        outputSettings: this.outputSettings,
+        targetFormatName: this.activeTargetFormatName,
+      });
+
+      return pagesBlobsProcessedInWorker as Blob[];
+    } catch (err) {
+      console.error(`Failed to process GIF in worker: ${(err as ErrorEvent).message}`);
+
+      const pagesBlobs = await GIFPagesToBlobs(
+        blobURL,
+        this.outputSettings,
+        this.activeTargetFormatName,
+      );
+
+      return pagesBlobs;
+    }
+  }
+
+  public dispose() {
+    this.workerPool.dispose();
   }
 }
