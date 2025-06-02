@@ -9,7 +9,10 @@ import BMPToBlob from './decoders/singlePage/BMPToBlob';
 import HEICToBlob from './decoders/singlePage/HEICToBlob';
 import JPEG_WEBP_PNG_ToBlob from './decoders/singlePage/JPEG_WEBP_PNG_ToBlob';
 import SVGToBlob from './decoders/singlePage/SVGToBlob';
-import { getScaledSVGDimensions } from './utils/getScaledSVGDimensions';
+
+import mergeGIF from './aggregators/mergeGIF';
+import mergePDF from './aggregators/mergePDF';
+import SVGToBitmap from './utils/SVGToBitmap';
 import WorkerPool from './utils/WorkerPool/WorkerPool';
 
 export default class Converter {
@@ -34,9 +37,9 @@ export default class Converter {
     }
 
     if (this.mergeToOne) {
-      const blobs = await Promise.allSettled(this.processTasks);
+      const tasksQueue = await Promise.allSettled(this.processTasks);
 
-      blobs.forEach((blob) => {
+      tasksQueue.forEach((blob) => {
         if (blob.status === 'fulfilled') {
           if (Array.isArray(blob.value)) {
             blob.value.forEach((blob) => this.collection.push(blob));
@@ -45,9 +48,53 @@ export default class Converter {
           }
         }
       });
+
+      if (this.collection.length > 0) {
+        const merged = await this.merge();
+        console.log(merged);
+      }
     } else {
-      const taskQueue = await Promise.allSettled(this.processTasks);
-      console.log(taskQueue);
+      await Promise.allSettled(this.processTasks);
+    }
+  }
+
+  private async merge() {
+    switch (this.activeTargetFormatName) {
+      case OutputFileFormatsNames.PDF:
+        {
+          const merged = await mergePDF(this.collection);
+
+          const URL = window.URL.createObjectURL(merged);
+          this.UIDispatcher(
+            addConvertedFile({
+              blobURL: URL,
+              downloadLink: URL,
+              name: `Merged-${Date.now()}`,
+              size: merged.size,
+              type: `image/${this.activeTargetFormatName}` as MIMETypes,
+              id: nanoid(),
+            }),
+          );
+        }
+        break;
+
+      case OutputFileFormatsNames.GIF:
+        {
+          const merged = await mergeGIF(this.collection, this.outputSettings);
+
+          const URL = window.URL.createObjectURL(merged);
+          this.UIDispatcher(
+            addConvertedFile({
+              blobURL: URL,
+              downloadLink: URL,
+              name: `Merged-${Date.now()}`,
+              size: merged.size,
+              type: `image/${this.activeTargetFormatName}` as MIMETypes,
+              id: nanoid(),
+            }),
+          );
+        }
+        break;
     }
   }
 
@@ -60,55 +107,55 @@ export default class Converter {
       case MIMETypes.WEBP:
       case MIMETypes.BMP:
       case MIMETypes.SVG:
-      case MIMETypes.HEIC:
-        {
-          const processed = await this.processSinglePageFile(blobURL, type);
+      case MIMETypes.HEIC: {
+        const processed = await this.processSinglePageFile(blobURL, type);
 
-          if (processed) {
-            const { name, id } = file;
-
-            const size = processed.size;
-            const URL = window.URL.createObjectURL(processed);
-
-            this.UIDispatcher(
-              addConvertedFile({
-                blobURL: URL,
-                downloadLink: URL,
-                name,
-                size,
-                type: `image/${this.activeTargetFormatName}` as MIMETypes,
-                id: nanoid(),
-                sourceId: id,
-              }),
-            );
-
-            return processed;
-          }
-        }
-        break;
-
-      case MIMETypes.TIFF:
-      case MIMETypes.GIF:
-      case MIMETypes.PDF: {
-        const processedPages = await this.processMultiPageFile(blobURL, type);
-
-        for (const [index, blobPage] of processedPages.entries()) {
+        if (!this.mergeToOne) {
           const { name, id } = file;
 
-          const size = blobPage.size;
-          const URL = window.URL.createObjectURL(blobPage);
+          const size = processed.size;
+          const URL = window.URL.createObjectURL(processed);
 
           this.UIDispatcher(
             addConvertedFile({
               blobURL: URL,
               downloadLink: URL,
-              name: `${name}_${index + 1}`,
+              name,
               size,
               type: `image/${this.activeTargetFormatName}` as MIMETypes,
               id: nanoid(),
               sourceId: id,
             }),
           );
+        }
+
+        return processed;
+      }
+
+      case MIMETypes.TIFF:
+      case MIMETypes.GIF:
+      case MIMETypes.PDF: {
+        const processedPages = await this.processMultiPageFile(blobURL, type);
+
+        if (!this.mergeToOne) {
+          for (const [index, blobPage] of processedPages.entries()) {
+            const { name, id } = file;
+
+            const size = blobPage.size;
+            const URL = window.URL.createObjectURL(blobPage);
+
+            this.UIDispatcher(
+              addConvertedFile({
+                blobURL: URL,
+                downloadLink: URL,
+                name: `${name}_${index + 1}`,
+                size,
+                type: `image/${this.activeTargetFormatName}` as MIMETypes,
+                id: nanoid(),
+                sourceId: id,
+              }),
+            );
+          }
         }
 
         return processedPages;
@@ -208,7 +255,7 @@ export default class Converter {
   }
 
   private async convertSVG(blobURL: string, type: MIMETypes): Promise<Blob> {
-    const bitmap = await this.SVGToBitmap(blobURL);
+    const bitmap = await SVGToBitmap(blobURL, this.outputSettings);
 
     try {
       const processedInWorker = await this.workerPool.addWork({
@@ -226,122 +273,6 @@ export default class Converter {
 
       return processed;
     }
-  }
-
-  private async SVGToBitmap(blobURL: string): Promise<ImageBitmap> {
-    let svgBlobURL;
-
-    const { resize, units, targetHeight, targetWidth } = this.outputSettings;
-
-    // Parse SVG
-    const file = await fetch(blobURL);
-    const svgText = await file.text();
-
-    const svgEl = new DOMParser().parseFromString(svgText, MIMETypes.SVG)
-      .documentElement as unknown as SVGSVGElement;
-
-    // Figuring out dimensions of given SVG
-    let currentWidth, currentHeight;
-
-    const widthAttribute = svgEl.getAttribute('width');
-    const heightAttribute = svgEl.getAttribute('height');
-
-    if (widthAttribute) {
-      currentWidth = parseInt(widthAttribute);
-    }
-
-    if (heightAttribute) {
-      currentHeight = parseInt(heightAttribute);
-    }
-
-    if (!currentWidth || !currentHeight) {
-      // Trying to get viewBox...
-      const viewBox = svgEl.getAttribute('viewBox');
-
-      if (viewBox) {
-        const viewBoxValues = viewBox.split(' ');
-        const viewBoxWidth = viewBoxValues[2];
-        const viewBoxHeight = viewBoxValues[3];
-
-        currentWidth = Number(viewBoxWidth);
-        currentHeight = Number(viewBoxHeight);
-      } else {
-        // If viewBox missing & there is no width-height - just place svg in DOM and get width and height
-        document.body.appendChild(svgEl);
-
-        if (svgEl.isConnected) {
-          const bbox = svgEl.getBBox();
-
-          currentWidth = Math.round(bbox.width);
-          currentHeight = Math.round(bbox.height);
-        }
-
-        svgEl.setAttribute('viewBox', `0 0 ${currentWidth} ${currentHeight}`);
-
-        // Cleanup
-        document.body.removeChild(svgEl);
-      }
-    }
-
-    if (
-      !currentWidth ||
-      !currentHeight ||
-      typeof currentHeight !== 'number' ||
-      typeof currentWidth !== 'number'
-    ) {
-      throw new Error('Failed to load SVG dimensions!');
-    }
-
-    if (resize && (targetWidth || targetHeight)) {
-      // Scale SVG
-      const targetDimensions = getScaledSVGDimensions(
-        currentHeight,
-        currentWidth,
-        units,
-        targetWidth,
-        targetHeight,
-      );
-
-      svgEl.setAttribute('width', targetDimensions.width);
-      svgEl.setAttribute('height', targetDimensions.height);
-
-      currentWidth = parseInt(targetDimensions.width);
-      currentHeight = parseInt(targetDimensions.height);
-
-      // Convert SVG element to a data URL
-      const svgData = new XMLSerializer().serializeToString(svgEl);
-      const svgBlob = new Blob([svgData], {
-        type: 'image/svg+xml;charset=utf-8',
-      });
-
-      svgBlobURL = URL.createObjectURL(svgBlob);
-    } else {
-      svgEl.setAttribute('width', `${currentWidth}`);
-      svgEl.setAttribute('height', `${currentHeight}`);
-
-      // Convert SVG element to a data URL
-      const svgData = new XMLSerializer().serializeToString(svgEl);
-      const svgBlob = new Blob([svgData], {
-        type: 'image/svg+xml;charset=utf-8',
-      });
-
-      svgBlobURL = URL.createObjectURL(svgBlob);
-    }
-
-    const img = new Image();
-    img.src = svgBlobURL;
-    await img.decode();
-
-    const bmp = await createImageBitmap(img, 0, 0, currentWidth, currentHeight, {
-      resizeHeight: currentHeight,
-      resizeWidth: currentWidth,
-    });
-
-    // If SVG was resized
-    if (svgBlobURL !== blobURL) {
-      URL.revokeObjectURL(svgBlobURL);
-    }
-    return bmp;
   }
 
   // Multi page

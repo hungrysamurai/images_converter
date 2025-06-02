@@ -51,7 +51,21 @@ const PDFPagesToBlobs = async (
     const worker = new PdfJsWorker();
     pdfjs.GlobalWorkerOptions.workerPort = worker;
 
-    const loadingTask = pdfjs.getDocument(arrayBuffer);
+    const document = {
+      //@ts-ignore
+      fonts: self.fonts,
+      createElement: (name: string) => {
+        if (name == 'canvas') {
+          return new OffscreenCanvas(1, 1);
+        }
+        return null;
+      },
+    };
+
+    const loadingTask = pdfjs.getDocument({
+      data: arrayBuffer,
+      ownerDocument: document as HTMLDocument,
+    });
     const pdf = await loadingTask.promise;
 
     const { numPages } = pdf._pdfInfo;

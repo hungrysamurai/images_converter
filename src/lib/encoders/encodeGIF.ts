@@ -17,10 +17,8 @@ const encodeGIF = async (
   if (!context) {
     throw new Error('2D context not available on OffscreenCanvas');
   }
-  console.log(gifWorkerUrl);
 
   const imgData = context.getImageData(0, 0, canvas.width, canvas.height);
-  console.log(quality);
 
   const blob: Blob = await new Promise((resolve, reject) => {
     const gif = new GIF({

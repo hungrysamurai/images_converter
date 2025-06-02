@@ -21,7 +21,7 @@ declare module 'gif.js' {
     constructor(options: GIFOptions);
 
     addFrame: (
-      imgData: ImageData,
+      imgData: ImageData | HTMLCanvasElement,
       opt?: {
         delay?: number;
         copy?: boolean;

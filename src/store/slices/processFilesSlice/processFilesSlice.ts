@@ -44,7 +44,12 @@ const processFilesSlice = createProcessFilesSlice({
           mergeToOne,
         );
 
-        await converter.convert(sourceFiles);
+        try {
+          await converter.convert(sourceFiles);
+        } catch (err) {
+          console.log(err);
+        }
+
         converter.dispose();
         // converter.dispose();
 
