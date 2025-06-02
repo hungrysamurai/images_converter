@@ -1,7 +1,7 @@
-import { CanvasToBMP } from './canvasToBMP';
+import { OffscreenCanvasToBMP } from './offscreenCanvasToBMP';
 
-const encodeBMP = async (canvas: HTMLCanvasElement): Promise<Blob> => {
-  const canvasConverter = new CanvasToBMP();
+const encodeBMP = async (canvas: OffscreenCanvas): Promise<Blob> => {
+  const canvasConverter = new OffscreenCanvasToBMP();
   const data = canvasConverter.toBuffer(canvas);
 
   return new Blob([data], { type: 'image/bmp' });

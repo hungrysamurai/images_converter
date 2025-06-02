@@ -1,5 +1,5 @@
 import { OutputFileFormatsNames } from '../../../types/types';
-import encodeCanvas from '../../utils/WorkerPool/worker_encoders/encodeCanvas';
+import encodeCanvas from '../../encode';
 
 const SVGToBlob = async (
   targetFormatSettings: OutputConversionSettings,

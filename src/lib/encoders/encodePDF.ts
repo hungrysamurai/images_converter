@@ -3,16 +3,18 @@ import { PDFDocument, PDFImage } from 'pdf-lib';
 import { isCompressionSetting } from '../../types/typeGuards';
 import { PDFCompressionTypes } from '../../types/types';
 
-import canvasToBlob from './canvasToBlob';
-
 const encodePDF = async (
-  canvas: HTMLCanvasElement,
+  canvas: OffscreenCanvas,
   targetFormatSettings: OutputConversionSettings,
-): Promise<Blob | void> => {
+): Promise<Blob> => {
+  let pdfBytes;
   if (isCompressionSetting(targetFormatSettings)) {
     const { compression, quality } = targetFormatSettings;
 
-    const blob = await canvasToBlob(canvas, compression, quality);
+    const blob = await canvas.convertToBlob({
+      type: `image/${compression.toLowerCase()}`,
+      quality,
+    });
     const arrayBuffer = await blob.arrayBuffer();
 
     const pdfDoc = await PDFDocument.create();
@@ -34,10 +36,9 @@ const encodePDF = async (
       height: canvas.height,
     });
 
-    const pdfBytes = await pdfDoc.save();
-
-    return new Blob([pdfBytes], { type: 'application/pdf' });
+    pdfBytes = await pdfDoc.save();
   }
+  return new Blob([pdfBytes as Uint8Array<ArrayBufferLike>], { type: 'application/pdf' });
 };
 
 export default encodePDF;

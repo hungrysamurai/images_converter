@@ -2,8 +2,8 @@ import { degrees, PDFDocument } from 'pdf-lib';
 import * as pdfjs from 'pdfjs-dist';
 import PdfJsWorker from 'pdfjs-dist/build/pdf.worker.mjs?worker';
 import { OutputFileFormatsNames } from '../../../types/types';
-import encodeCanvas from '../../utils/WorkerPool/worker_encoders/encodeCanvas';
-import { getResizedCanvas } from '../../utils/WorkerPool/worker_utils/getResizedCanvas';
+import encodeCanvas from '../../encode';
+import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
 const PDFPagesToBlobs = async (
   blobURL: string,

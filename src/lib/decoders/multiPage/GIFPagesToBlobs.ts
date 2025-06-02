@@ -2,8 +2,8 @@ import { decompressFrames, parseGIF } from 'gifuct-js';
 
 import { OutputFileFormatsNames } from '../../../types/types';
 
-import encodeCanvas from '../../utils/WorkerPool/worker_encoders/encodeCanvas';
-import { getResizedCanvas } from '../../utils/WorkerPool/worker_utils/getResizedCanvas';
+import encodeCanvas from '../../encode';
+import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
 const GIFPagesToBlobs = async (
   blobURL: string,

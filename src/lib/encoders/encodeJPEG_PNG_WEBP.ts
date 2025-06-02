@@ -2,30 +2,19 @@ import { isQualitySetting } from '../../types/typeGuards';
 import { OutputFileFormatsNames } from '../../types/types';
 
 const encodeJPEG_PNG_WEBP = async (
-  canvas: HTMLCanvasElement,
+  canvas: OffscreenCanvas,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
 ): Promise<Blob> => {
-  const resultingCanvas = canvas;
+  let quality: number | undefined;
 
-  return new Promise((resolve, reject) => {
-    let quality;
+  if (isQualitySetting(targetFormatSettings)) {
+    quality = targetFormatSettings.quality;
+  }
 
-    if (isQualitySetting(targetFormatSettings)) {
-      quality = targetFormatSettings.quality;
-    }
-    resultingCanvas.toBlob(
-      (blob: Blob | null) => {
-        // blob = null
-        if (blob) {
-          resolve(blob);
-        } else {
-          reject();
-        }
-      },
-      `image/${activeTargetFormatName}`,
-      quality,
-    );
+  return canvas.convertToBlob({
+    type: `image/${activeTargetFormatName.toLowerCase()}`,
+    quality,
   });
 };
 

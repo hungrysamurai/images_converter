@@ -1,59 +1,58 @@
 import { SmoothingPresets, Units } from '../../types/types';
 
 export const getResizedCanvas = (
-  canvas: HTMLCanvasElement,
+  canvas: OffscreenCanvas,
   smoothing: false | SmoothingPresets,
   units: Units,
   targetWidth?: number | null,
   targetHeight?: number | null,
-) => {
+): OffscreenCanvas => {
   if (!targetWidth && !targetHeight) return canvas;
 
-  const { width: srcWidth, height: srcHeight } = canvas;
+  const srcWidth = canvas.width;
+  const srcHeight = canvas.height;
   const srcAspectRatio = srcWidth / srcHeight;
 
-  const resultingCanvas = document.createElement('canvas');
-  const resultingCanvasContext = resultingCanvas.getContext('2d') as CanvasRenderingContext2D;
-
-  let resultWidth, resultHeight;
+  let resultWidth: number | undefined;
+  let resultHeight: number | undefined;
 
   if (units === Units.PIXELS) {
     if (targetWidth && targetHeight) {
       resultWidth = targetWidth;
       resultHeight = targetHeight;
     } else if (!targetWidth && targetHeight) {
-      resultWidth = Number((targetHeight * srcAspectRatio).toFixed(0));
+      resultWidth = Math.round(targetHeight * srcAspectRatio);
       resultHeight = targetHeight;
     } else if (targetWidth && !targetHeight) {
       resultWidth = targetWidth;
-      resultHeight = Number((targetWidth / srcAspectRatio).toFixed(0));
+      resultHeight = Math.round(targetWidth / srcAspectRatio);
     }
   } else if (units === Units.PERCENTAGES) {
     if (targetWidth && targetHeight) {
-      resultWidth = Number(((srcWidth / 100) * targetWidth).toFixed(0));
-      resultHeight = Number(((srcHeight / 100) * targetHeight).toFixed(0));
+      resultWidth = Math.round((srcWidth * targetWidth) / 100);
+      resultHeight = Math.round((srcHeight * targetHeight) / 100);
     } else if (!targetWidth && targetHeight) {
-      resultWidth = Number(((srcWidth / 100) * targetHeight).toFixed(0));
-      resultHeight = Number(((srcHeight / 100) * targetHeight).toFixed(0));
+      resultWidth = Math.round((srcWidth * targetHeight) / 100);
+      resultHeight = Math.round((srcHeight * targetHeight) / 100);
     } else if (targetWidth && !targetHeight) {
-      resultWidth = Number(((srcWidth / 100) * targetWidth).toFixed(0));
-      resultHeight = Number(((srcHeight / 100) * targetWidth).toFixed(0));
+      resultWidth = Math.round((srcWidth * targetWidth) / 100);
+      resultHeight = Math.round((srcHeight * targetWidth) / 100);
     }
   }
 
   if (resultWidth && resultHeight) {
-    resultingCanvas.width = resultWidth;
-    resultingCanvas.height = resultHeight;
+    const resizedCanvas = new OffscreenCanvas(resultWidth, resultHeight);
+    const ctx = resizedCanvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
 
     if (!smoothing) {
-      resultingCanvasContext.imageSmoothingEnabled = false;
+      ctx.imageSmoothingEnabled = false;
     } else {
-      resultingCanvasContext.imageSmoothingQuality = smoothing as ImageSmoothingQuality;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = smoothing as ImageSmoothingQuality;
     }
 
-    resultingCanvasContext.drawImage(canvas, 0, 0, resultWidth, resultHeight);
-
-    return resultingCanvas;
+    ctx.drawImage(canvas, 0, 0, resultWidth, resultHeight);
+    return resizedCanvas;
   }
 
   return canvas;

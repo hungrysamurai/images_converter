@@ -1,9 +1,11 @@
 declare module 'gif.js' {
-  interface options {
+  import type { GIFDitherOptions } from './types';
+
+  interface GIFOptions {
     workers: number;
     quality: number;
     workerScript: string;
-    dither: import('./types').GIFDitherOptions | false;
+    dither: GIFDitherOptions | false;
     background?: string;
     debug?: boolean;
     repeat?: number;
@@ -12,20 +14,24 @@ declare module 'gif.js' {
     height?: number;
   }
 
-  type finishCallback = (blob: Blob) => void;
+  type FinishCallback = (blob: Blob) => void;
+  type ErrorCallback = (error: Error) => void;
 
   class GIF {
-    constructor(opt: options);
+    constructor(options: GIFOptions);
 
     addFrame: (
-      canvas: HTMLCanvasElement,
+      imgData: ImageData,
       opt?: {
         delay?: number;
         copy?: boolean;
         dispose?: number;
       },
     ) => void;
-    on: (event: 'finished', cb: finishCallback) => void;
+
+    on(event: 'finished', cb: FinishCallback): void;
+    on(event: 'error', cb: ErrorCallback): void;
+
     render: () => void;
   }
 
