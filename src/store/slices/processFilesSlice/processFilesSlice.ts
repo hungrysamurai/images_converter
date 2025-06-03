@@ -2,7 +2,7 @@ import { asyncThunkCreator, buildCreateSlice, current, PayloadAction } from '@re
 
 import { AppDispatch, RootState } from '../../store';
 
-import Converter from '../../../lib/converter';
+import Converter from '../../../lib/Converter';
 import { zipAndSave } from '../../../lib/utils/zipAndSave';
 import { isMergeSetting } from '../../../types/typeGuards';
 
@@ -51,61 +51,6 @@ const processFilesSlice = createProcessFilesSlice({
         }
 
         converter.dispose();
-        // converter.dispose();
-
-        // const collection: MergeCollection = [];
-
-        // if (!mergeToOne) {
-        //   // With workers
-        //   const processTasks: Promise<void>[] = [];
-        //   const workerPool = new WorkerPool();
-
-        //   for (const source of sourceFiles) {
-        //     processTasks.push(
-        //       processFile(
-        //         source,
-        //         targetFormatSettings,
-        //         activeTargetFormatName,
-        //         inputSettings,
-        //         dispatch,
-        //         mergeToOne,
-        //         collection,
-        //         workerPool,
-        //       ),
-        //     );
-        //   }
-
-        //   await Promise.allSettled(processTasks);
-
-        //   // workerPool.dispose();
-        // } else {
-        //   for (const source of sourceFiles) {
-        //     try {
-        //       await processFile(
-        //         source,
-        //         targetFormatSettings,
-        //         activeTargetFormatName,
-        //         inputSettings,
-        //         dispatch,
-        //         mergeToOne,
-        //         collection,
-        //       );
-        //     } catch (err) {
-        //       console.error(
-        //         `Error processing file ${source.name}.${getFileFormat(source.type)}:`,
-        //         (err as Error).message,
-        //       );
-        //     }
-        //   }
-
-        //   try {
-        //     if (collection.length > 0) {
-        //       await merge(collection, targetFormatSettings, activeTargetFormatName, dispatch);
-        //     }
-        //   } catch (err) {
-        //     console.error('Error merging file:', err);
-        //   }
-        // }
       },
       {
         pending: (state) => {

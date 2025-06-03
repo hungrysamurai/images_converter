@@ -1,7 +1,9 @@
 import { nanoid } from '@reduxjs/toolkit';
 import { addConvertedFile } from '../store/slices/processFilesSlice/processFilesSlice';
-import { AppDispatch } from '../store/store';
+import type { AppDispatch } from '../store/store';
 import { MIMETypes, OutputFileFormatsNames } from '../types/types';
+import mergeGIF from './aggregators/mergeGIF';
+import mergePDF from './aggregators/mergePDF';
 import GIFPagesToBlobs from './decoders/multiPage/GIFPagesToBlobs';
 import PDFPagesToBlobs from './decoders/multiPage/PDFPagesToBlobs';
 import TIFFPagesToBlobs from './decoders/multiPage/TIFFPagesToBlobs';
@@ -9,10 +11,8 @@ import BMPToBlob from './decoders/singlePage/BMPToBlob';
 import HEICToBlob from './decoders/singlePage/HEICToBlob';
 import JPEG_WEBP_PNG_ToBlob from './decoders/singlePage/JPEG_WEBP_PNG_ToBlob';
 import SVGToBlob from './decoders/singlePage/SVGToBlob';
-
-import mergeGIF from './aggregators/mergeGIF';
-import mergePDF from './aggregators/mergePDF';
 import SVGToBitmap from './utils/SVGToBitmap';
+
 import WorkerPool from './utils/WorkerPool/WorkerPool';
 
 export default class Converter {
