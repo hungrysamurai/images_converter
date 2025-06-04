@@ -7,8 +7,8 @@ import mergePDF from './aggregators/mergePDF';
 import GIFPagesToBlobs from './decoders/multiPage/GIFPagesToBlobs';
 import PDFPagesToBlobs from './decoders/multiPage/PDFPagesToBlobs';
 import TIFFPagesToBlobs from './decoders/multiPage/TIFFPagesToBlobs';
-import BMPToBlob from './decoders/singlePage/BMPToBlob';
-import SVGToBlob from './decoders/singlePage/SVGToBlob';
+import decodeBMP from './decoders/singlePage/bmp';
+import decodeSVGBitmap from './decoders/singlePage/svg';
 import SVGToBitmap from './utils/SVGToBitmap';
 
 import WorkerPool from './utils/WorkerPool/WorkerPool';
@@ -218,7 +218,7 @@ export default class Converter {
       );
 
       try {
-        const JPEG_WEBP_PNG_ToBlob = await import('./decoders/singlePage/JPEG_WEBP_PNG_ToBlob');
+        const JPEG_WEBP_PNG_ToBlob = await import('./decoders/singlePage/jpeg_webp_png');
 
         const processed = await JPEG_WEBP_PNG_ToBlob.default(
           blobURL,
@@ -251,7 +251,7 @@ export default class Converter {
     } catch (err) {
       console.error(`Failed to process BMP in worker: ${(err as ErrorEvent).message}`);
 
-      const processed = await BMPToBlob(blobURL, this.outputSettings, this.activeTargetFormatName);
+      const processed = await decodeBMP(blobURL, this.outputSettings, this.activeTargetFormatName);
 
       return processed;
     }
@@ -278,9 +278,9 @@ export default class Converter {
       );
 
       try {
-        const HEICToBlob = await import('@/lib/decoders/shared/heic-decoder');
+        const decodeHEIC = await import('@/lib/decoders/singlePage/heic');
 
-        const processed = await HEICToBlob.default(
+        const processed = await decodeHEIC.default(
           blobURL,
           this.outputSettings,
           this.activeTargetFormatName,
@@ -316,7 +316,11 @@ export default class Converter {
       );
 
       const bitmap = await SVGToBitmap(blobURL, this.outputSettings);
-      const processed = await SVGToBlob(this.outputSettings, this.activeTargetFormatName, bitmap);
+      const processed = await decodeSVGBitmap(
+        this.outputSettings,
+        this.activeTargetFormatName,
+        bitmap,
+      );
 
       return processed;
     }

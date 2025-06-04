@@ -1,7 +1,7 @@
 import { OutputFileFormatsNames } from '../../../types/types';
 import encodeCanvas from '../../encode';
 
-const SVGToBlob = async (
+const decodeSVGBitmap = async (
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
   bmp: ImageBitmap,
@@ -36,4 +36,4 @@ const SVGToBlob = async (
   return encoded;
 };
 
-export default SVGToBlob;
+export default decodeSVGBitmap;

@@ -3,11 +3,11 @@ import { OutputFileFormatsNames } from '../../../types/types';
 import encodeCanvas from '../../encode';
 import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
-export default async function HEICToBlob(
+const decodeHEIC = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
-): Promise<Blob> {
+): Promise<Blob> => {
   const response = await fetch(blobURL);
   const srcBlob = await response.blob();
   const arrayBuffer = await srcBlob.arrayBuffer();
@@ -70,4 +70,6 @@ export default async function HEICToBlob(
       throw err;
     }
   }
-}
+};
+
+export default decodeHEIC;

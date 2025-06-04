@@ -12,10 +12,13 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('src/lib/decoders/singlePage/HEICToBlob')) {
-            return 'heic-decoder';
-          }
+        // manualChunks(id) {
+        //   if (id.includes('src/lib/decoders/singlePage/heic')) {
+        //     return 'heic-decoder';
+        //   }
+        // },
+        manualChunks: {
+          heic: ['src/lib/decoders/singlePage/heic.ts'],
         },
       },
     },
@@ -25,10 +28,13 @@ export default defineConfig({
     rollupOptions: {
       output: {
         format: 'es',
-        manualChunks(id) {
-          if (id.includes('src/lib/shared/heic-decoder')) {
-            return 'heic-decoder';
-          }
+        // manualChunks(id) {
+        //   if (id.includes('src/lib/decoders/singlePage/heic')) {
+        //     return 'heic-decoder';
+        //   }
+        // },
+        manualChunks: {
+          heic: ['src/lib/decoders/singlePage/heic.ts'],
         },
       },
     },

@@ -27,7 +27,7 @@ interface Bitmap {
   };
 }
 
-const BMPToBlob = async (
+const decodeBMP = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
@@ -119,4 +119,4 @@ const BMPToBlob = async (
   return encoded;
 };
 
-export default BMPToBlob;
+export default decodeBMP;

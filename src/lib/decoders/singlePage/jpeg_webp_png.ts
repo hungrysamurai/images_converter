@@ -2,7 +2,7 @@ import { OutputFileFormatsNames } from '../../../types/types';
 import encodeCanvas from '../../encode';
 import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
-const JPEG_WEBP_PNG_ToBlob = async (
+const decodeJPEG_WEBP_PNG = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
@@ -28,4 +28,4 @@ const JPEG_WEBP_PNG_ToBlob = async (
   return encoded;
 };
 
-export default JPEG_WEBP_PNG_ToBlob;
+export default decodeJPEG_WEBP_PNG;

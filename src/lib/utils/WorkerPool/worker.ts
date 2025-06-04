@@ -23,25 +23,25 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
       case MIMETypes.JPG:
       case MIMETypes.PNG:
       case MIMETypes.WEBP: {
-        const JPEG_WEBP_PNG_ToBlob = await import('../../decoders/singlePage/JPEG_WEBP_PNG_ToBlob');
+        const decodeJPEG_WEBP_PNG = await import('../../decoders/singlePage/jpeg_webp_png');
 
-        result = await JPEG_WEBP_PNG_ToBlob.default(blobURL, outputSettings, targetFormatName);
+        result = await decodeJPEG_WEBP_PNG.default(blobURL, outputSettings, targetFormatName);
 
         break;
       }
 
       case MIMETypes.BMP: {
-        const BMPToBlob = await import('../../decoders/singlePage/BMPToBlob');
+        const decodeBMP = await import('../../decoders/singlePage/bmp');
 
-        result = await BMPToBlob.default(blobURL, outputSettings, targetFormatName);
+        result = await decodeBMP.default(blobURL, outputSettings, targetFormatName);
 
         break;
       }
 
       case MIMETypes.HEIC: {
-        const HEICToBlob = await import('@/lib/decoders/shared/heic-decoder');
+        const decodeHEIC = await import('@/lib/decoders/singlePage/heic');
 
-        result = await HEICToBlob.default(blobURL, outputSettings, targetFormatName);
+        result = await decodeHEIC.default(blobURL, outputSettings, targetFormatName);
 
         break;
       }
@@ -49,9 +49,9 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
       case MIMETypes.SVG: {
         if (!bitmap) throw new Error('Missing bitmap for SVG conversion');
 
-        const SVGToBlob = await import('../../decoders/singlePage/SVGToBlob');
+        const decodeSVGBitmap = await import('../../decoders/singlePage/svg');
 
-        result = await SVGToBlob.default(outputSettings, targetFormatName, bitmap);
+        result = await decodeSVGBitmap.default(outputSettings, targetFormatName, bitmap);
         break;
       }
 
