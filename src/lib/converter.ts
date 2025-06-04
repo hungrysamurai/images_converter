@@ -39,20 +39,20 @@ export default class Converter {
 
     if (this.mergeToOne) {
       const tasksQueue = await Promise.allSettled(this.processTasks);
+      console.log(tasksQueue);
 
       tasksQueue.forEach((blob) => {
-        if (blob.status === 'fulfilled') {
+        if (blob.status === 'fulfilled' && blob.value) {
           if (Array.isArray(blob.value)) {
             blob.value.forEach((blob) => this.collection.push(blob));
           } else {
-            this.collection.push(blob.value as Blob);
+            this.collection.push(blob.value);
           }
         }
       });
 
       if (this.collection.length > 0) {
-        const merged = await this.merge();
-        console.log(merged);
+        await this.merge();
       }
     } else {
       await Promise.allSettled(this.processTasks);
@@ -111,11 +111,10 @@ export default class Converter {
       case MIMETypes.HEIC:
         {
           const processed = await this.processSinglePageFile(blobURL, type, name);
+          if (processed) {
+            if (!this.mergeToOne) {
+              const { name, id } = file;
 
-          if (!this.mergeToOne) {
-            const { name, id } = file;
-
-            if (processed) {
               const size = processed.size;
               const URL = window.URL.createObjectURL(processed);
 
@@ -131,7 +130,6 @@ export default class Converter {
                 }),
               );
             }
-
             return processed;
           }
         }
@@ -233,6 +231,7 @@ export default class Converter {
         console.error(
           `Failed to process ${getFileFormat(type)}-file '${fileName}' in main thread: ${(err as Error).message}`,
         );
+        throw err;
       }
     }
   }

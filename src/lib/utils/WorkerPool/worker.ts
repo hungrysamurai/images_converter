@@ -1,11 +1,4 @@
 import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
-import GIFPagesToBlobs from '../../decoders/multiPage/GIFPagesToBlobs';
-import PDFPagesToBlobs from '../../decoders/multiPage/PDFPagesToBlobs';
-import TIFFPagesToBlobs from '../../decoders/multiPage/TIFFPagesToBlobs';
-import BMPToBlob from '../../decoders/singlePage/BMPToBlob';
-import HEICToBlob from '../../decoders/singlePage/HEICToBlob';
-import JPEG_WEBP_PNG_ToBlob from '../../decoders/singlePage/JPEG_WEBP_PNG_ToBlob';
-import SVGToBlob from '../../decoders/singlePage/SVGToBlob';
 
 interface WorkerMessage {
   type: MIMETypes;
@@ -29,35 +22,66 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
     switch (type) {
       case MIMETypes.JPG:
       case MIMETypes.PNG:
-      case MIMETypes.WEBP:
-        result = await JPEG_WEBP_PNG_ToBlob(blobURL, outputSettings, targetFormatName);
-        break;
+      case MIMETypes.WEBP: {
+        const JPEG_WEBP_PNG_ToBlob = await import('../../decoders/singlePage/JPEG_WEBP_PNG_ToBlob');
 
-      case MIMETypes.BMP:
-        result = await BMPToBlob(blobURL, outputSettings, targetFormatName);
-        break;
+        result = await JPEG_WEBP_PNG_ToBlob.default(blobURL, outputSettings, targetFormatName);
 
-      case MIMETypes.HEIC:
-        result = await HEICToBlob(blobURL, outputSettings, targetFormatName);
         break;
+      }
 
-      case MIMETypes.SVG:
+      case MIMETypes.BMP: {
+        const BMPToBlob = await import('../../decoders/singlePage/BMPToBlob');
+
+        result = await BMPToBlob.default(blobURL, outputSettings, targetFormatName);
+
+        break;
+      }
+
+      case MIMETypes.HEIC: {
+        const HEICToBlob = await import('../../decoders/singlePage/HEICToBlob');
+
+        result = await HEICToBlob.default(blobURL, outputSettings, targetFormatName);
+
+        break;
+      }
+
+      case MIMETypes.SVG: {
         if (!bitmap) throw new Error('Missing bitmap for SVG conversion');
-        result = await SVGToBlob(outputSettings, targetFormatName, bitmap);
-        break;
 
-      case MIMETypes.TIFF:
-        result = await TIFFPagesToBlobs(blobURL, outputSettings, targetFormatName);
-        break;
+        const SVGToBlob = await import('../../decoders/singlePage/SVGToBlob');
 
-      case MIMETypes.PDF:
+        result = await SVGToBlob.default(outputSettings, targetFormatName, bitmap);
+        break;
+      }
+
+      case MIMETypes.TIFF: {
+        const TIFFPagesToBlobs = await import('../../decoders/multiPage/TIFFPagesToBlobs');
+
+        result = await TIFFPagesToBlobs.default(blobURL, outputSettings, targetFormatName);
+
+        break;
+      }
+
+      case MIMETypes.PDF: {
         if (!inputSettings) throw new Error('Missing inputSettings for PDF conversion');
-        result = await PDFPagesToBlobs(blobURL, outputSettings, targetFormatName, inputSettings);
-        break;
+        const PDFPagesToBlobs = await import('../../decoders/multiPage/PDFPagesToBlobs');
 
-      case MIMETypes.GIF:
-        result = await GIFPagesToBlobs(blobURL, outputSettings, targetFormatName);
+        result = await PDFPagesToBlobs.default(
+          blobURL,
+          outputSettings,
+          targetFormatName,
+          inputSettings,
+        );
         break;
+      }
+
+      case MIMETypes.GIF: {
+        const GIFPagesToBlobs = await import('../../decoders/multiPage/GIFPagesToBlobs');
+
+        result = await GIFPagesToBlobs.default(blobURL, outputSettings, targetFormatName);
+        break;
+      }
 
       default:
         throw new Error(`Unsupported file type: ${type}`);

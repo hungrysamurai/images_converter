@@ -47,7 +47,7 @@ const processFilesSlice = createProcessFilesSlice({
         try {
           await converter.convert(sourceFiles);
         } catch (err) {
-          console.log(err);
+          console.error(err);
         }
 
         converter.dispose();

@@ -10,4 +10,12 @@ export default defineConfig({
     outDir: 'build',
     emptyOutDir: true,
   },
+  worker: {
+    format: 'es',
+    rollupOptions: {
+      output: {
+        format: 'es',
+      },
+    },
+  },
 });

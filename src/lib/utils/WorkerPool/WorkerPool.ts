@@ -1,4 +1,4 @@
-import mainWorker from './worker?worker&url';
+import WorkerConstructor from './worker?worker';
 
 /**
  * Describes a task to be executed by a Web Worker.
@@ -50,7 +50,8 @@ export default class WorkerPool<TIn, TOut> {
    */
   constructor() {
     for (let i = 0; i < this.NUM_WORKERS; i++) {
-      const worker = new Worker(mainWorker, { type: 'module' });
+      // const worker = new Worker(mainWorker, { type: 'module' });
+      const worker = new WorkerConstructor();
 
       worker.onmessage = (message) => {
         this._handleWorkerDone(worker, null, message.data);
