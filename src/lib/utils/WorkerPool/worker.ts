@@ -1,4 +1,4 @@
-import { MIMETypes } from '../../../types/types';
+import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
 import GIFPagesToBlobs from '../../decoders/multiPage/GIFPagesToBlobs';
 import PDFPagesToBlobs from '../../decoders/multiPage/PDFPagesToBlobs';
 import TIFFPagesToBlobs from '../../decoders/multiPage/TIFFPagesToBlobs';
@@ -7,74 +7,63 @@ import HEICToBlob from '../../decoders/singlePage/HEICToBlob';
 import JPEG_WEBP_PNG_ToBlob from '../../decoders/singlePage/JPEG_WEBP_PNG_ToBlob';
 import SVGToBlob from '../../decoders/singlePage/SVGToBlob';
 
-addEventListener('message', async (e) => {
-  const { type, outputSettings, targetFormatName, blobURL, transferable, inputSettings } = e.data;
+interface WorkerMessage {
+  type: MIMETypes;
+  blobURL: string;
+  outputSettings: OutputConversionSettings;
+  targetFormatName: OutputFileFormatsNames;
+  inputSettings?: {
+    [OutputFileFormatsNames.PDF]: PDFInputSettings;
+  };
+  bitmap?: ImageBitmap;
+}
+
+type WorkerResult = Blob | Blob[];
+
+self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
+  const { type, blobURL, outputSettings, targetFormatName, inputSettings, bitmap } = e.data;
 
   try {
+    let result: WorkerResult;
+
     switch (type) {
       case MIMETypes.JPG:
       case MIMETypes.PNG:
       case MIMETypes.WEBP:
-        {
-          const blob = await JPEG_WEBP_PNG_ToBlob(blobURL, outputSettings, targetFormatName);
-
-          postMessage(blob);
-        }
+        result = await JPEG_WEBP_PNG_ToBlob(blobURL, outputSettings, targetFormatName);
         break;
 
       case MIMETypes.BMP:
-        {
-          const blob = await BMPToBlob(blobURL, outputSettings, targetFormatName);
-
-          postMessage(blob);
-        }
+        result = await BMPToBlob(blobURL, outputSettings, targetFormatName);
         break;
 
       case MIMETypes.HEIC:
-        {
-          const blob = await HEICToBlob(blobURL, outputSettings, targetFormatName);
-
-          postMessage(blob);
-        }
+        result = await HEICToBlob(blobURL, outputSettings, targetFormatName);
         break;
 
       case MIMETypes.SVG:
-        {
-          const blob = await SVGToBlob(outputSettings, targetFormatName, transferable);
-
-          postMessage(blob);
-        }
+        if (!bitmap) throw new Error('Missing bitmap for SVG conversion');
+        result = await SVGToBlob(outputSettings, targetFormatName, bitmap);
         break;
 
       case MIMETypes.TIFF:
-        {
-          const blobs = await TIFFPagesToBlobs(blobURL, outputSettings, targetFormatName);
-
-          postMessage(blobs);
-        }
+        result = await TIFFPagesToBlobs(blobURL, outputSettings, targetFormatName);
         break;
 
       case MIMETypes.PDF:
-        {
-          const blobs = await PDFPagesToBlobs(
-            blobURL,
-            outputSettings,
-            targetFormatName,
-            inputSettings,
-          );
-
-          postMessage(blobs);
-        }
+        if (!inputSettings) throw new Error('Missing inputSettings for PDF conversion');
+        result = await PDFPagesToBlobs(blobURL, outputSettings, targetFormatName, inputSettings);
         break;
 
       case MIMETypes.GIF:
-        {
-          const blobs = await GIFPagesToBlobs(blobURL, outputSettings, targetFormatName);
-
-          postMessage(blobs);
-        }
+        result = await GIFPagesToBlobs(blobURL, outputSettings, targetFormatName);
         break;
+
+      default:
+        throw new Error(`Unsupported file type: ${type}`);
     }
+
+    postMessage(result);
   } catch (err) {
     setTimeout(() => {
       throw err;

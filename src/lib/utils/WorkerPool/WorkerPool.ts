@@ -1,81 +1,129 @@
 import mainWorker from './worker?worker&url';
 
-export default class WorkerPool {
-  idleWorkers: Worker[];
-  workQueue;
-  workerMap;
+/**
+ * Describes a task to be executed by a Web Worker.
+ * @template TIn - The type of data to be passed to the worker.
+ * @template _TOut - The type of result expected from the worker (used for typing purposes).
+ */
 
-  NUM_VORKERS = navigator.hardwareConcurrency - 1 || 1;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type WorkerTask<TIn, _TOut> = {
+  /** The input data to be processed by the worker. */
+  data: TIn;
+  /** Optional array of transferable objects (e.g., ArrayBuffer, MessagePort). */
+  transfer?: Transferable[];
+};
 
+type WorkUnit<TIn, TOut> = [
+  task: WorkerTask<TIn, TOut>,
+  resolve: (value: TOut) => void,
+  reject: (reason?: unknown) => void,
+];
+
+/**
+ * A generic worker pool for distributing asynchronous tasks across multiple Web Workers.
+ *
+ * @template TIn - The type of data input to each worker.
+ * @template TOut - The type of data output from each worker.
+ *
+ */
+export default class WorkerPool<TIn, TOut> {
+  /** The pool of currently idle workers. */
+  private idleWorkers: Worker[] = [];
+
+  /** The queue of tasks waiting to be processed. */
+  private workQueue: WorkUnit<TIn, TOut>[] = [];
+
+  /** Maps active workers to their respective promise resolvers/rejectors. */
+  private workerMap: Map<
+    Worker,
+    [resolve: (value: TOut) => void, reject: (err?: unknown) => void]
+  > = new Map();
+
+  /** Number of worker threads to spawn (defaults to one less than CPU cores). */
+  private readonly NUM_WORKERS = Math.max(navigator.hardwareConcurrency - 1, 1);
+
+  /**
+   * Creates a new instance of the WorkerPool.
+   *
+   * @param workerUrl - URL of the JavaScript module for the worker.
+   */
   constructor() {
-    this.idleWorkers = [];
-    this.workQueue = [];
-    this.workerMap = new Map();
-
-    for (let i = 0; i < this.NUM_VORKERS; i++) {
+    for (let i = 0; i < this.NUM_WORKERS; i++) {
       const worker = new Worker(mainWorker, { type: 'module' });
 
       worker.onmessage = (message) => {
-        this._workerDone(worker, null, message.data);
+        this._handleWorkerDone(worker, null, message.data);
       };
 
       worker.onerror = (error) => {
-        this._workerDone(worker, error, null);
+        this._handleWorkerDone(worker, error, null);
       };
 
-      this.idleWorkers[i] = worker;
+      this.idleWorkers.push(worker);
     }
   }
 
-  _workerDone(worker: Worker, error: ErrorEvent | null, response: Blob | null) {
-    const workerInMap = this.workerMap.get(worker);
+  /**
+   * Handles the completion of a worker's task, processing the next task if any.
+   *
+   * @param worker - The worker that completed the task.
+   * @param error - Optional error event, if an error occurred.
+   * @param result - The result returned by the worker.
+   */
+  private _handleWorkerDone(worker: Worker, error: ErrorEvent | null, result: TOut | null) {
+    const callbacks = this.workerMap.get(worker);
 
-    if (workerInMap) {
-      const [resolver, rejector] = workerInMap;
+    if (!callbacks) return;
 
-      this.workerMap.delete(worker);
+    const [resolve, reject] = callbacks;
+    this.workerMap.delete(worker);
 
-      if (this.workQueue.length === 0) {
-        this.idleWorkers.push(worker);
-      } else {
-        const [work, resolver, rejector] = this.workQueue.shift();
-        this.workerMap.set(worker, [resolver, rejector]);
-        worker.postMessage(work);
+    const nextTask = this.workQueue.shift();
+
+    if (nextTask) {
+      const [task, nextResolve, nextReject] = nextTask;
+      this.workerMap.set(worker, [nextResolve, nextReject]);
+
+      try {
+        worker.postMessage(task.data, task.transfer ?? []);
+      } catch (err) {
+        nextReject(err);
       }
+    } else {
+      this.idleWorkers.push(worker);
+    }
 
-      if (error === null) {
-        resolver(response);
-      } else {
-        rejector(error);
-      }
+    if (error) {
+      reject(error);
+    } else {
+      resolve(result as TOut);
     }
   }
 
-  addWork(work): Promise<Blob | Blob[]> {
-    const { type, outputSettings, targetFormatName, blobURL, transferable, inputSettings } = work;
-
+  /**
+   * Submits a new task to the worker pool.
+   *
+   * @param task - The task to be processed by a worker.
+   * @returns A promise that resolves with the result from the worker.
+   */
+  public addWork(task: WorkerTask<TIn, TOut>): Promise<TOut> {
     return new Promise((resolve, reject) => {
       if (this.idleWorkers.length > 0) {
         const worker = this.idleWorkers.pop() as Worker;
         this.workerMap.set(worker, [resolve, reject]);
 
-        worker.postMessage(
-          {
-            blobURL,
-            type,
-            outputSettings,
-            targetFormatName,
-            inputSettings,
-            transferable,
-          },
-          transferable ? [transferable] : [],
-        );
+        worker.postMessage(task.data, task.transfer ?? []);
       } else {
-        this.workQueue.push([work, resolve, reject]);
+        this.workQueue.push([task, resolve, reject]);
       }
     });
   }
 
+  /**
+   * Terminates all workers.
+   * Use this when the pool is no longer needed to free resources.
+   */
   public dispose() {
     for (const worker of [...this.idleWorkers, ...this.workerMap.keys()]) {
       worker.terminate();

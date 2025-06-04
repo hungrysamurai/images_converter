@@ -240,4 +240,17 @@ declare global {
   }
 
   type MergeCollection = Blob[];
+
+  interface ConvertTaks {
+    type: MIMETypes;
+    blobURL: string;
+    outputSettings: OutputConversionSettings;
+    targetFormatName: OutputFileFormatsNames;
+    inputSettings?: {
+      [OutputFileFormatsNames.PDF]: PDFInputSettings;
+    };
+    bitmap?: ImageBitmap;
+  }
+
+  type ConvertTaskResult = Blob | Blob[];
 }

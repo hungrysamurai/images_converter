@@ -14,10 +14,11 @@ import SVGToBlob from './decoders/singlePage/SVGToBlob';
 import SVGToBitmap from './utils/SVGToBitmap';
 
 import WorkerPool from './utils/WorkerPool/WorkerPool';
+import { getFileFormat } from './utils/getFileFormat';
 
 export default class Converter {
   private collection: Blob[] = [];
-  private workerPool = new WorkerPool();
+  private workerPool = new WorkerPool<ConvertTaks, ConvertTaskResult>();
   private processTasks: Promise<Blob | Blob[] | void>[] = [];
 
   constructor(
@@ -99,7 +100,7 @@ export default class Converter {
   }
 
   private async processFile(file: SourceFile): Promise<Blob | Blob[] | void> {
-    const { blobURL, type } = file;
+    const { blobURL, type, name } = file;
 
     switch (file.type) {
       case MIMETypes.JPG:
@@ -107,30 +108,34 @@ export default class Converter {
       case MIMETypes.WEBP:
       case MIMETypes.BMP:
       case MIMETypes.SVG:
-      case MIMETypes.HEIC: {
-        const processed = await this.processSinglePageFile(blobURL, type);
+      case MIMETypes.HEIC:
+        {
+          const processed = await this.processSinglePageFile(blobURL, type, name);
 
-        if (!this.mergeToOne) {
-          const { name, id } = file;
+          if (!this.mergeToOne) {
+            const { name, id } = file;
 
-          const size = processed.size;
-          const URL = window.URL.createObjectURL(processed);
+            if (processed) {
+              const size = processed.size;
+              const URL = window.URL.createObjectURL(processed);
 
-          this.UIDispatcher(
-            addConvertedFile({
-              blobURL: URL,
-              downloadLink: URL,
-              name,
-              size,
-              type: `image/${this.activeTargetFormatName}` as MIMETypes,
-              id: nanoid(),
-              sourceId: id,
-            }),
-          );
+              this.UIDispatcher(
+                addConvertedFile({
+                  blobURL: URL,
+                  downloadLink: URL,
+                  name,
+                  size,
+                  type: `image/${this.activeTargetFormatName}` as MIMETypes,
+                  id: nanoid(),
+                  sourceId: id,
+                }),
+              );
+            }
+
+            return processed;
+          }
         }
-
-        return processed;
-      }
+        break;
 
       case MIMETypes.TIFF:
       case MIMETypes.GIF:
@@ -165,12 +170,16 @@ export default class Converter {
 
   // Single page
 
-  private async processSinglePageFile(blobURL: string, type: MIMETypes): Promise<Blob> {
+  private async processSinglePageFile(
+    blobURL: string,
+    type: MIMETypes,
+    fileName: string,
+  ): Promise<Blob | void> {
     switch (type) {
       case MIMETypes.JPG:
       case MIMETypes.PNG:
       case MIMETypes.WEBP: {
-        return this.convertJPEG_WEBP_PNG(blobURL, type);
+        return this.convertJPEG_WEBP_PNG(blobURL, type, fileName);
       }
 
       case MIMETypes.BMP: {
@@ -191,39 +200,52 @@ export default class Converter {
     }
   }
 
-  private async convertJPEG_WEBP_PNG(blobURL: string, type: MIMETypes): Promise<Blob> {
-    // If no need of strict order...
+  private async convertJPEG_WEBP_PNG(
+    blobURL: string,
+    type: MIMETypes,
+    fileName: string,
+  ): Promise<Blob | void> {
     try {
-      // try process files with Workers
-
       const processedInWorker = await this.workerPool.addWork({
-        type,
-        blobURL,
-        outputSettings: this.outputSettings,
-        targetFormatName: this.activeTargetFormatName,
+        data: {
+          type,
+          blobURL,
+          outputSettings: this.outputSettings,
+          targetFormatName: this.activeTargetFormatName,
+        },
       });
 
       return processedInWorker as Blob;
     } catch (err) {
-      console.error(`Failed to process ${type} file in worker: ${(err as ErrorEvent).message}`);
-      // try process file in main thread
-      const processed = await JPEG_WEBP_PNG_ToBlob(
-        blobURL,
-        this.outputSettings,
-        this.activeTargetFormatName,
+      console.error(
+        `Failed to process ${getFileFormat(type)}-file '${fileName}' in worker: ${(err as ErrorEvent).message}.Trying to process in main thread...`,
       );
 
-      return processed;
+      try {
+        const processed = await JPEG_WEBP_PNG_ToBlob(
+          blobURL,
+          this.outputSettings,
+          this.activeTargetFormatName,
+        );
+
+        return processed;
+      } catch (err) {
+        console.error(
+          `Failed to process ${getFileFormat(type)}-file '${fileName}' in main thread: ${(err as Error).message}`,
+        );
+      }
     }
   }
 
   private async convertBMP(blobURL: string, type: MIMETypes): Promise<Blob> {
     try {
       const processedInWorker = await this.workerPool.addWork({
-        type,
-        blobURL,
-        outputSettings: this.outputSettings,
-        targetFormatName: this.activeTargetFormatName,
+        data: {
+          type,
+          blobURL,
+          outputSettings: this.outputSettings,
+          targetFormatName: this.activeTargetFormatName,
+        },
       });
 
       return processedInWorker as Blob;
@@ -239,10 +261,12 @@ export default class Converter {
   private async convertHEIC(blobURL: string, type: MIMETypes): Promise<Blob> {
     try {
       const processedInWorker = await this.workerPool.addWork({
-        type,
-        blobURL,
-        outputSettings: this.outputSettings,
-        targetFormatName: this.activeTargetFormatName,
+        data: {
+          type,
+          blobURL,
+          outputSettings: this.outputSettings,
+          targetFormatName: this.activeTargetFormatName,
+        },
       });
       return processedInWorker as Blob;
     } catch (err) {
@@ -255,20 +279,25 @@ export default class Converter {
   }
 
   private async convertSVG(blobURL: string, type: MIMETypes): Promise<Blob> {
-    const bitmap = await SVGToBitmap(blobURL, this.outputSettings);
-
     try {
+      const bitmap = await SVGToBitmap(blobURL, this.outputSettings);
       const processedInWorker = await this.workerPool.addWork({
-        type,
-        blobURL,
-        outputSettings: this.outputSettings,
-        targetFormatName: this.activeTargetFormatName,
-        transferable: bitmap,
+        data: {
+          type,
+          blobURL,
+          outputSettings: this.outputSettings,
+          targetFormatName: this.activeTargetFormatName,
+          bitmap,
+        },
+        transfer: [bitmap],
       });
       return processedInWorker as Blob;
     } catch (err) {
-      console.error(`Failed to process SVG in worker: ${(err as ErrorEvent).message}`);
+      console.error(
+        `Failed to process ${getFileFormat(type)}-file in worker: ${(err as ErrorEvent).message}`,
+      );
 
+      const bitmap = await SVGToBitmap(blobURL, this.outputSettings);
       const processed = await SVGToBlob(this.outputSettings, this.activeTargetFormatName, bitmap);
 
       return processed;
@@ -301,10 +330,12 @@ export default class Converter {
   private async convertTIFF(blobURL: string, type: MIMETypes): Promise<Blob[]> {
     try {
       const pagesBlobsProcessedInWorker = await this.workerPool.addWork({
-        type,
-        blobURL,
-        outputSettings: this.outputSettings,
-        targetFormatName: this.activeTargetFormatName,
+        data: {
+          type,
+          blobURL,
+          outputSettings: this.outputSettings,
+          targetFormatName: this.activeTargetFormatName,
+        },
       });
 
       return pagesBlobsProcessedInWorker as Blob[];
@@ -324,11 +355,13 @@ export default class Converter {
   private async convertPDF(blobURL: string, type: MIMETypes): Promise<Blob[]> {
     try {
       const pagesBlobsProcessedInWorker = await this.workerPool.addWork({
-        type,
-        blobURL,
-        outputSettings: this.outputSettings,
-        targetFormatName: this.activeTargetFormatName,
-        inputSettings: this.inputSettings,
+        data: {
+          type,
+          blobURL,
+          outputSettings: this.outputSettings,
+          targetFormatName: this.activeTargetFormatName,
+          inputSettings: this.inputSettings,
+        },
       });
 
       return pagesBlobsProcessedInWorker as Blob[];
@@ -341,6 +374,7 @@ export default class Converter {
         this.activeTargetFormatName,
         this.inputSettings,
       );
+
       return pagesBlobs;
     }
   }
@@ -348,10 +382,12 @@ export default class Converter {
   private async convertGIF(blobURL: string, type: MIMETypes): Promise<Blob[]> {
     try {
       const pagesBlobsProcessedInWorker = await this.workerPool.addWork({
-        type,
-        blobURL,
-        outputSettings: this.outputSettings,
-        targetFormatName: this.activeTargetFormatName,
+        data: {
+          type,
+          blobURL,
+          outputSettings: this.outputSettings,
+          targetFormatName: this.activeTargetFormatName,
+        },
       });
 
       return pagesBlobsProcessedInWorker as Blob[];
