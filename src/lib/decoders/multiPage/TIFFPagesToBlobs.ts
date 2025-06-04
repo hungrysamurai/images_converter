@@ -1,4 +1,3 @@
-import UTIF from 'utif';
 import { OutputFileFormatsNames } from '../../../types/types';
 import encodeCanvas from '../../encode';
 import { getResizedCanvas } from '../../utils/getResizedCanvas';
@@ -8,6 +7,8 @@ const TIFFPagesToBlobs = async (
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
 ): Promise<Blob[]> => {
+  const UTIF = await import('utif');
+
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
 

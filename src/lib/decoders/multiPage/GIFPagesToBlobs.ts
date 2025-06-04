@@ -1,5 +1,3 @@
-import { decompressFrames, parseGIF } from 'gifuct-js';
-
 import { OutputFileFormatsNames } from '../../../types/types';
 
 import encodeCanvas from '../../encode';
@@ -10,6 +8,8 @@ const GIFPagesToBlobs = async (
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
 ): Promise<Blob[]> => {
+  const { decompressFrames, parseGIF } = await import('gifuct-js');
+
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
 

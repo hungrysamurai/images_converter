@@ -32,7 +32,6 @@ const mergeGIF = async (
     if (!ctx) {
       throw new Error('Could not get 2D context from canvas');
     }
-    console.log(img);
 
     ctx.drawImage(img, 0, 0);
 

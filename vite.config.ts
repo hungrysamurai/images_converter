@@ -7,18 +7,22 @@ import { analyzer } from 'vite-bundle-analyzer';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), analyzer()],
+  optimizeDeps: {
+    include: ['libheif-js/wasm-bundle'],
+    exclude: ['@/lib/decoders/singlePage/heic'],
+  },
   build: {
     outDir: 'build',
     emptyOutDir: true,
     rollupOptions: {
       output: {
-        // manualChunks(id) {
-        //   if (id.includes('src/lib/decoders/singlePage/heic')) {
-        //     return 'heic-decoder';
-        //   }
-        // },
-        manualChunks: {
-          heic: ['src/lib/decoders/singlePage/heic.ts'],
+        manualChunks: (id) => {
+          if (id.includes('.wasm') || id.includes('libheif-js') || id.includes('wasm-bundle')) {
+            return 'wasm-vendor';
+          }
+          if (id.includes('src/lib/decoders/')) {
+            return 'decoders';
+          }
         },
       },
     },
@@ -28,14 +32,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         format: 'es',
-        // manualChunks(id) {
-        //   if (id.includes('src/lib/decoders/singlePage/heic')) {
-        //     return 'heic-decoder';
-        //   }
-        // },
-        manualChunks: {
-          heic: ['src/lib/decoders/singlePage/heic.ts'],
-        },
       },
     },
   },

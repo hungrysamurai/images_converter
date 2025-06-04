@@ -1,4 +1,3 @@
-import libheif from 'libheif-js/wasm-bundle';
 import { OutputFileFormatsNames } from '../../../types/types';
 import encodeCanvas from '../../encode';
 import { getResizedCanvas } from '../../utils/getResizedCanvas';
@@ -15,6 +14,7 @@ const decodeHEIC = async (
   const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
 
   try {
+    const libheif = await import('libheif-js/wasm-bundle');
     const decoder = new libheif.HeifDecoder();
     const data = await decoder.decode(arrayBuffer);
 

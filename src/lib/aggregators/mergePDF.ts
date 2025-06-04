@@ -1,6 +1,6 @@
-import { PDFDocument } from 'pdf-lib';
-
 const mergePDF = async (collection: MergeCollection): Promise<Blob> => {
+  const { PDFDocument } = await import('pdf-lib');
+
   const merged = await PDFDocument.create();
 
   for (let i = 0; i < collection.length; i++) {

@@ -1,6 +1,6 @@
-import UTIF from 'utif';
-
 const encodeTIFF = async (canvas: OffscreenCanvas): Promise<Blob> => {
+  const UTIF = await import('utif');
+
   const { width, height } = canvas;
 
   const resultingCanvasContext = canvas.getContext('2d');

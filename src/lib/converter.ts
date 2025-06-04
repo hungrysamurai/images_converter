@@ -218,9 +218,9 @@ export default class Converter {
       );
 
       try {
-        const JPEG_WEBP_PNG_ToBlob = await import('./decoders/singlePage/jpeg_webp_png');
+        const decodeJPEG_PNG_WEBP = await import('@/lib/decoders/singlePage/jpeg_webp_png');
 
-        const processed = await JPEG_WEBP_PNG_ToBlob.default(
+        const processed = await decodeJPEG_PNG_WEBP.default(
           blobURL,
           this.outputSettings,
           this.activeTargetFormatName,

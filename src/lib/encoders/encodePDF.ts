@@ -1,5 +1,3 @@
-import { PDFDocument, PDFImage } from 'pdf-lib';
-
 import { isCompressionSetting } from '../../types/typeGuards';
 import { PDFCompressionTypes } from '../../types/types';
 
@@ -7,6 +5,7 @@ const encodePDF = async (
   canvas: OffscreenCanvas,
   targetFormatSettings: OutputConversionSettings,
 ): Promise<Blob> => {
+  const { PDFDocument } = await import('pdf-lib');
   let pdfBytes;
   if (isCompressionSetting(targetFormatSettings)) {
     const { compression, quality } = targetFormatSettings;
@@ -19,7 +18,7 @@ const encodePDF = async (
 
     const pdfDoc = await PDFDocument.create();
 
-    let image: PDFImage;
+    let image;
 
     if (compression === PDFCompressionTypes.JPG) {
       image = await pdfDoc.embedJpg(arrayBuffer);

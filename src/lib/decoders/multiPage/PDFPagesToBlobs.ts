@@ -1,5 +1,3 @@
-import { degrees, PDFDocument } from 'pdf-lib';
-import * as pdfjs from 'pdfjs-dist';
 import PdfJsWorker from 'pdfjs-dist/build/pdf.worker.mjs?worker';
 import { OutputFileFormatsNames } from '../../../types/types';
 import encodeCanvas from '../../encode';
@@ -21,6 +19,8 @@ const PDFPagesToBlobs = async (
 
   // Don't rasterize PDF Source, just split it!
   if (activeTargetFormatName === OutputFileFormatsNames.PDF && !targetFormatSettings.resize) {
+    const { degrees, PDFDocument } = await import('pdf-lib');
+
     const blob = await fetch(blobURL);
     const arrayBuffer = await blob.arrayBuffer();
 
@@ -45,6 +45,7 @@ const PDFPagesToBlobs = async (
       pagesBlobs.push(blob);
     });
   } else {
+    const pdfjs = await import('pdfjs-dist');
     const blob = await fetch(blobURL);
     const arrayBuffer = await blob.arrayBuffer();
 
