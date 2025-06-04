@@ -8,8 +8,6 @@ import GIFPagesToBlobs from './decoders/multiPage/GIFPagesToBlobs';
 import PDFPagesToBlobs from './decoders/multiPage/PDFPagesToBlobs';
 import TIFFPagesToBlobs from './decoders/multiPage/TIFFPagesToBlobs';
 import BMPToBlob from './decoders/singlePage/BMPToBlob';
-import HEICToBlob from './decoders/singlePage/HEICToBlob';
-import JPEG_WEBP_PNG_ToBlob from './decoders/singlePage/JPEG_WEBP_PNG_ToBlob';
 import SVGToBlob from './decoders/singlePage/SVGToBlob';
 import SVGToBitmap from './utils/SVGToBitmap';
 
@@ -185,7 +183,7 @@ export default class Converter {
       }
 
       case MIMETypes.HEIC: {
-        return this.convertHEIC(blobURL, type);
+        return this.convertHEIC(blobURL, type, fileName);
       }
 
       case MIMETypes.SVG: {
@@ -220,7 +218,9 @@ export default class Converter {
       );
 
       try {
-        const processed = await JPEG_WEBP_PNG_ToBlob(
+        const JPEG_WEBP_PNG_ToBlob = await import('./decoders/singlePage/JPEG_WEBP_PNG_ToBlob');
+
+        const processed = await JPEG_WEBP_PNG_ToBlob.default(
           blobURL,
           this.outputSettings,
           this.activeTargetFormatName,
@@ -257,7 +257,11 @@ export default class Converter {
     }
   }
 
-  private async convertHEIC(blobURL: string, type: MIMETypes): Promise<Blob> {
+  private async convertHEIC(
+    blobURL: string,
+    type: MIMETypes,
+    fileName: string,
+  ): Promise<Blob | void> {
     try {
       const processedInWorker = await this.workerPool.addWork({
         data: {
@@ -269,11 +273,26 @@ export default class Converter {
       });
       return processedInWorker as Blob;
     } catch (err) {
-      console.error(`Failed to process HEIC in worker: ${(err as ErrorEvent).message}`);
+      console.error(
+        `Failed to process ${getFileFormat(type)}-file '${fileName}' in worker: ${(err as ErrorEvent).message}.Trying to process in main thread...`,
+      );
 
-      const processed = await HEICToBlob(blobURL, this.outputSettings, this.activeTargetFormatName);
+      try {
+        const HEICToBlob = await import('@/lib/decoders/shared/heic-decoder');
 
-      return processed;
+        const processed = await HEICToBlob.default(
+          blobURL,
+          this.outputSettings,
+          this.activeTargetFormatName,
+        );
+
+        return processed;
+      } catch (err) {
+        console.error(
+          `Failed to process ${getFileFormat(type)}-file '${fileName}' in main thread: ${(err as Error).message}`,
+        );
+        throw err;
+      }
     }
   }
 

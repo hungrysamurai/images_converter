@@ -39,7 +39,7 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
       }
 
       case MIMETypes.HEIC: {
-        const HEICToBlob = await import('../../decoders/singlePage/HEICToBlob');
+        const HEICToBlob = await import('@/lib/decoders/shared/heic-decoder');
 
         result = await HEICToBlob.default(blobURL, outputSettings, targetFormatName);
 
