@@ -7,9 +7,6 @@ import { persistor, store } from './store/store.js';
 
 import { PersistGate } from 'redux-persist/integration/react';
 
-import initMetrika from './metrika';
-initMetrika();
-
 import initGoogleAnalytics from './analytics';
 initGoogleAnalytics();
 

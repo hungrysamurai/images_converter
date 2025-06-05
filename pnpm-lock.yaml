@@ -105,6 +105,9 @@ importers:
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
+      react-metrika:
+        specifier: ^0.3.3
+        version: 0.3.3
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -1742,6 +1745,9 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  react-metrika@0.3.3:
+    resolution: {integrity: sha512-o494gvJaqMJcioWSBESmZ5JpwzuNoiCpqvaIfgXKjggLqb0Xat67K0jXPrWcDc/G1ewGP+qqgw+Rw9usFAVcDg==}
 
   react-redux@9.1.2:
     resolution: {integrity: sha512-0OA4dhM1W48l3uzmv6B7TXPCGmokUU4p1M44DGN2/D9a1FjVPukVjER1PcPX97jIg6aUeLq1XJo1IpfbgULn0w==}
@@ -3956,6 +3962,8 @@ snapshots:
       scheduler: 0.25.0
 
   react-is@16.13.1: {}
+
+  react-metrika@0.3.3: {}
 
   react-redux@9.1.2(@types/react@19.0.10)(react@19.0.0)(redux@5.0.1):
     dependencies:

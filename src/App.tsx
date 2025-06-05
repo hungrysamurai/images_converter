@@ -13,12 +13,24 @@ import UploadContainer from './components/UploadContainer';
 
 import { getNavigatorLang } from './lib/utils/getNavigatorLang';
 
+import { MetrikaCounter } from 'react-metrika';
+
 const App = () => {
   const [settingsPanelVisibility, setSettingsPanelVisibility] = useState(false);
   const [lang] = useState(() => getNavigatorLang());
 
   return (
     <>
+      {import.meta.env.VITE_TARGET_DOMAIN === 'convert-it.ru' && (
+        <MetrikaCounter
+          id={import.meta.env.VITE_YANDEX_METRICA_COUNTER_CONVERT_IT_RU}
+          options={{
+            trackHash: true,
+            webvisor: true,
+          }}
+        />
+      )}
+
       <GlobalStyles />
 
       <SettingsPanelWrapper
