@@ -1,4 +1,3 @@
-import GIF from 'gif.js';
 import gifWorkerUrl from 'gif.js/dist/gif.worker.js?url';
 
 import { isDitherSetting } from '../../types/typeGuards';
@@ -10,7 +9,7 @@ const encodeGIF = async (
   if (!isDitherSetting(targetFormatSettings)) {
     throw new Error('Invalid target format settings for GIF');
   }
-
+  const GIF = (await import('gif.js')).default;
   const { quality, dither } = targetFormatSettings;
   const context = canvas.getContext('2d');
 

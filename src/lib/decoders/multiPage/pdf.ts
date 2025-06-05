@@ -3,7 +3,7 @@ import { OutputFileFormatsNames } from '../../../types/types';
 import encodeCanvas from '../../encode';
 import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
-const PDFPagesToBlobs = async (
+const decodePDF = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
@@ -104,4 +104,4 @@ const PDFPagesToBlobs = async (
   return pagesBlobs;
 };
 
-export default PDFPagesToBlobs;
+export default decodePDF;

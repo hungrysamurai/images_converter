@@ -7,10 +7,6 @@ import { analyzer } from 'vite-bundle-analyzer';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), analyzer()],
-  optimizeDeps: {
-    include: ['libheif-js/wasm-bundle'],
-    exclude: ['@/lib/decoders/singlePage/heic'],
-  },
   build: {
     outDir: 'build',
     emptyOutDir: true,

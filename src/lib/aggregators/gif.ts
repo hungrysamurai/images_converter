@@ -1,4 +1,3 @@
-import GIF from 'gif.js';
 import gifWorkerUrl from 'gif.js/dist/gif.worker.js?url';
 import { isDitherSetting } from '../../types/typeGuards';
 
@@ -9,7 +8,7 @@ const mergeGIF = async (
   if (!isDitherSetting(targetFormatSettings)) {
     throw new Error('Invalid target format settings for GIF');
   }
-
+  const GIF = (await import('gif.js')).default;
   const { quality, dither, animationDelay } = targetFormatSettings;
 
   const options = {

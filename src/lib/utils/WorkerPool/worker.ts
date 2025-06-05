@@ -23,7 +23,7 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
       case MIMETypes.JPG:
       case MIMETypes.PNG:
       case MIMETypes.WEBP: {
-        const decodeJPEG_WEBP_PNG = await import('../../decoders/singlePage/jpeg_webp_png');
+        const decodeJPEG_WEBP_PNG = await import('@/lib/decoders/singlePage/jpeg_webp_png');
 
         result = await decodeJPEG_WEBP_PNG.default(blobURL, outputSettings, targetFormatName);
 
@@ -31,7 +31,7 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
       }
 
       case MIMETypes.BMP: {
-        const decodeBMP = await import('../../decoders/singlePage/bmp');
+        const decodeBMP = await import('@/lib/decoders/singlePage/bmp');
 
         result = await decodeBMP.default(blobURL, outputSettings, targetFormatName);
 
@@ -49,14 +49,14 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
       case MIMETypes.SVG: {
         if (!bitmap) throw new Error('Missing bitmap for SVG conversion');
 
-        const decodeSVGBitmap = await import('../../decoders/singlePage/svg');
+        const decodeSVGBitmap = await import('@/lib/decoders/singlePage/svg');
 
         result = await decodeSVGBitmap.default(outputSettings, targetFormatName, bitmap);
         break;
       }
 
       case MIMETypes.TIFF: {
-        const TIFFPagesToBlobs = await import('../../decoders/multiPage/TIFFPagesToBlobs');
+        const TIFFPagesToBlobs = await import('@/lib/decoders/multiPage/tiff');
 
         result = await TIFFPagesToBlobs.default(blobURL, outputSettings, targetFormatName);
 
@@ -65,7 +65,7 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
 
       case MIMETypes.PDF: {
         if (!inputSettings) throw new Error('Missing inputSettings for PDF conversion');
-        const PDFPagesToBlobs = await import('../../decoders/multiPage/PDFPagesToBlobs');
+        const PDFPagesToBlobs = await import('@/lib/decoders/multiPage/pdf');
 
         result = await PDFPagesToBlobs.default(
           blobURL,
@@ -77,9 +77,9 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
       }
 
       case MIMETypes.GIF: {
-        const GIFPagesToBlobs = await import('../../decoders/multiPage/GIFPagesToBlobs');
+        const decodeGIF = await import('@/lib/decoders/multiPage/gif');
 
-        result = await GIFPagesToBlobs.default(blobURL, outputSettings, targetFormatName);
+        result = await decodeGIF.default(blobURL, outputSettings, targetFormatName);
         break;
       }
 

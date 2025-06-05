@@ -3,7 +3,7 @@ import { OutputFileFormatsNames } from '../../../types/types';
 import encodeCanvas from '../../encode';
 import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
-const GIFPagesToBlobs = async (
+const decodeGIF = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
@@ -47,4 +47,4 @@ const GIFPagesToBlobs = async (
   return pagesBlobs;
 };
 
-export default GIFPagesToBlobs;
+export default decodeGIF;

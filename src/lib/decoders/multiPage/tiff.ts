@@ -2,7 +2,7 @@ import { OutputFileFormatsNames } from '../../../types/types';
 import encodeCanvas from '../../encode';
 import { getResizedCanvas } from '../../utils/getResizedCanvas';
 
-const TIFFPagesToBlobs = async (
+const decodeTIFF = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
   activeTargetFormatName: OutputFileFormatsNames,
@@ -44,4 +44,4 @@ const TIFFPagesToBlobs = async (
   return pagesBlobs;
 };
 
-export default TIFFPagesToBlobs;
+export default decodeTIFF;
