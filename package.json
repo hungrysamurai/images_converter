@@ -9,9 +9,8 @@
     "npm": "please-use-pnpm"
   },
   "scripts": {
-    "dev": "vite --host --base=/projects/images_converter",
-    "build": "vite build --base=./",
-    "build:portfolio": "vite build --outDir ../../server/dist/public/projects/images_converter --base=/projects/images_converter",
+    "dev": "vite --host",
+    "build": "vite build",
     "build:convert-it.ru": "cross-env VITE_TARGET_DOMAIN=convert-it.ru vite build --outDir convert-it.ru --base=./",
     "lint": "eslint src --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format:fix": "prettier --write .",

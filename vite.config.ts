@@ -2,11 +2,12 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
 
-import { analyzer } from 'vite-bundle-analyzer';
-
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), analyzer()],
+  plugins: [react()],
+  // Served by nginx at /projects/images_converter/ (see wrapper repo nginx/locations.conf).
+  // The standalone convert-it.ru build overrides it with --base=./
+  base: '/projects/images_converter/',
   build: {
     outDir: 'build',
     emptyOutDir: true,
