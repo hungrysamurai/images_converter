@@ -51,7 +51,8 @@ export default tseslint.config(
   {
     settings: {
       react: {
-        version: 'detect',
+        // 'detect' crashes eslint-plugin-react 7.x on ESLint 10 (uses removed context.getFilename)
+        version: '19.3',
       },
     },
   },

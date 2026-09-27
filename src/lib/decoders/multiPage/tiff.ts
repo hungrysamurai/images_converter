@@ -24,7 +24,11 @@ const decodeTIFF = async (
 
     const { width, height } = page;
 
-    const imageData = new ImageData(new Uint8ClampedArray(rgba.buffer), width, height);
+    const imageData = new ImageData(
+      new Uint8ClampedArray(rgba.buffer as ArrayBuffer),
+      width,
+      height,
+    );
 
     let canvas = new OffscreenCanvas(width, height);
     const ctx = canvas.getContext('2d');

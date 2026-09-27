@@ -1,4 +1,6 @@
-export const settingsPanelBackgroundAnimation = {
+import type { Variants } from 'framer-motion';
+
+export const settingsPanelBackgroundAnimation: Variants = {
   hidden: {
     opacity: 0,
   },
@@ -16,27 +18,27 @@ export const settingsPanelBackgroundAnimation = {
   },
 };
 
-export const settingsPanelAnimation = {
+export const settingsPanelAnimation: Variants = {
   hidden: {
     x: '100%',
   },
   show: {
     x: 0,
     transition: {
-      type: 'easeIn',
+      ease: 'easeIn',
       duration: 0.2,
     },
   },
   exit: {
     x: '100%',
     transition: {
-      type: 'easeOut',
+      ease: 'easeOut',
       duration: 0.2,
     },
   },
 };
 
-export const fileElementAnimation = {
+export const fileElementAnimation: Variants = {
   hidden: {
     y: 20,
     opacity: 0,
@@ -45,7 +47,7 @@ export const fileElementAnimation = {
     y: 0,
     opacity: 1,
     transition: {
-      type: 'easeIn',
+      ease: 'easeIn',
       duration: 0.1,
     },
   },
@@ -53,13 +55,13 @@ export const fileElementAnimation = {
     y: 20,
     opacity: 0,
     transition: {
-      type: 'easeOut',
+      ease: 'easeOut',
       duration: 0.1,
     },
   },
 };
 
-export const filePreviewIconAnimation = {
+export const filePreviewIconAnimation: Variants = {
   hidden: {
     y: 20,
     opacity: 0,
@@ -68,7 +70,7 @@ export const filePreviewIconAnimation = {
     y: 0,
     opacity: 1,
     transition: {
-      type: 'easeIn',
+      ease: 'easeIn',
       duration: 0.1,
       delay: 0.1,
     },
@@ -77,13 +79,13 @@ export const filePreviewIconAnimation = {
     y: 20,
     opacity: 0,
     transition: {
-      type: 'easeOut',
+      ease: 'easeOut',
       duration: 0.1,
     },
   },
 };
 
-export const fileInfoContainerAnimation = {
+export const fileInfoContainerAnimation: Variants = {
   hidden: {
     y: -20,
     opacity: 0,
@@ -92,7 +94,7 @@ export const fileInfoContainerAnimation = {
     y: 0,
     opacity: 1,
     transition: {
-      type: 'easeIn',
+      ease: 'easeIn',
       duration: 0.1,
       delay: 0.1,
     },
@@ -101,27 +103,27 @@ export const fileInfoContainerAnimation = {
     y: -20,
     opacity: 0,
     transition: {
-      type: 'easeOut',
+      ease: 'easeOut',
       duration: 0.1,
     },
   },
 };
 
-export const fadeAnimation = {
+export const fadeAnimation: Variants = {
   hidden: {
     opacity: 0,
   },
   show: {
     opacity: 1,
     transition: {
-      type: 'easeIn',
+      ease: 'easeIn',
       duration: 0.2,
     },
   },
   exit: {
     opacity: 0,
     transition: {
-      type: 'easeOut',
+      ease: 'easeOut',
       duration: 0.2,
     },
   },

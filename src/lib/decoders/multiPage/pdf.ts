@@ -41,7 +41,7 @@ const decodePDF = async (
     );
 
     arrays.forEach((arr) => {
-      const blob = new Blob([arr], { type: 'application/pdf' });
+      const blob = new Blob([arr as Uint8Array<ArrayBuffer>], { type: 'application/pdf' });
       pagesBlobs.push(blob);
     });
   } else {
@@ -53,7 +53,7 @@ const decodePDF = async (
     pdfjs.GlobalWorkerOptions.workerPort = worker;
 
     const document = {
-      //@ts-ignore
+      // @ts-expect-error -- `fonts` exists on WorkerGlobalScope, but self is typed as Window
       fonts: self.fonts,
       createElement: (name: string) => {
         if (name == 'canvas') {
@@ -85,6 +85,7 @@ const decodePDF = async (
       const ctx = canvas.getContext('2d');
 
       const renderContext = {
+        canvas: null,
         canvasContext: ctx as unknown as CanvasRenderingContext2D,
         viewport: viewport,
       };

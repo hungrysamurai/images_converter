@@ -16,12 +16,7 @@ export class OffscreenCanvasToBMP {
 
     const file = new ArrayBuffer(fileLength);
     this.view = new DataView(file);
-    let x = 0,
-      y = 0,
-      p = 0,
-      s = 0,
-      alpha = 0,
-      abgr = 0;
+    let s = 0;
 
     this.setU16(0x4d42);
     this.setU32(fileLength);
@@ -45,16 +40,13 @@ export class OffscreenCanvasToBMP {
     this.setU32(0xff000000);
     this.setU32(0x57696e20); // " win"
 
-    while (y < h) {
-      p = 0x7a + y * stride;
-      x = 0;
-      while (x < w * 4) {
-        abgr = data32[s++];
-        alpha = abgr >>> 24;
+    for (let y = 0; y < h; y++) {
+      const p = 0x7a + y * stride;
+      for (let x = 0; x < w * 4; x += 4) {
+        const abgr = data32[s++];
+        const alpha = abgr >>> 24;
         this.view.setUint32(p + x, (abgr << 8) | alpha);
-        x += 4;
       }
-      y++;
     }
 
     return file;
@@ -70,7 +62,7 @@ export class OffscreenCanvasToBMP {
     this.pos += 4;
   }
 
-  toBuffer(canvas: OffscreenCanvas): Uint8Array {
+  toBuffer(canvas: OffscreenCanvas): Uint8Array<ArrayBuffer> {
     return new Uint8Array(this.toArrayBuffer(canvas));
   }
 }

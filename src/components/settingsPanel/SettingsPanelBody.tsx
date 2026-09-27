@@ -4,7 +4,8 @@ import { Lang } from '../../types/types';
 import { OutputFileFormatsNames } from '../../types/types';
 
 import FormatSelect from './SettingsPanelBodyComponents/FormatSelect';
-import OutputSettings, { StyledDivider } from './SettingsPanelBodyComponents/OutputSettings';
+import OutputSettings from './SettingsPanelBodyComponents/OutputSettings';
+import { StyledDivider } from './SettingsPanelBodyComponents/StyledDivider';
 import InputSettings from './SettingsPanelBodyComponents/InputSettings';
 
 type SettingsPanelBodyProps = {

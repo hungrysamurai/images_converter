@@ -10,7 +10,8 @@ import {
   REGISTER,
   REHYDRATE,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+
+import { storage } from './storageAdapter';
 
 import conversionSettingsReducer from './slices/conversionSettingsSlice/conversionSettingsSlice';
 import processFilesReducer from './slices/processFilesSlice/processFilesSlice';

@@ -37,7 +37,7 @@ const encodePDF = async (
 
     pdfBytes = await pdfDoc.save();
   }
-  return new Blob([pdfBytes as Uint8Array<ArrayBufferLike>], { type: 'application/pdf' });
+  return new Blob([pdfBytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' });
 };
 
 export default encodePDF;

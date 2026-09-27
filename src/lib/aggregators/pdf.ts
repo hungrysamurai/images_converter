@@ -13,7 +13,7 @@ const mergePDF = async (collection: MergeCollection): Promise<Blob> => {
   }
 
   const arrayBuffer = await merged.save();
-  const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+  const blob = new Blob([arrayBuffer as Uint8Array<ArrayBuffer>], { type: 'application/pdf' });
 
   return blob;
 };

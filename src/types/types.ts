@@ -149,10 +149,7 @@ declare global {
 
   type SelectOptionsValues = Units | SmoothingPresets | GIFDitherOptions | PDFCompressionTypes;
   type SelectOptionsKeys =
-    | keyof UnitsOption
-    | keyof SmoothingOption
-    | keyof DitherOption
-    | keyof CompressionOption;
+    keyof UnitsOption | keyof SmoothingOption | keyof DitherOption | keyof CompressionOption;
 
   // Output numeric settings
   type TargetWidthOption = {
@@ -174,10 +171,7 @@ declare global {
   };
 
   type NumericOptions =
-    | TargetHeightOption
-    | TargetWidthOption
-    | PDFInputSettings
-    | GIFAnimationDelay;
+    TargetHeightOption | TargetWidthOption | PDFInputSettings | GIFAnimationDelay;
 
   type NumericOptionsKeys =
     | keyof TargetHeightOption
