@@ -27,3 +27,5 @@ convert-it.ru
 .next
 next-env.d.ts
 dist
+# Local docs
+manual
