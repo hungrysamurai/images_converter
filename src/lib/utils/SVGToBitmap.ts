@@ -1,5 +1,6 @@
 import { MIME } from '@/types/formats';
 import { getScaledSVGDimensions } from './getScaledSVGDimensions';
+import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
 
 export default async function SVGToBitmap(
   blobURL: string,

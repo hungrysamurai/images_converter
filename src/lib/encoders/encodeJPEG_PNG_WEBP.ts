@@ -1,5 +1,6 @@
 import { isQualitySetting } from '@/types/typeGuards';
 import { MIME, type OutputFormat } from '@/types/formats';
+import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
 
 const encodeJPEG_PNG_WEBP = async (
   canvas: OffscreenCanvas,

@@ -4,6 +4,7 @@ import encodeGIF from './encoders/encodeGIF';
 import encodeJPEG_PNG_WEBP from './encoders/encodeJPEG_PNG_WEBP';
 import encodePDF from './encoders/encodePDF';
 import encodeTIFF from './encoders/encodeTIFF';
+import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
 
 export default async function encodeCanvas(
   canvas: OffscreenCanvas,

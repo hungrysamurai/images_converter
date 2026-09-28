@@ -3,6 +3,7 @@ import { createSlice, current, nanoid, PayloadAction } from '@reduxjs/toolkit';
 import { MIME, type MIMEType } from '@/types/formats';
 
 import { trimFileName } from '@/lib/utils/trimFileName';
+import type { SourceFile } from '@/types/files';
 
 const initialState: SourceFile[] = [];
 

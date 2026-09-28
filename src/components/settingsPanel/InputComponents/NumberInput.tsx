@@ -7,6 +7,10 @@ import {
   updateActiveTargetFormatNumericSetting,
   updateInputSettings,
 } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import type {
+  NumericOptions,
+  NumericOptionsKeys,
+} from '@/store/slices/conversionSettingsSlice/types';
 
 type NumberInputProps = {
   caption: string;

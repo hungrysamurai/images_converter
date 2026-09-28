@@ -1,6 +1,7 @@
 import { type OutputFormat } from '@/types/formats';
 import encodeCanvas from '@/lib/encode';
 import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
+import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
 
 interface Bitmap {
   stride: number;

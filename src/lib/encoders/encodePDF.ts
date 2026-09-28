@@ -1,4 +1,5 @@
 import { isCompressionSetting } from '@/types/typeGuards';
+import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
 
 const encodePDF = async (
   canvas: OffscreenCanvas,

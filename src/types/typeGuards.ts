@@ -1,13 +1,19 @@
 import {
+  type BasicOutputConversionSettings,
   DITHER_OPTIONS,
   type Dither,
+  type GIFOutputConversionSettings,
+  type JPEG_WEBPOutputConversionSettings,
   PDF_COMPRESSION_OPTIONS,
   type PDFCompression,
+  type PDFOutputConversionSettings,
   RESIZE_UNITS,
   type ResizeUnits,
+  type SelectOptionsValues,
   SMOOTHING_OPTIONS,
   type Smoothing,
 } from '@/store/slices/conversionSettingsSlice/types';
+import type { ProcessedFile, SourceFile } from './files';
 
 // Type checkers for conversion setting store slice
 

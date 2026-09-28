@@ -3,6 +3,11 @@ import styled from 'styled-components';
 
 import { useAppDispatch } from '@/store/hooks';
 import { updateActiveTargetFormatSelectSetting } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import type {
+  SelectOptions,
+  SelectOptionsKeys,
+  SelectOptionsValues,
+} from '@/store/slices/conversionSettingsSlice/types';
 
 type SelectInputProps = {
   options: readonly SelectOptionsValues[];

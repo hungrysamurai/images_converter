@@ -1,8 +1,9 @@
 import gifWorkerUrl from 'gif.js/dist/gif.worker.js?url';
 import { isDitherSetting } from '@/types/typeGuards';
+import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
 
 const mergeGIF = async (
-  collection: MergeCollection,
+  collection: Blob[],
   targetFormatSettings: OutputConversionSettings,
 ): Promise<Blob> => {
   if (!isDitherSetting(targetFormatSettings)) {

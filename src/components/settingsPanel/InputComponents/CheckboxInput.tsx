@@ -3,6 +3,10 @@ import React, { ChangeEvent, memo } from 'react';
 
 import { useAppDispatch } from '@/store/hooks';
 import { updateActiveTargetFormatToggleSetting } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import type {
+  CheckboxOptions,
+  CheckboxOptionsKeys,
+} from '@/store/slices/conversionSettingsSlice/types';
 
 type CheckboxInputProps = {
   currentValue: boolean;

@@ -5,10 +5,16 @@ import { AppDispatch, RootState } from '@/store/store';
 import Converter from '@/lib/Converter';
 import { zipAndSave } from '@/lib/utils/zipAndSave';
 import { isMergeSetting } from '@/types/typeGuards';
+import type { ProcessedFile } from '@/types/files';
 
 const createProcessFilesSlice = buildCreateSlice({
   creators: { asyncThunk: asyncThunkCreator },
 });
+
+interface ProcessFilesState {
+  loading: boolean;
+  files: ProcessedFile[];
+}
 
 const initialState: ProcessFilesState = {
   loading: false,

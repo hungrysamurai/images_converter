@@ -6,10 +6,16 @@ import SVGToBitmap from './utils/SVGToBitmap';
 
 import { getFileFormat } from './utils/getFileFormat';
 import WorkerPool from './utils/WorkerPool/WorkerPool';
+import type { ConvertTask, ConvertTaskResult } from './utils/WorkerPool/types';
+import type {
+  OutputConversionSettings,
+  PDFInputSettings,
+} from '@/store/slices/conversionSettingsSlice/types';
+import type { SourceFile } from '@/types/files';
 
 export default class Converter {
   private collection: Blob[] = [];
-  private workerPool = new WorkerPool<ConvertTaks, ConvertTaskResult>();
+  private workerPool = new WorkerPool<ConvertTask, ConvertTaskResult>();
   private processTasks: Promise<Blob | Blob[] | void>[] = [];
 
   // TODO: DRY decoders functions into ONE

@@ -1,6 +1,7 @@
 import gifWorkerUrl from 'gif.js/dist/gif.worker.js?url';
 
 import { isDitherSetting } from '@/types/typeGuards';
+import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
 
 const encodeGIF = async (
   canvas: OffscreenCanvas,

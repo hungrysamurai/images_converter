@@ -7,6 +7,7 @@ import { useAppDispatch } from '@/store/hooks';
 import React, { ChangeEvent, memo } from 'react';
 import { updateActiveTargetFormatSliderSetting } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 import { SliderConvertModes } from '@/types/types';
+import type { QualityOption } from '@/store/slices/conversionSettingsSlice/types';
 
 type SliderInputProps = {
   label: string;

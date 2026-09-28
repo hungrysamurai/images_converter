@@ -5,6 +5,7 @@ import { saveAs } from 'file-saver';
 
 import { type OutputFormat } from '@/types/formats';
 import { getFileFormat } from './getFileFormat';
+import type { ProcessedFile } from '@/types/files';
 
 export const zipAndSave = async (
   files: ProcessedFile[],

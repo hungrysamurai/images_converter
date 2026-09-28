@@ -8,6 +8,17 @@ import {
   isUnits,
 } from '@/types/typeGuards';
 import { type OutputFormat } from '@/types/formats';
+import type {
+  CheckboxOptions,
+  CheckboxOptionsKeys,
+  CombinedOutputConversionSettings,
+  NumericOptions,
+  NumericOptionsKeys,
+  QualityOption,
+  SelectOptions,
+  SelectOptionsKeys,
+  SelectOptionsValues,
+} from './types';
 
 export const conversionSettingsSlice = createSlice({
   name: 'conversionSettings',

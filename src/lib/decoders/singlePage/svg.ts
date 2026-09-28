@@ -1,5 +1,6 @@
 import { type OutputFormat } from '@/types/formats';
 import encodeCanvas from '@/lib/encode';
+import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
 
 const decodeSVGBitmap = async (
   targetFormatSettings: OutputConversionSettings,

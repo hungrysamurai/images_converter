@@ -2,6 +2,10 @@ import PdfJsWorker from 'pdfjs-dist/build/pdf.worker.mjs?worker';
 import { type OutputFormat } from '@/types/formats';
 import encodeCanvas from '@/lib/encode';
 import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
+import type {
+  OutputConversionSettings,
+  PDFInputSettings,
+} from '@/store/slices/conversionSettingsSlice/types';
 
 const decodePDF = async (
   blobURL: string,

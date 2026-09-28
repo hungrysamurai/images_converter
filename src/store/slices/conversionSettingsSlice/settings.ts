@@ -1,4 +1,5 @@
 import { OUTPUT_FORMATS } from '@/types/formats';
+import type { ConversionSettings } from './types';
 
 export const initialState: ConversionSettings = {
   inputSettings: {

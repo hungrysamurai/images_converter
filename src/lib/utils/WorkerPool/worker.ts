@@ -1,23 +1,11 @@
-import { MIME, type MIMEType, type OutputFormat } from '@/types/formats';
+import { MIME } from '@/types/formats';
+import type { ConvertTask, ConvertTaskResult } from './types';
 
-interface WorkerMessage {
-  type: MIMEType;
-  blobURL: string;
-  outputSettings: OutputConversionSettings;
-  targetFormatName: OutputFormat;
-  inputSettings?: {
-    pdf: PDFInputSettings;
-  };
-  bitmap?: ImageBitmap;
-}
-
-type WorkerResult = Blob | Blob[];
-
-self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
+self.addEventListener('message', async (e: MessageEvent<ConvertTask>) => {
   const { type, blobURL, outputSettings, targetFormatName, inputSettings, bitmap } = e.data;
 
   try {
-    let result: WorkerResult;
+    let result: ConvertTaskResult;
 
     switch (type) {
       case MIME.jpeg:
