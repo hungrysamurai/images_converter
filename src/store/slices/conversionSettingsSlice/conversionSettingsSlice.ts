@@ -76,11 +76,11 @@ export const conversionSettingsSlice = createSlice({
         }
 
         if (isSmoothingOption(value) && key === 'smoothing') {
-          state.outputSettings[activeFormat].smoothing = value !== 'off' ? value : false;
+          state.outputSettings[activeFormat].smoothing = value;
         }
 
         if (activeFormat === 'gif' && isDitherOption(value) && key === 'dither') {
-          state.outputSettings[activeFormat].dither = value !== 'off' ? value : false;
+          state.outputSettings[activeFormat].dither = value;
         }
 
         if (activeFormat === 'pdf' && isCompressionOption(value) && key === 'compression') {

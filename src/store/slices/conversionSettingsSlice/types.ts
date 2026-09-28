@@ -46,11 +46,11 @@ export type UnitsOption = {
 };
 
 export type SmoothingOption = {
-  smoothing: Smoothing | false;
+  smoothing: Smoothing;
 };
 
 export type DitherOption = {
-  dither: Dither | false;
+  dither: Dither;
 };
 
 export type CompressionOption = {

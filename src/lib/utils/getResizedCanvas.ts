@@ -2,7 +2,7 @@ import type { ResizeUnits, Smoothing } from '@/store/slices/conversionSettingsSl
 
 export const getResizedCanvas = (
   canvas: OffscreenCanvas,
-  smoothing: false | Smoothing,
+  smoothing: Smoothing,
   units: ResizeUnits,
   targetWidth?: number | null,
   targetHeight?: number | null,
@@ -44,11 +44,11 @@ export const getResizedCanvas = (
     const resizedCanvas = new OffscreenCanvas(resultWidth, resultHeight);
     const ctx = resizedCanvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
 
-    if (!smoothing) {
+    if (smoothing === 'off') {
       ctx.imageSmoothingEnabled = false;
     } else {
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = smoothing as ImageSmoothingQuality;
+      ctx.imageSmoothingQuality = smoothing;
     }
 
     ctx.drawImage(canvas, 0, 0, resultWidth, resultHeight);

@@ -40,7 +40,7 @@ const outputSettings = {
     smoothing: 'medium',
     quality: 11,
     animationDelay: 200,
-    dither: false,
+    dither: 'off',
   },
   tiff: {
     resize: false,

@@ -65,11 +65,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
           options={DITHER_OPTIONS}
           label={lang === Lang.EN ? 'Dither:' : 'Дизеринг:'}
           name="dither"
-          currentValue={
-            activeTargetFromatOutputSettings.dither
-              ? activeTargetFromatOutputSettings.dither
-              : 'off'
-          }
+          currentValue={activeTargetFromatOutputSettings.dither}
           active={true}
         />
         <CheckboxInput
@@ -177,7 +173,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
           options={SMOOTHING_OPTIONS}
           label={lang === Lang.EN ? 'Resize smoothing:' : 'Сглаживание при масштабировании:'}
           name="smoothing"
-          currentValue={smoothing ? smoothing : 'off'}
+          currentValue={smoothing}
           active={resize}
         />
       </StyledResizeSettingsContainer>

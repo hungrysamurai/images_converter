@@ -24,10 +24,10 @@ const decodeSVGBitmap = async (
   }
 
   // Apply smoothing preset
-  if (!smoothing) {
+  if (smoothing === 'off') {
     ctx!.imageSmoothingEnabled = false;
   } else {
-    ctx!.imageSmoothingQuality = smoothing as ImageSmoothingQuality;
+    ctx!.imageSmoothingQuality = smoothing;
   }
 
   ctx!.drawImage(bmp, 0, 0, width, height);

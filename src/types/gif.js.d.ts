@@ -5,7 +5,7 @@ declare module 'gif.js' {
     workers: number;
     quality: number;
     workerScript: string;
-    dither: Dither | false;
+    dither: Exclude<Dither, 'off'> | false;
     background?: string;
     debug?: boolean;
     repeat?: number;

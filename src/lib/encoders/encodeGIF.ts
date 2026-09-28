@@ -24,7 +24,7 @@ const encodeGIF = async (
     const gif = new GIF({
       workers: 2,
       quality,
-      dither,
+      dither: dither === 'off' ? false : dither,
       workerScript: gifWorkerUrl,
     });
 

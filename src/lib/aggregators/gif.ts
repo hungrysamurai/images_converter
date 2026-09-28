@@ -12,15 +12,13 @@ const mergeGIF = async (
   const GIF = (await import('gif.js')).default;
   const { quality, dither, animationDelay } = targetFormatSettings;
 
-  const options = {
+  const gif = new GIF({
     workers: 2,
     quality,
     workerScript: gifWorkerUrl,
-    dither,
+    dither: dither === 'off' ? false : dither,
     repeat: 0,
-  };
-
-  const gif = new GIF(options);
+  });
 
   for (const blob of collection) {
     const img = await createImageBitmap(blob);
