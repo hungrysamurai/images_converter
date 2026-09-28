@@ -33,10 +33,8 @@ const processFilesSlice = createProcessFilesSlice({
 
         const { sourceFiles, conversionSettings } = state;
 
-        const { inputSettings, outputSettings } = conversionSettings;
-
-        const { activeTargetFormatName } = outputSettings;
-        const targetFormatSettings = outputSettings.settings[activeTargetFormatName];
+        const { activeFormat, inputSettings, outputSettings } = conversionSettings;
+        const targetFormatSettings = outputSettings[activeFormat];
 
         const mergeToOne = isMergeSetting(targetFormatSettings)
           ? targetFormatSettings.merge
@@ -44,7 +42,7 @@ const processFilesSlice = createProcessFilesSlice({
 
         const converter = new Converter(
           targetFormatSettings,
-          activeTargetFormatName,
+          activeFormat,
           inputSettings,
           dispatch,
           mergeToOne,
@@ -111,13 +109,11 @@ const processFilesSlice = createProcessFilesSlice({
         const state = thunkApi.getState() as RootState;
         const {
           processFiles: { files },
-          conversionSettings: {
-            outputSettings: { activeTargetFormatName },
-          },
+          conversionSettings: { activeFormat },
         } = state;
 
         try {
-          await zipAndSave(files, activeTargetFormatName);
+          await zipAndSave(files, activeFormat);
         } catch (err) {
           console.error(`Error generating zip archive:`, (err as Error).message);
         }

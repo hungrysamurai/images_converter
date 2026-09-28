@@ -121,21 +121,20 @@ export type CombinedOutputConversionSettings = BasicOutputConversionSettings &
   GIFOutputConversionSettings &
   PDFOutputConversionSettings;
 
-export interface ConversionSettings {
+export type OutputSettingsMap = {
+  jpeg: JPEG_WEBPOutputConversionSettings;
+  png: BasicOutputConversionSettings;
+  webp: JPEG_WEBPOutputConversionSettings;
+  pdf: PDFOutputConversionSettings;
+  bmp: BasicOutputConversionSettings;
+  gif: GIFOutputConversionSettings;
+  tiff: BasicOutputConversionSettings;
+};
+
+export type ConversionSettingsState = {
+  activeFormat: OutputFormat;
+  outputSettings: OutputSettingsMap;
   inputSettings: {
     pdf: PDFInputSettings;
   };
-  outputSettings: {
-    allFormats: OutputFormat[];
-    activeTargetFormatName: OutputFormat;
-    settings: {
-      jpeg: JPEG_WEBPOutputConversionSettings;
-      webp: JPEG_WEBPOutputConversionSettings;
-      png: BasicOutputConversionSettings;
-      tiff: BasicOutputConversionSettings;
-      gif: GIFOutputConversionSettings;
-      bmp: BasicOutputConversionSettings;
-      pdf: PDFOutputConversionSettings;
-    };
-  };
-}
+};

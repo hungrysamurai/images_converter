@@ -2,19 +2,17 @@ import styled from 'styled-components';
 import { memo } from 'react';
 
 import { Lang } from '@/types/types';
-import { type OutputFormat } from '@/types/formats';
+import { OUTPUT_FORMATS, type OutputFormat } from '@/types/formats';
 
 import { useAppDispatch } from '@/store/hooks';
 import { selectTargetFormat } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
 type FormatSelectProps = {
-  formats: OutputFormat[];
   lang: Lang;
   activeTargetFormatName: OutputFormat;
 };
 
 const FormatSelect: React.FC<FormatSelectProps> = memo(function FormatSelect({
-  formats,
   lang,
   activeTargetFormatName,
 }) {
@@ -30,8 +28,8 @@ const FormatSelect: React.FC<FormatSelectProps> = memo(function FormatSelect({
           }}
           defaultValue={activeTargetFormatName}
         >
-          {formats.map((formatName, i) => (
-            <option key={i} value={formatName}>
+          {OUTPUT_FORMATS.map((formatName) => (
+            <option key={formatName} value={formatName}>
               {formatName.toUpperCase()}
             </option>
           ))}

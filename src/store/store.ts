@@ -4,6 +4,7 @@ import {
   FLUSH,
   PAUSE,
   PERSIST,
+  type PersistedState,
   persistReducer,
   persistStore,
   PURGE,
@@ -17,15 +18,17 @@ import conversionSettingsReducer from './slices/conversionSettingsSlice/conversi
 import processFilesReducer from './slices/processFilesSlice/processFilesSlice';
 import sourceFilesReducer from './slices/sourceFilesSlice/sourceFilesSlice';
 
-const persistConfig = {
-  key: 'root',
-  storage,
-  blacklist: ['sourceFiles', 'processFiles'],
-};
+const CONVERSION_SETTINGS_VERSION = 1;
 
 const conversionSettingsPersistConfig = {
   key: 'conversionSettings',
   storage,
+  version: CONVERSION_SETTINGS_VERSION,
+  // Older persisted shapes are incompatible: drop them so the initial state applies
+  migrate: (state: PersistedState) =>
+    Promise.resolve(
+      state && state._persist.version >= CONVERSION_SETTINGS_VERSION ? state : undefined,
+    ),
 };
 
 const rootReducer = combineReducers({
@@ -34,10 +37,8 @@ const rootReducer = combineReducers({
   processFiles: processFilesReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

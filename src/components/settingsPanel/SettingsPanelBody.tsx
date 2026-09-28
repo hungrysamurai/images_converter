@@ -11,19 +11,17 @@ import InputSettings from './SettingsPanelBodyComponents/InputSettings';
 type SettingsPanelBodyProps = {
   isPDF: boolean;
   lang: Lang;
-  formats: OutputFormat[];
   activeTargetFormatName: OutputFormat;
 };
 
 const SettingsPanelBody: React.FC<SettingsPanelBodyProps> = memo(function SettingsPanelBody({
   isPDF,
   lang,
-  formats,
   activeTargetFormatName,
 }) {
   return (
     <>
-      <FormatSelect formats={formats} lang={lang} activeTargetFormatName={activeTargetFormatName} />
+      <FormatSelect lang={lang} activeTargetFormatName={activeTargetFormatName} />
 
       <OutputSettings lang={lang} activeTargetFormatName={activeTargetFormatName} />
 

@@ -9,7 +9,6 @@ import { fadeAnimation, settingsPanelAnimation } from '@/animations';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { checkPDFInSourceFiles } from '@/store/slices/sourceFilesSlice/sourceFilesSlice';
 import {
-  getAllTargetFormats,
   getActiveTargetFormatName,
   defaultActiveTargetFormat,
 } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
@@ -30,7 +29,6 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
   lang,
 }) => {
   const isPDF = useAppSelector(checkPDFInSourceFiles);
-  const formats = useAppSelector(getAllTargetFormats);
   const activeTargetFormatName = useAppSelector(getActiveTargetFormatName);
 
   const dispatch = useAppDispatch();
@@ -71,7 +69,6 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
             <SettingsPanelBody
               lang={lang}
               isPDF={isPDF}
-              formats={formats}
               activeTargetFormatName={activeTargetFormatName}
             />
 

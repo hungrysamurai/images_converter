@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice, current } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { initialState } from './settings';
 
 import {
@@ -7,7 +7,7 @@ import {
   isSmoothingOption,
   isUnits,
 } from '@/types/typeGuards';
-import { type OutputFormat } from '@/types/formats';
+import { OUTPUT_FORMATS, type OutputFormat } from '@/types/formats';
 import type {
   CheckboxOptions,
   CheckboxOptionsKeys,
@@ -25,130 +25,100 @@ export const conversionSettingsSlice = createSlice({
   initialState,
   reducers: (create) => ({
     defaultActiveTargetFormat: create.reducer((state) => {
-      const {
-        outputSettings: { activeTargetFormatName },
-      } = current(state);
+      const { activeFormat } = state;
 
       // Type not very safe, but whatever
-      const defaultOutputSettings = initialState.outputSettings.settings[
-        activeTargetFormatName
+      state.outputSettings[activeFormat] = initialState.outputSettings[
+        activeFormat
       ] as CombinedOutputConversionSettings;
-      const defaultInputSettings = initialState.inputSettings;
-
-      state.outputSettings.settings[activeTargetFormatName] = defaultOutputSettings;
-      state.inputSettings = defaultInputSettings;
+      state.inputSettings = initialState.inputSettings;
     }),
 
     switchTargetFormat: create.reducer((state) => {
-      const {
-        outputSettings: { allFormats, activeTargetFormatName },
-      } = current(state);
+      const nextFormatIndex =
+        (OUTPUT_FORMATS.indexOf(state.activeFormat) + 1) % OUTPUT_FORMATS.length;
 
-      const currentFormatIndex = allFormats.indexOf(activeTargetFormatName);
-      let newFormatIndex = currentFormatIndex + 1;
-
-      if (newFormatIndex === allFormats.length) {
-        newFormatIndex = 0;
-      }
-
-      state.outputSettings.activeTargetFormatName = allFormats[newFormatIndex];
+      state.activeFormat = OUTPUT_FORMATS[nextFormatIndex];
     }),
 
     selectTargetFormat: create.reducer((state, action: PayloadAction<OutputFormat>) => {
-      state.outputSettings.activeTargetFormatName = action.payload;
+      state.activeFormat = action.payload;
     }),
 
     updateActiveTargetFormatSliderSetting: create.reducer(
       (state, action: PayloadAction<QualityOption>) => {
         const { quality } = action.payload;
-        const {
-          outputSettings: { activeTargetFormatName },
-        } = current(state);
+        const { activeFormat } = state;
 
         if (
-          activeTargetFormatName === 'jpeg' ||
-          activeTargetFormatName === 'webp' ||
-          activeTargetFormatName === 'gif' ||
-          activeTargetFormatName === 'pdf'
+          activeFormat === 'jpeg' ||
+          activeFormat === 'webp' ||
+          activeFormat === 'gif' ||
+          activeFormat === 'pdf'
         ) {
-          state.outputSettings.settings[activeTargetFormatName].quality = quality;
+          state.outputSettings[activeFormat].quality = quality;
         }
       },
     ),
 
     updateActiveTargetFormatSelectSetting: create.reducer(
       (state, action: PayloadAction<SelectOptions>) => {
-        const {
-          outputSettings: { activeTargetFormatName },
-        } = current(state);
+        const { activeFormat } = state;
 
         const key = Object.keys(action.payload)[0] as SelectOptionsKeys;
         const value = Object.values(action.payload)[0] as SelectOptionsValues;
 
         if (isUnits(value) && key === 'units') {
-          state.outputSettings.settings[activeTargetFormatName].targetHeight = null;
-          state.outputSettings.settings[activeTargetFormatName].targetWidth = null;
+          state.outputSettings[activeFormat].targetHeight = null;
+          state.outputSettings[activeFormat].targetWidth = null;
 
-          state.outputSettings.settings[activeTargetFormatName].units = value;
+          state.outputSettings[activeFormat].units = value;
         }
 
         if (isSmoothingOption(value) && key === 'smoothing') {
-          state.outputSettings.settings[activeTargetFormatName].smoothing =
-            value !== 'off' ? value : false;
+          state.outputSettings[activeFormat].smoothing = value !== 'off' ? value : false;
         }
 
-        if (activeTargetFormatName === 'gif' && isDitherOption(value) && key === 'dither') {
-          state.outputSettings.settings[activeTargetFormatName].dither =
-            value !== 'off' ? value : false;
+        if (activeFormat === 'gif' && isDitherOption(value) && key === 'dither') {
+          state.outputSettings[activeFormat].dither = value !== 'off' ? value : false;
         }
 
-        if (
-          activeTargetFormatName === 'pdf' &&
-          isCompressionOption(value) &&
-          key === 'compression'
-        ) {
-          state.outputSettings.settings[activeTargetFormatName].compression = value;
+        if (activeFormat === 'pdf' && isCompressionOption(value) && key === 'compression') {
+          state.outputSettings[activeFormat].compression = value;
         }
       },
     ),
 
     updateActiveTargetFormatNumericSetting: create.reducer(
       (state, action: PayloadAction<NumericOptions>) => {
-        const {
-          outputSettings: { activeTargetFormatName },
-        } = current(state);
+        const { activeFormat } = state;
 
         const key = Object.keys(action.payload)[0] as NumericOptionsKeys;
         const value = Object.values(action.payload)[0] as number | null;
 
-        if (key === 'animationDelay' && activeTargetFormatName === 'gif') {
-          state.outputSettings.settings[activeTargetFormatName].animationDelay = value || 200;
+        if (key === 'animationDelay' && activeFormat === 'gif') {
+          state.outputSettings[activeFormat].animationDelay = value || 200;
         }
 
         if (key === 'targetHeight' || key === 'targetWidth') {
-          state.outputSettings.settings[activeTargetFormatName][key] = value;
+          state.outputSettings[activeFormat][key] = value;
         }
       },
     ),
 
     updateActiveTargetFormatToggleSetting: create.reducer(
       (state, action: PayloadAction<CheckboxOptions>) => {
-        const {
-          outputSettings: { activeTargetFormatName },
-        } = current(state);
+        const { activeFormat } = state;
 
         const key = Object.keys(action.payload)[0] as CheckboxOptionsKeys;
         const value = Object.values(action.payload)[0] as boolean;
 
-        if (
-          key === 'merge' &&
-          (activeTargetFormatName === 'pdf' || activeTargetFormatName === 'gif')
-        ) {
-          state.outputSettings.settings[activeTargetFormatName].merge = value;
+        if (key === 'merge' && (activeFormat === 'pdf' || activeFormat === 'gif')) {
+          state.outputSettings[activeFormat].merge = value;
         }
 
         if (key === 'resize') {
-          state.outputSettings.settings[activeTargetFormatName].resize = value;
+          state.outputSettings[activeFormat].resize = value;
         }
       },
     ),
@@ -164,13 +134,8 @@ export const conversionSettingsSlice = createSlice({
   }),
 
   selectors: {
-    getActiveTargetFormatName: (state) => state.outputSettings.activeTargetFormatName,
-    getAllTargetFormats: (state) => state.outputSettings.allFormats,
-    getActiveFormatOutputSettings: (state) => {
-      const activeTargetFormatName = state.outputSettings.activeTargetFormatName;
-
-      return state.outputSettings.settings[activeTargetFormatName];
-    },
+    getActiveTargetFormatName: (state) => state.activeFormat,
+    getActiveFormatOutputSettings: (state) => state.outputSettings[state.activeFormat],
     getPDFInputSettings: (state) => state.inputSettings.pdf,
   },
 });
@@ -186,11 +151,7 @@ export const {
   defaultActiveTargetFormat,
 } = conversionSettingsSlice.actions;
 
-export const {
-  getActiveTargetFormatName,
-  getAllTargetFormats,
-  getActiveFormatOutputSettings,
-  getPDFInputSettings,
-} = conversionSettingsSlice.selectors;
+export const { getActiveTargetFormatName, getActiveFormatOutputSettings, getPDFInputSettings } =
+  conversionSettingsSlice.selectors;
 
 export default conversionSettingsSlice.reducer;
