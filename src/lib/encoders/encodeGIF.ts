@@ -23,7 +23,7 @@ const encodeGIF = async (
   const blob: Blob = await new Promise((resolve, reject) => {
     const gif = new GIF({
       workers: 2,
-      quality,
+      quality: 21 - quality,
       dither: dither === 'off' ? false : dither,
       workerScript: gifWorkerUrl,
     });

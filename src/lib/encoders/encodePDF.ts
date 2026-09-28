@@ -12,7 +12,7 @@ const encodePDF = async (
 
     const blob = await canvas.convertToBlob({
       type: `image/${compression.toLowerCase()}`,
-      quality,
+      quality: quality / 100,
     });
     const arrayBuffer = await blob.arrayBuffer();
 

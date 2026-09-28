@@ -10,7 +10,7 @@ const encodeJPEG_PNG_WEBP = async (
   let quality: number | undefined;
 
   if (isQualitySetting(targetFormatSettings)) {
-    quality = targetFormatSettings.quality;
+    quality = targetFormatSettings.quality / 100;
   }
 
   return canvas.convertToBlob({

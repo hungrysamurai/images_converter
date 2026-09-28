@@ -7,7 +7,7 @@ const outputSettings = {
     targetWidth: null,
     targetHeight: null,
     smoothing: 'medium',
-    quality: 0.75,
+    quality: 75,
   },
   png: {
     resize: false,
@@ -22,7 +22,7 @@ const outputSettings = {
     targetWidth: null,
     targetHeight: null,
     smoothing: 'medium',
-    quality: 0.75,
+    quality: 75,
   },
   bmp: {
     resize: false,
@@ -38,7 +38,7 @@ const outputSettings = {
     targetHeight: null,
     merge: false,
     smoothing: 'medium',
-    quality: 11,
+    quality: 10,
     animationDelay: 200,
     dither: 'off',
   },
@@ -52,7 +52,7 @@ const outputSettings = {
   pdf: {
     resize: false,
     merge: false,
-    quality: 0.75,
+    quality: 75,
     units: 'pixels',
     targetWidth: null,
     targetHeight: null,

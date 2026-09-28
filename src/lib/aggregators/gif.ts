@@ -14,7 +14,7 @@ const mergeGIF = async (
 
   const gif = new GIF({
     workers: 2,
-    quality,
+    quality: 21 - quality,
     workerScript: gifWorkerUrl,
     dither: dither === 'off' ? false : dither,
     repeat: 0,

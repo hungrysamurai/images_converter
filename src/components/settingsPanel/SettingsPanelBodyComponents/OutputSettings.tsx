@@ -46,7 +46,6 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
         min="1"
         max="100"
         name="quality"
-        mode={activeTargetFormatName}
       />
     ) : null;
 
@@ -59,7 +58,6 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
           min="1"
           max="20"
           name="quality"
-          mode={activeTargetFormatName}
         />
         <SelectInput
           options={DITHER_OPTIONS}
@@ -108,7 +106,6 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
             min="1"
             max="100"
             name="quality"
-            mode={activeTargetFormatName}
           />
         )}
 

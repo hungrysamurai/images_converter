@@ -1,12 +1,9 @@
 import styled from 'styled-components';
 
-import { getConvertedValue } from '@/lib/utils/getConvertedValue';
-
 import { useAppDispatch } from '@/store/hooks';
 
 import React, { ChangeEvent, memo } from 'react';
 import { updateActiveTargetFormatSliderSetting } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
-import { SliderConvertModes } from '@/types/types';
 import type { QualityOption } from '@/store/slices/conversionSettingsSlice/types';
 
 type SliderInputProps = {
@@ -15,51 +12,37 @@ type SliderInputProps = {
   min: string;
   max: string;
   name: keyof QualityOption;
-  mode: 'jpeg' | 'webp' | 'gif' | 'pdf';
 };
 
-const SliderInput: React.FC<SliderInputProps> = memo(
-  ({ label, currentValue, min, max, name, mode }) => {
-    const dispatch = useAppDispatch();
+const SliderInput: React.FC<SliderInputProps> = memo(({ label, currentValue, min, max, name }) => {
+  const dispatch = useAppDispatch();
 
-    const displayValuesConversionMode =
-      mode === 'jpeg' || mode === 'webp' || mode === 'pdf'
-        ? SliderConvertModes.DecimalsToPercentages
-        : SliderConvertModes.GifDisplay;
-    const stateValuesConversionMode =
-      mode === 'jpeg' || mode === 'webp' || mode === 'pdf'
-        ? SliderConvertModes.PercentagesToDecimals
-        : SliderConvertModes.GifState;
-
-    const convertedValue = getConvertedValue(currentValue, displayValuesConversionMode);
-
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      dispatch(
-        updateActiveTargetFormatSliderSetting({
-          [name]: getConvertedValue(Number(e.target.value), stateValuesConversionMode),
-        }),
-      );
-    };
-
-    return (
-      <StyledSliderContainer>
-        <StyledSliderLabel>
-          {label}
-          <StyledSliderInput
-            type="range"
-            min={min}
-            max={max}
-            onChange={handleChange}
-            value={convertedValue}
-            name={name}
-          />
-        </StyledSliderLabel>
-
-        <StyledSliderDisplayValue>{convertedValue}</StyledSliderDisplayValue>
-      </StyledSliderContainer>
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      updateActiveTargetFormatSliderSetting({
+        [name]: Number(e.target.value),
+      }),
     );
-  },
-);
+  };
+
+  return (
+    <StyledSliderContainer>
+      <StyledSliderLabel>
+        {label}
+        <StyledSliderInput
+          type="range"
+          min={min}
+          max={max}
+          onChange={handleChange}
+          value={currentValue}
+          name={name}
+        />
+      </StyledSliderLabel>
+
+      <StyledSliderDisplayValue>{currentValue}</StyledSliderDisplayValue>
+    </StyledSliderContainer>
+  );
+});
 
 const StyledSliderContainer = styled.div`
   width: 100%;
