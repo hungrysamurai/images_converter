@@ -1,4 +1,4 @@
-import { MIMETypes } from '@/types/types';
+import { MIME } from '@/types/formats';
 import { getScaledSVGDimensions } from './getScaledSVGDimensions';
 
 export default async function SVGToBitmap(
@@ -13,7 +13,7 @@ export default async function SVGToBitmap(
   const file = await fetch(blobURL);
   const svgText = await file.text();
 
-  const svgEl = new DOMParser().parseFromString(svgText, MIMETypes.SVG)
+  const svgEl = new DOMParser().parseFromString(svgText, MIME.svg)
     .documentElement as unknown as SVGSVGElement;
 
   // Figuring out dimensions of given SVG

@@ -1,12 +1,12 @@
-import { MIMETypes, OutputFileFormatsNames } from '@/types/types';
+import { MIME, type MIMEType, type OutputFormat } from '@/types/formats';
 
 interface WorkerMessage {
-  type: MIMETypes;
+  type: MIMEType;
   blobURL: string;
   outputSettings: OutputConversionSettings;
-  targetFormatName: OutputFileFormatsNames;
+  targetFormatName: OutputFormat;
   inputSettings?: {
-    [OutputFileFormatsNames.PDF]: PDFInputSettings;
+    pdf: PDFInputSettings;
   };
   bitmap?: ImageBitmap;
 }
@@ -20,9 +20,9 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
     let result: WorkerResult;
 
     switch (type) {
-      case MIMETypes.JPG:
-      case MIMETypes.PNG:
-      case MIMETypes.WEBP: {
+      case MIME.jpeg:
+      case MIME.png:
+      case MIME.webp: {
         const decodeJPEG_WEBP_PNG = await import('@/lib/decoders/singlePage/jpeg_webp_png');
 
         result = await decodeJPEG_WEBP_PNG.default(blobURL, outputSettings, targetFormatName);
@@ -30,7 +30,7 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
         break;
       }
 
-      case MIMETypes.BMP: {
+      case MIME.bmp: {
         const decodeBMP = await import('@/lib/decoders/singlePage/bmp');
 
         result = await decodeBMP.default(blobURL, outputSettings, targetFormatName);
@@ -38,7 +38,7 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
         break;
       }
 
-      case MIMETypes.HEIC: {
+      case MIME.heic: {
         const decodeHEIC = await import('@/lib/decoders/singlePage/heic');
 
         result = await decodeHEIC.default(blobURL, outputSettings, targetFormatName);
@@ -46,7 +46,7 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
         break;
       }
 
-      case MIMETypes.SVG: {
+      case MIME.svg: {
         if (!bitmap) throw new Error('Missing bitmap for SVG conversion');
 
         const decodeSVGBitmap = await import('@/lib/decoders/singlePage/svg');
@@ -55,7 +55,7 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
         break;
       }
 
-      case MIMETypes.TIFF: {
+      case MIME.tiff: {
         const TIFFPagesToBlobs = await import('@/lib/decoders/multiPage/tiff');
 
         result = await TIFFPagesToBlobs.default(blobURL, outputSettings, targetFormatName);
@@ -63,7 +63,7 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
         break;
       }
 
-      case MIMETypes.PDF: {
+      case MIME.pdf: {
         if (!inputSettings) throw new Error('Missing inputSettings for PDF conversion');
         const PDFPagesToBlobs = await import('@/lib/decoders/multiPage/pdf');
 
@@ -76,7 +76,7 @@ self.addEventListener('message', async (e: MessageEvent<WorkerMessage>) => {
         break;
       }
 
-      case MIMETypes.GIF: {
+      case MIME.gif: {
         const decodeGIF = await import('@/lib/decoders/multiPage/gif');
 
         result = await decodeGIF.default(blobURL, outputSettings, targetFormatName);

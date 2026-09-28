@@ -1,13 +1,13 @@
 import PdfJsWorker from 'pdfjs-dist/build/pdf.worker.mjs?worker';
-import { OutputFileFormatsNames } from '@/types/types';
+import { type OutputFormat } from '@/types/formats';
 import encodeCanvas from '@/lib/encode';
 import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
 
 const decodePDF = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFileFormatsNames,
-  inputSettings: { [OutputFileFormatsNames.PDF]: PDFInputSettings },
+  activeTargetFormatName: OutputFormat,
+  inputSettings: { pdf: PDFInputSettings },
 ): Promise<Blob[]> => {
   const {
     pdf: { resolution, rotation },
@@ -18,7 +18,7 @@ const decodePDF = async (
   const pagesBlobs: Blob[] = [];
 
   // Don't rasterize PDF Source, just split it!
-  if (activeTargetFormatName === OutputFileFormatsNames.PDF && !targetFormatSettings.resize) {
+  if (activeTargetFormatName === 'pdf' && !targetFormatSettings.resize) {
     const { degrees, PDFDocument } = await import('pdf-lib');
 
     const blob = await fetch(blobURL);

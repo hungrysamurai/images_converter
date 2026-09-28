@@ -1,7 +1,7 @@
 import { nanoid } from '@reduxjs/toolkit';
 import { addConvertedFile } from '../store/slices/processFilesSlice/processFilesSlice';
 import type { AppDispatch } from '../store/store';
-import { MIMETypes, OutputFileFormatsNames } from '../types/types';
+import { MIME, type MIMEType, type OutputFormat } from '@/types/formats';
 import SVGToBitmap from './utils/SVGToBitmap';
 
 import { getFileFormat } from './utils/getFileFormat';
@@ -15,9 +15,9 @@ export default class Converter {
   // TODO: DRY decoders functions into ONE
   constructor(
     private outputSettings: OutputConversionSettings,
-    private activeTargetFormatName: OutputFileFormatsNames,
+    private activeTargetFormatName: OutputFormat,
     private inputSettings: {
-      [OutputFileFormatsNames.PDF]: PDFInputSettings;
+      pdf: PDFInputSettings;
     },
     private UIDispatcher: AppDispatch,
     private mergeToOne: boolean,
@@ -52,7 +52,7 @@ export default class Converter {
 
   private async merge() {
     switch (this.activeTargetFormatName) {
-      case OutputFileFormatsNames.PDF:
+      case 'pdf':
         {
           const mergePDF = await import('@/lib/aggregators/pdf');
 
@@ -65,14 +65,14 @@ export default class Converter {
               downloadLink: URL,
               name: `Merged-${Date.now()}`,
               size: merged.size,
-              type: `image/${this.activeTargetFormatName}` as MIMETypes,
+              type: MIME[this.activeTargetFormatName],
               id: nanoid(),
             }),
           );
         }
         break;
 
-      case OutputFileFormatsNames.GIF:
+      case 'gif':
         {
           const mergeGIF = await import('@/lib/aggregators/gif');
 
@@ -85,7 +85,7 @@ export default class Converter {
               downloadLink: URL,
               name: `Merged-${Date.now()}`,
               size: merged.size,
-              type: `image/${this.activeTargetFormatName}` as MIMETypes,
+              type: MIME[this.activeTargetFormatName],
               id: nanoid(),
             }),
           );
@@ -98,12 +98,12 @@ export default class Converter {
     const { blobURL, type, name } = file;
 
     switch (file.type) {
-      case MIMETypes.JPG:
-      case MIMETypes.PNG:
-      case MIMETypes.WEBP:
-      case MIMETypes.BMP:
-      case MIMETypes.SVG:
-      case MIMETypes.HEIC:
+      case MIME.jpeg:
+      case MIME.png:
+      case MIME.webp:
+      case MIME.bmp:
+      case MIME.svg:
+      case MIME.heic:
         {
           const processed = await this.processSinglePageFile(blobURL, type, name);
           if (processed) {
@@ -119,7 +119,7 @@ export default class Converter {
                   downloadLink: URL,
                   name,
                   size,
-                  type: `image/${this.activeTargetFormatName}` as MIMETypes,
+                  type: MIME[this.activeTargetFormatName],
                   id: nanoid(),
                   sourceId: id,
                 }),
@@ -130,9 +130,9 @@ export default class Converter {
         }
         break;
 
-      case MIMETypes.TIFF:
-      case MIMETypes.GIF:
-      case MIMETypes.PDF: {
+      case MIME.tiff:
+      case MIME.gif:
+      case MIME.pdf: {
         const processedPages = await this.processMultiPageFile(blobURL, type, name);
 
         if (Array.isArray(processedPages) && processedPages.length > 0) {
@@ -149,7 +149,7 @@ export default class Converter {
                   downloadLink: URL,
                   name: `${name}_${index + 1}`,
                   size,
-                  type: `image/${this.activeTargetFormatName}` as MIMETypes,
+                  type: MIME[this.activeTargetFormatName],
                   id: nanoid(),
                   sourceId: id,
                 }),
@@ -167,25 +167,25 @@ export default class Converter {
 
   private async processSinglePageFile(
     blobURL: string,
-    type: MIMETypes,
+    type: MIMEType,
     fileName: string,
   ): Promise<Blob | void> {
     switch (type) {
-      case MIMETypes.JPG:
-      case MIMETypes.PNG:
-      case MIMETypes.WEBP: {
+      case MIME.jpeg:
+      case MIME.png:
+      case MIME.webp: {
         return this.convertJPEG_WEBP_PNG(blobURL, type, fileName);
       }
 
-      case MIMETypes.BMP: {
+      case MIME.bmp: {
         return this.convertBMP(blobURL, type, fileName);
       }
 
-      case MIMETypes.HEIC: {
+      case MIME.heic: {
         return this.convertHEIC(blobURL, type, fileName);
       }
 
-      case MIMETypes.SVG: {
+      case MIME.svg: {
         return this.convertSVG(blobURL, type, fileName);
       }
 
@@ -197,7 +197,7 @@ export default class Converter {
 
   private async convertJPEG_WEBP_PNG(
     blobURL: string,
-    type: MIMETypes,
+    type: MIMEType,
     fileName: string,
   ): Promise<Blob | void> {
     try {
@@ -237,7 +237,7 @@ export default class Converter {
 
   private async convertBMP(
     blobURL: string,
-    type: MIMETypes,
+    type: MIMEType,
     fileName: string,
   ): Promise<Blob | void> {
     try {
@@ -277,7 +277,7 @@ export default class Converter {
 
   private async convertHEIC(
     blobURL: string,
-    type: MIMETypes,
+    type: MIMEType,
     fileName: string,
   ): Promise<Blob | void> {
     try {
@@ -316,7 +316,7 @@ export default class Converter {
 
   private async convertSVG(
     blobURL: string,
-    type: MIMETypes,
+    type: MIMEType,
     fileName: string,
   ): Promise<Blob | void> {
     try {
@@ -364,19 +364,19 @@ export default class Converter {
 
   private async processMultiPageFile(
     blobURL: string,
-    type: MIMETypes,
+    type: MIMEType,
     fileName: string,
   ): Promise<Blob[] | void> {
     switch (type) {
-      case MIMETypes.TIFF: {
+      case MIME.tiff: {
         const pagesBlobs = await this.convertTIFF(blobURL, type, fileName);
         return pagesBlobs;
       }
-      case MIMETypes.PDF: {
+      case MIME.pdf: {
         const pagesBlobs = await this.convertPDF(blobURL, type, fileName);
         return pagesBlobs;
       }
-      case MIMETypes.GIF: {
+      case MIME.gif: {
         const pagesBlobs = await this.convertGIF(blobURL, type, fileName);
         return pagesBlobs;
       }
@@ -389,7 +389,7 @@ export default class Converter {
 
   private async convertTIFF(
     blobURL: string,
-    type: MIMETypes,
+    type: MIMEType,
     fileName: string,
   ): Promise<Blob[] | void> {
     try {
@@ -429,7 +429,7 @@ export default class Converter {
 
   private async convertPDF(
     blobURL: string,
-    type: MIMETypes,
+    type: MIMEType,
     fileName: string,
   ): Promise<Blob[] | void> {
     try {
@@ -471,7 +471,7 @@ export default class Converter {
 
   private async convertGIF(
     blobURL: string,
-    type: MIMETypes,
+    type: MIMEType,
     fileName: string,
   ): Promise<Blob[] | void> {
     try {

@@ -1,11 +1,11 @@
-import { InputFileFormatsNames, MIMETypes } from '@/types/types';
+import { INPUT_FORMATS, MIME, type InputFormat, type MIMEType } from '@/types/formats';
 
-export const getFileFormat = (type: MIMETypes): InputFileFormatsNames => {
-  let fileFormatName = type.split('/')[1];
+export const getFileFormat = (type: MIMEType): InputFormat => {
+  const format = INPUT_FORMATS.find((format) => MIME[format] === type);
 
-  if (fileFormatName === 'svg+xml') {
-    fileFormatName = InputFileFormatsNames.SVG;
+  if (!format) {
+    throw new Error(`Unknown MIME type: ${type}`);
   }
 
-  return fileFormatName as InputFileFormatsNames;
+  return format;
 };

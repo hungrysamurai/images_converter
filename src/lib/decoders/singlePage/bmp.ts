@@ -1,4 +1,4 @@
-import { OutputFileFormatsNames } from '@/types/types';
+import { type OutputFormat } from '@/types/formats';
 import encodeCanvas from '@/lib/encode';
 import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
 
@@ -30,7 +30,7 @@ interface Bitmap {
 const decodeBMP = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFileFormatsNames,
+  activeTargetFormatName: OutputFormat,
 ): Promise<Blob> => {
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();

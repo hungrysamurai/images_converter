@@ -1,4 +1,4 @@
-import { OutputFileFormatsNames } from '../types/types';
+import { type OutputFormat } from '@/types/formats';
 import encodeBMP from './encoders/encodeBMP';
 import encodeGIF from './encoders/encodeGIF';
 import encodeJPEG_PNG_WEBP from './encoders/encodeJPEG_PNG_WEBP';
@@ -8,27 +8,27 @@ import encodeTIFF from './encoders/encodeTIFF';
 export default async function encodeCanvas(
   canvas: OffscreenCanvas,
   targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFileFormatsNames,
+  activeTargetFormatName: OutputFormat,
 ): Promise<Blob> {
   switch (activeTargetFormatName) {
-    case OutputFileFormatsNames.JPG:
-    case OutputFileFormatsNames.WEBP:
-    case OutputFileFormatsNames.PNG: {
+    case 'jpeg':
+    case 'webp':
+    case 'png': {
       return encodeJPEG_PNG_WEBP(canvas, targetFormatSettings, activeTargetFormatName);
     }
-    case OutputFileFormatsNames.BMP: {
+    case 'bmp': {
       return encodeBMP(canvas);
     }
 
-    case OutputFileFormatsNames.TIFF: {
+    case 'tiff': {
       return encodeTIFF(canvas);
     }
 
-    case OutputFileFormatsNames.PDF: {
+    case 'pdf': {
       return encodePDF(canvas, targetFormatSettings);
     }
 
-    case OutputFileFormatsNames.GIF: {
+    case 'gif': {
       return encodeGIF(canvas, targetFormatSettings);
     }
   }

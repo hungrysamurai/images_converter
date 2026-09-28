@@ -1,10 +1,5 @@
-import {
-  InputFileFormatsNames,
-  OutputFileFormatsNames,
-  PDFCompressionTypes,
-  SmoothingPresets,
-  Units,
-} from '@/types/types';
+import { PDFCompressionTypes, SmoothingPresets, Units } from '@/types/types';
+import { OUTPUT_FORMATS } from '@/types/formats';
 
 export const initialState: ConversionSettings = {
   inputSettings: {
@@ -14,18 +9,10 @@ export const initialState: ConversionSettings = {
     },
   },
   outputSettings: {
-    allFormats: [
-      OutputFileFormatsNames.JPG,
-      OutputFileFormatsNames.PNG,
-      OutputFileFormatsNames.WEBP,
-      OutputFileFormatsNames.PDF,
-      OutputFileFormatsNames.BMP,
-      OutputFileFormatsNames.GIF,
-      OutputFileFormatsNames.TIFF,
-    ],
-    activeTargetFormatName: OutputFileFormatsNames.JPG,
+    allFormats: [...OUTPUT_FORMATS],
+    activeTargetFormatName: 'jpeg',
     settings: {
-      [InputFileFormatsNames.JPG]: {
+      jpeg: {
         resize: false,
         units: Units.PIXELS,
         targetWidth: null,
@@ -33,14 +20,14 @@ export const initialState: ConversionSettings = {
         smoothing: SmoothingPresets.MEDIUM,
         quality: 0.75,
       },
-      [InputFileFormatsNames.PNG]: {
+      png: {
         resize: false,
         units: Units.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
       },
-      [InputFileFormatsNames.WEBP]: {
+      webp: {
         resize: false,
         units: Units.PIXELS,
         targetWidth: null,
@@ -48,14 +35,14 @@ export const initialState: ConversionSettings = {
         smoothing: SmoothingPresets.MEDIUM,
         quality: 0.75,
       },
-      [InputFileFormatsNames.BMP]: {
+      bmp: {
         resize: false,
         units: Units.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
       },
-      [InputFileFormatsNames.GIF]: {
+      gif: {
         resize: false,
         units: Units.PIXELS,
         targetWidth: null,
@@ -66,14 +53,14 @@ export const initialState: ConversionSettings = {
         animationDelay: 200,
         dither: false,
       },
-      [InputFileFormatsNames.TIFF]: {
+      tiff: {
         resize: false,
         units: Units.PIXELS,
         targetWidth: null,
         targetHeight: null,
         smoothing: SmoothingPresets.MEDIUM,
       },
-      [InputFileFormatsNames.PDF]: {
+      pdf: {
         resize: false,
         merge: false,
         quality: 0.75,

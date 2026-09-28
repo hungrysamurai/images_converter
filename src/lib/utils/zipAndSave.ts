@@ -3,12 +3,12 @@ import JSZipUtils from 'jszip-utils';
 
 import { saveAs } from 'file-saver';
 
-import { OutputFileFormatsNames } from '@/types/types';
+import { type OutputFormat } from '@/types/formats';
 import { getFileFormat } from './getFileFormat';
 
 export const zipAndSave = async (
   files: ProcessedFile[],
-  activeTargetFormatName: OutputFileFormatsNames,
+  activeTargetFormatName: OutputFormat,
 ): Promise<void> => {
   return new Promise((resolve, reject) => {
     const zip = new JSZip();

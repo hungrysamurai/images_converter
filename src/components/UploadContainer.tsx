@@ -3,7 +3,8 @@ import { ChangeEvent, DragEvent, MouseEvent, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Lang, MIMETypes, ScreenOrientations } from '../types/types';
+import { Lang, ScreenOrientations } from '../types/types';
+import { MIME } from '@/types/formats';
 
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
@@ -69,7 +70,7 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
     files.forEach((file) => {
       if (isHEIC(file)) {
         const heicFile = new File([file], file.name, {
-          type: MIMETypes.HEIC,
+          type: MIME.heic,
         });
         dispatch(addSourceFile(heicFile));
       } else if (checkFileType(file.type)) {

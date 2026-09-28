@@ -4,11 +4,11 @@ import styled from 'styled-components';
 import {
   GIFDitherOptions,
   Lang,
-  OutputFileFormatsNames,
   PDFCompressionTypes,
   SmoothingPresets,
   Units,
 } from '@/types/types';
+import { type OutputFormat } from '@/types/formats';
 
 import { useAppSelector } from '@/store/hooks';
 import { getActiveFormatOutputSettings } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
@@ -23,7 +23,7 @@ import { isCompressionSetting, isDitherSetting, isQualitySetting } from '@/types
 
 type OutputSettingsType = {
   lang: Lang;
-  activeTargetFormatName: OutputFileFormatsNames;
+  activeTargetFormatName: OutputFormat;
 };
 
 const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSettings({
@@ -39,8 +39,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
   // Format specific options
   const JPEG_WEBP_QualitySlider =
     isQualitySetting(activeTargetFromatOutputSettings) &&
-    (activeTargetFormatName === OutputFileFormatsNames.JPG ||
-      activeTargetFormatName === OutputFileFormatsNames.WEBP) ? (
+    (activeTargetFormatName === 'jpeg' || activeTargetFormatName === 'webp') ? (
       <SliderInput
         label={lang === Lang.EN ? 'Quality:' : 'Качество:'}
         currentValue={activeTargetFromatOutputSettings.quality}
@@ -52,8 +51,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
     ) : null;
 
   const GIFSettings =
-    isDitherSetting(activeTargetFromatOutputSettings) &&
-    activeTargetFormatName === OutputFileFormatsNames.GIF ? (
+    isDitherSetting(activeTargetFromatOutputSettings) && activeTargetFormatName === 'gif' ? (
       <>
         <SliderInput
           label={lang === Lang.EN ? 'Quality:' : 'Качество:'}
@@ -97,8 +95,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
     ) : null;
 
   const PDFCompressionSettings =
-    isCompressionSetting(activeTargetFromatOutputSettings) &&
-    activeTargetFormatName === OutputFileFormatsNames.PDF ? (
+    isCompressionSetting(activeTargetFromatOutputSettings) && activeTargetFormatName === 'pdf' ? (
       <>
         <SelectInput
           options={Object.values(PDFCompressionTypes)}

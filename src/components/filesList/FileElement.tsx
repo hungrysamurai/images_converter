@@ -3,7 +3,8 @@ import styled from 'styled-components';
 
 import { memo, useState } from 'react';
 
-import { ElementColorMode, InputFileFormatsNames } from '@/types/types';
+import { ElementColorMode } from '@/types/types';
+import { isPreviewFormat, type InputFormat } from '@/types/formats';
 
 import {
   fileElementAnimation,
@@ -15,14 +16,13 @@ import { useAppDispatch } from '@/store/hooks';
 import { removeConvertedFile } from '@/store/slices/processFilesSlice/processFilesSlice';
 import { removeSourceFile } from '@/store/slices/sourceFilesSlice/sourceFilesSlice';
 
-import { isPreviewFormat } from '@/types/typeGuards';
 import IconDownloadElement from '../icons/IconDownloadElement';
 import IconPreviewFile from '../icons/IconPreviewFile';
 import IconRemoveElement from '../icons/IconRemoveElement';
 
 type FileElementProps = {
   id: string;
-  format: InputFileFormatsNames;
+  format: InputFormat;
   size: string;
   name: string;
   downloadLink?: string;
@@ -117,7 +117,7 @@ const FileElement: React.FC<FileElementProps> = memo(
 );
 
 interface StyledFileElementProps extends HTMLMotionProps<'div'> {
-  $bg: InputFileFormatsNames;
+  $bg: InputFormat;
   $color: ElementColorMode;
 }
 

@@ -1,10 +1,10 @@
 import { isQualitySetting } from '@/types/typeGuards';
-import { OutputFileFormatsNames } from '@/types/types';
+import { MIME, type OutputFormat } from '@/types/formats';
 
 const encodeJPEG_PNG_WEBP = async (
   canvas: OffscreenCanvas,
   targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFileFormatsNames,
+  activeTargetFormatName: OutputFormat,
 ): Promise<Blob> => {
   let quality: number | undefined;
 
@@ -13,7 +13,7 @@ const encodeJPEG_PNG_WEBP = async (
   }
 
   return canvas.convertToBlob({
-    type: `image/${activeTargetFormatName.toLowerCase()}`,
+    type: MIME[activeTargetFormatName],
     quality,
   });
 };

@@ -12,6 +12,7 @@
     "dev": "vite --host",
     "build": "vite build",
     "build:convert-it.ru": "cross-env VITE_TARGET_DOMAIN=convert-it.ru vite build --outDir convert-it.ru --base=./",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint src --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format:fix": "prettier --write .",
     "format:check": "prettier --check .",

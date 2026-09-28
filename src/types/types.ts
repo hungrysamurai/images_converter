@@ -1,36 +1,4 @@
-export enum MIMETypes {
-  JPG = 'image/jpeg',
-  PNG = 'image/png',
-  GIF = 'image/gif',
-  WEBP = 'image/webp',
-  BMP = 'image/bmp',
-  TIFF = 'image/tiff',
-  HEIC = 'image/heic',
-  PDF = 'application/pdf',
-  SVG = 'image/svg+xml',
-}
-
-export enum InputFileFormatsNames {
-  JPG = 'jpeg',
-  PNG = 'png',
-  GIF = 'gif',
-  WEBP = 'webp',
-  BMP = 'bmp',
-  TIFF = 'tiff',
-  HEIC = 'heic',
-  PDF = 'pdf',
-  SVG = 'svg',
-}
-
-export enum OutputFileFormatsNames {
-  JPG = 'jpeg',
-  PNG = 'png',
-  GIF = 'gif',
-  WEBP = 'webp',
-  BMP = 'bmp',
-  TIFF = 'tiff',
-  PDF = 'pdf',
-}
+import type { MIMEType, OutputFormat } from './formats';
 
 export enum Lang {
   EN = 'en',
@@ -81,16 +49,6 @@ export enum ScreenOrientations {
   Horizontal = 'min-aspect-ratio: 1/1',
 }
 
-export enum FormatsWithPreview {
-  JPG = 'jpeg',
-  PNG = 'png',
-  GIF = 'gif',
-  WEBP = 'webp',
-  BMP = 'bmp',
-  PDF = 'pdf',
-  SVG = 'svg',
-}
-
 export enum ElementColorMode {
   Light = 'light',
   Dark = 'dark',
@@ -100,7 +58,7 @@ declare global {
   type SourceFile = {
     blobURL: string;
     name: string;
-    type: MIMETypes;
+    type: MIMEType;
     size: number;
     id: string;
   };
@@ -211,19 +169,19 @@ declare global {
 
   interface ConversionSettings {
     inputSettings: {
-      [InputFileFormatsNames.PDF]: PDFInputSettings;
+      pdf: PDFInputSettings;
     };
     outputSettings: {
-      allFormats: OutputFileFormatsNames[];
-      activeTargetFormatName: OutputFileFormatsNames;
+      allFormats: OutputFormat[];
+      activeTargetFormatName: OutputFormat;
       settings: {
-        [InputFileFormatsNames.JPG]: JPEG_WEBPOutputConversionSettings;
-        [InputFileFormatsNames.WEBP]: JPEG_WEBPOutputConversionSettings;
-        [InputFileFormatsNames.PNG]: BasicOutputConversionSettings;
-        [InputFileFormatsNames.TIFF]: BasicOutputConversionSettings;
-        [InputFileFormatsNames.GIF]: GIFOutputConversionSettings;
-        [InputFileFormatsNames.BMP]: BasicOutputConversionSettings;
-        [InputFileFormatsNames.PDF]: PDFOutputConversionSettings;
+        jpeg: JPEG_WEBPOutputConversionSettings;
+        webp: JPEG_WEBPOutputConversionSettings;
+        png: BasicOutputConversionSettings;
+        tiff: BasicOutputConversionSettings;
+        gif: GIFOutputConversionSettings;
+        bmp: BasicOutputConversionSettings;
+        pdf: PDFOutputConversionSettings;
       };
     };
   }
@@ -236,12 +194,12 @@ declare global {
   type MergeCollection = Blob[];
 
   interface ConvertTaks {
-    type: MIMETypes;
+    type: MIMEType;
     blobURL: string;
     outputSettings: OutputConversionSettings;
-    targetFormatName: OutputFileFormatsNames;
+    targetFormatName: OutputFormat;
     inputSettings?: {
-      [OutputFileFormatsNames.PDF]: PDFInputSettings;
+      pdf: PDFInputSettings;
     };
     bitmap?: ImageBitmap;
   }

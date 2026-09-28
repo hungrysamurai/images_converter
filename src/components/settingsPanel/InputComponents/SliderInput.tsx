@@ -6,7 +6,7 @@ import { useAppDispatch } from '@/store/hooks';
 
 import React, { ChangeEvent, memo } from 'react';
 import { updateActiveTargetFormatSliderSetting } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
-import { OutputFileFormatsNames, SliderConvertModes } from '@/types/types';
+import { SliderConvertModes } from '@/types/types';
 
 type SliderInputProps = {
   label: string;
@@ -14,11 +14,7 @@ type SliderInputProps = {
   min: string;
   max: string;
   name: keyof QualityOption;
-  mode:
-    | OutputFileFormatsNames.JPG
-    | OutputFileFormatsNames.WEBP
-    | OutputFileFormatsNames.GIF
-    | OutputFileFormatsNames.PDF;
+  mode: 'jpeg' | 'webp' | 'gif' | 'pdf';
 };
 
 const SliderInput: React.FC<SliderInputProps> = memo(
@@ -26,15 +22,11 @@ const SliderInput: React.FC<SliderInputProps> = memo(
     const dispatch = useAppDispatch();
 
     const displayValuesConversionMode =
-      mode === OutputFileFormatsNames.JPG ||
-      mode === OutputFileFormatsNames.WEBP ||
-      mode === OutputFileFormatsNames.PDF
+      mode === 'jpeg' || mode === 'webp' || mode === 'pdf'
         ? SliderConvertModes.DecimalsToPercentages
         : SliderConvertModes.GifDisplay;
     const stateValuesConversionMode =
-      mode === OutputFileFormatsNames.JPG ||
-      mode === OutputFileFormatsNames.WEBP ||
-      mode === OutputFileFormatsNames.PDF
+      mode === 'jpeg' || mode === 'webp' || mode === 'pdf'
         ? SliderConvertModes.PercentagesToDecimals
         : SliderConvertModes.GifState;
 

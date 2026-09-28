@@ -7,7 +7,8 @@ import {
   isSmoothingOption,
   isUnits,
 } from '@/types/typeGuards';
-import { GIFDitherOptions, OutputFileFormatsNames, SmoothingPresets } from '@/types/types';
+import { GIFDitherOptions, SmoothingPresets } from '@/types/types';
+import { type OutputFormat } from '@/types/formats';
 
 export const conversionSettingsSlice = createSlice({
   name: 'conversionSettings',
@@ -43,7 +44,7 @@ export const conversionSettingsSlice = createSlice({
       state.outputSettings.activeTargetFormatName = allFormats[newFormatIndex];
     }),
 
-    selectTargetFormat: create.reducer((state, action: PayloadAction<OutputFileFormatsNames>) => {
+    selectTargetFormat: create.reducer((state, action: PayloadAction<OutputFormat>) => {
       state.outputSettings.activeTargetFormatName = action.payload;
     }),
 
@@ -55,10 +56,10 @@ export const conversionSettingsSlice = createSlice({
         } = current(state);
 
         if (
-          activeTargetFormatName === OutputFileFormatsNames.JPG ||
-          activeTargetFormatName === OutputFileFormatsNames.WEBP ||
-          activeTargetFormatName === OutputFileFormatsNames.GIF ||
-          activeTargetFormatName === OutputFileFormatsNames.PDF
+          activeTargetFormatName === 'jpeg' ||
+          activeTargetFormatName === 'webp' ||
+          activeTargetFormatName === 'gif' ||
+          activeTargetFormatName === 'pdf'
         ) {
           state.outputSettings.settings[activeTargetFormatName].quality = quality;
         }
@@ -86,17 +87,13 @@ export const conversionSettingsSlice = createSlice({
             value !== SmoothingPresets.OFF ? value : false;
         }
 
-        if (
-          activeTargetFormatName === OutputFileFormatsNames.GIF &&
-          isDitherOption(value) &&
-          key === 'dither'
-        ) {
+        if (activeTargetFormatName === 'gif' && isDitherOption(value) && key === 'dither') {
           state.outputSettings.settings[activeTargetFormatName].dither =
             value !== GIFDitherOptions.OFF ? value : false;
         }
 
         if (
-          activeTargetFormatName === OutputFileFormatsNames.PDF &&
+          activeTargetFormatName === 'pdf' &&
           isCompressionOption(value) &&
           key === 'compression'
         ) {
@@ -114,7 +111,7 @@ export const conversionSettingsSlice = createSlice({
         const key = Object.keys(action.payload)[0] as NumericOptionsKeys;
         const value = Object.values(action.payload)[0] as number | null;
 
-        if (key === 'animationDelay' && activeTargetFormatName === OutputFileFormatsNames.GIF) {
+        if (key === 'animationDelay' && activeTargetFormatName === 'gif') {
           state.outputSettings.settings[activeTargetFormatName].animationDelay = value || 200;
         }
 
@@ -135,8 +132,7 @@ export const conversionSettingsSlice = createSlice({
 
         if (
           key === 'merge' &&
-          (activeTargetFormatName === OutputFileFormatsNames.PDF ||
-            activeTargetFormatName === OutputFileFormatsNames.GIF)
+          (activeTargetFormatName === 'pdf' || activeTargetFormatName === 'gif')
         ) {
           state.outputSettings.settings[activeTargetFormatName].merge = value;
         }

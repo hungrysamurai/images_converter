@@ -1,6 +1,6 @@
 import { createSlice, current, nanoid, PayloadAction } from '@reduxjs/toolkit';
 
-import { MIMETypes } from '@/types/types';
+import { MIME, type MIMEType } from '@/types/formats';
 
 import { trimFileName } from '@/lib/utils/trimFileName';
 
@@ -19,7 +19,7 @@ export const sourceFilesSlice = createSlice({
           payload: {
             blobURL,
             name,
-            type: file.type as MIMETypes,
+            type: file.type as MIMEType,
             size: file.size,
             id: nanoid(),
           },
@@ -43,7 +43,7 @@ export const sourceFilesSlice = createSlice({
 
   selectors: {
     getAllSourceFiles: (state): SourceFile[] => state,
-    checkPDFInSourceFiles: (state) => state.some((f) => f.type === MIMETypes.PDF),
+    checkPDFInSourceFiles: (state) => state.some((f) => f.type === MIME.pdf),
   },
 });
 

@@ -1,9 +1,9 @@
-import { OutputFileFormatsNames } from '@/types/types';
+import { type OutputFormat } from '@/types/formats';
 import encodeCanvas from '@/lib/encode';
 
 const decodeSVGBitmap = async (
   targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFileFormatsNames,
+  activeTargetFormatName: OutputFormat,
   bmp: ImageBitmap,
 ): Promise<Blob> => {
   const { smoothing } = targetFormatSettings;
@@ -14,9 +14,9 @@ const decodeSVGBitmap = async (
 
   // If active output format don't hold transparecy
   if (
-    activeTargetFormatName !== OutputFileFormatsNames.PNG &&
-    activeTargetFormatName !== OutputFileFormatsNames.TIFF &&
-    activeTargetFormatName !== OutputFileFormatsNames.WEBP
+    activeTargetFormatName !== 'png' &&
+    activeTargetFormatName !== 'tiff' &&
+    activeTargetFormatName !== 'webp'
   ) {
     ctx!.fillStyle = 'white';
     ctx!.fillRect(0, 0, canvas.width, canvas.height);

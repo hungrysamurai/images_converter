@@ -1,4 +1,4 @@
-import { OutputFileFormatsNames } from '@/types/types';
+import { type OutputFormat } from '@/types/formats';
 
 import encodeCanvas from '@/lib/encode';
 import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
@@ -6,7 +6,7 @@ import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
 const decodeGIF = async (
   blobURL: string,
   targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFileFormatsNames,
+  activeTargetFormatName: OutputFormat,
 ): Promise<Blob[]> => {
   const { decompressFrames, parseGIF } = await import('gifuct-js');
 
