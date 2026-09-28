@@ -1,5 +1,4 @@
 import { isCompressionSetting } from '@/types/typeGuards';
-import { PDFCompressionTypes } from '@/types/types';
 
 const encodePDF = async (
   canvas: OffscreenCanvas,
@@ -20,7 +19,7 @@ const encodePDF = async (
 
     let image;
 
-    if (compression === PDFCompressionTypes.JPG) {
+    if (compression === 'jpeg') {
       image = await pdfDoc.embedJpg(arrayBuffer);
     } else {
       image = await pdfDoc.embedPng(arrayBuffer);

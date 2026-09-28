@@ -1,9 +1,9 @@
-import { Units } from '@/types/types';
+import type { ResizeUnits } from '@/store/slices/conversionSettingsSlice/types';
 
 export const getScaledSVGDimensions = (
   currentHeight: number,
   currentWidth: number,
-  units: Units,
+  units: ResizeUnits,
   targetWidth: number | null,
   targetHeight: number | null,
 ): {
@@ -13,7 +13,7 @@ export const getScaledSVGDimensions = (
   let width: number;
   let height: number;
 
-  if (units === Units.PIXELS) {
+  if (units === 'pixels') {
     if (targetWidth && !targetHeight) {
       width = targetWidth;
       height = (currentHeight / currentWidth) * width;
@@ -27,7 +27,7 @@ export const getScaledSVGDimensions = (
       width = currentWidth;
       height = currentHeight;
     }
-  } else if (units === Units.PERCENTAGES) {
+  } else if (units === 'percentages') {
     if (targetWidth && !targetHeight) {
       width = (targetWidth / 100) * currentWidth;
       height = (currentHeight / currentWidth) * width;

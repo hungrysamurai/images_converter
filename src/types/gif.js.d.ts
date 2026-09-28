@@ -1,11 +1,11 @@
 declare module 'gif.js' {
-  import type { GIFDitherOptions } from './types';
+  import type { Dither } from '@/store/slices/conversionSettingsSlice/types';
 
   interface GIFOptions {
     workers: number;
     quality: number;
     workerScript: string;
-    dither: GIFDitherOptions | false;
+    dither: Dither | false;
     background?: string;
     debug?: boolean;
     repeat?: number;

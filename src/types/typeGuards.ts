@@ -1,21 +1,33 @@
-import { GIFDitherOptions, PDFCompressionTypes, SmoothingPresets, Units } from './types';
+import {
+  DITHER_OPTIONS,
+  type Dither,
+  PDF_COMPRESSION_OPTIONS,
+  type PDFCompression,
+  RESIZE_UNITS,
+  type ResizeUnits,
+  SMOOTHING_OPTIONS,
+  type Smoothing,
+} from '@/store/slices/conversionSettingsSlice/types';
 
 // Type checkers for conversion setting store slice
 
-export function isUnits(toCheck: SelectOptionsValues): toCheck is Units {
-  return Object.values(Units).includes(toCheck as Units);
+const isOneOf = <T extends string>(options: readonly T[], toCheck: string): toCheck is T =>
+  (options as readonly string[]).includes(toCheck);
+
+export function isUnits(toCheck: SelectOptionsValues): toCheck is ResizeUnits {
+  return isOneOf(RESIZE_UNITS, toCheck);
 }
 
-export function isSmoothingOption(toCheck: SelectOptionsValues): toCheck is SmoothingPresets {
-  return Object.values(SmoothingPresets).includes(toCheck as SmoothingPresets);
+export function isSmoothingOption(toCheck: SelectOptionsValues): toCheck is Smoothing {
+  return isOneOf(SMOOTHING_OPTIONS, toCheck);
 }
 
-export function isDitherOption(toCheck: SelectOptionsValues): toCheck is GIFDitherOptions {
-  return Object.values(GIFDitherOptions).includes(toCheck as GIFDitherOptions);
+export function isDitherOption(toCheck: SelectOptionsValues): toCheck is Dither {
+  return isOneOf(DITHER_OPTIONS, toCheck);
 }
 
-export function isCompressionOption(toCheck: SelectOptionsValues): toCheck is PDFCompressionTypes {
-  return Object.values(PDFCompressionTypes).includes(toCheck as PDFCompressionTypes);
+export function isCompressionOption(toCheck: SelectOptionsValues): toCheck is PDFCompression {
+  return isOneOf(PDF_COMPRESSION_OPTIONS, toCheck);
 }
 
 // Type checkers for Output Conversion settings object

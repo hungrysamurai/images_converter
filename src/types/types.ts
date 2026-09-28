@@ -1,40 +1,14 @@
 import type { MIMEType, OutputFormat } from './formats';
+import type {
+  Dither,
+  PDFCompression,
+  ResizeUnits,
+  Smoothing,
+} from '@/store/slices/conversionSettingsSlice/types';
 
 export enum Lang {
   EN = 'en',
   RU = 'ru',
-}
-
-export enum Units {
-  PIXELS = 'pixels',
-  PERCENTAGES = 'percentages',
-  PPI = 'ppi',
-  DEG = 'deg',
-  MS = 'ms',
-}
-
-export enum SmoothingPresets {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  OFF = 'off',
-}
-
-export enum GIFDitherOptions {
-  FloydSteinberg = 'FloydSteinberg',
-  FloydSteinbergSerpentine = 'FloydSteinberg-serpentine',
-  FalseFloydSteinberg = 'FalseFloydSteinberg',
-  FalseFloydSteinbergSerpentine = 'FalseFloydSteinberg-serpentine',
-  Stucki = 'Stucki',
-  StuckiSerpentine = 'Stucki-serpentine',
-  Atkinson = 'Atkinson',
-  AtkinsonSerpentine = 'Atkinson-serpentine',
-  OFF = 'off',
-}
-
-export enum PDFCompressionTypes {
-  JPG = 'jpeg',
-  PNG = 'png',
 }
 
 export enum SliderConvertModes {
@@ -88,24 +62,24 @@ declare global {
 
   // Select
   type UnitsOption = {
-    units: Units;
+    units: ResizeUnits;
   };
 
   type SmoothingOption = {
-    smoothing: SmoothingPresets | false;
+    smoothing: Smoothing | false;
   };
 
   type DitherOption = {
-    dither: GIFDitherOptions | false;
+    dither: Dither | false;
   };
 
   type CompressionOption = {
-    compression: PDFCompressionTypes;
+    compression: PDFCompression;
   };
 
   type SelectOptions = UnitsOption | SmoothingOption | DitherOption | CompressionOption;
 
-  type SelectOptionsValues = Units | SmoothingPresets | GIFDitherOptions | PDFCompressionTypes;
+  type SelectOptionsValues = ResizeUnits | Smoothing | Dither | PDFCompression;
   type SelectOptionsKeys =
     keyof UnitsOption | keyof SmoothingOption | keyof DitherOption | keyof CompressionOption;
 

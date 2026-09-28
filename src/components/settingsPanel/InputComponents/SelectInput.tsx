@@ -5,7 +5,7 @@ import { useAppDispatch } from '@/store/hooks';
 import { updateActiveTargetFormatSelectSetting } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
 type SelectInputProps = {
-  options: SelectOptionsValues[];
+  options: readonly SelectOptionsValues[];
   label: string;
   name: SelectOptionsKeys;
   currentValue: SelectOptionsValues;

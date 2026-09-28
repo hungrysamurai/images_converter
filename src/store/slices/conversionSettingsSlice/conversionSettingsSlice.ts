@@ -7,7 +7,6 @@ import {
   isSmoothingOption,
   isUnits,
 } from '@/types/typeGuards';
-import { GIFDitherOptions, SmoothingPresets } from '@/types/types';
 import { type OutputFormat } from '@/types/formats';
 
 export const conversionSettingsSlice = createSlice({
@@ -84,12 +83,12 @@ export const conversionSettingsSlice = createSlice({
 
         if (isSmoothingOption(value) && key === 'smoothing') {
           state.outputSettings.settings[activeTargetFormatName].smoothing =
-            value !== SmoothingPresets.OFF ? value : false;
+            value !== 'off' ? value : false;
         }
 
         if (activeTargetFormatName === 'gif' && isDitherOption(value) && key === 'dither') {
           state.outputSettings.settings[activeTargetFormatName].dither =
-            value !== GIFDitherOptions.OFF ? value : false;
+            value !== 'off' ? value : false;
         }
 
         if (

@@ -1,17 +1,17 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 
-import {
-  GIFDitherOptions,
-  Lang,
-  PDFCompressionTypes,
-  SmoothingPresets,
-  Units,
-} from '@/types/types';
+import { Lang } from '@/types/types';
 import { type OutputFormat } from '@/types/formats';
 
 import { useAppSelector } from '@/store/hooks';
 import { getActiveFormatOutputSettings } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import {
+  DITHER_OPTIONS,
+  PDF_COMPRESSION_OPTIONS,
+  RESIZE_UNITS,
+  SMOOTHING_OPTIONS,
+} from '@/store/slices/conversionSettingsSlice/types';
 
 import CheckboxInput from '../InputComponents/CheckboxInput';
 import NumberInput from '../InputComponents/NumberInput';
@@ -62,13 +62,13 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
           mode={activeTargetFormatName}
         />
         <SelectInput
-          options={Object.values(GIFDitherOptions)}
+          options={DITHER_OPTIONS}
           label={lang === Lang.EN ? 'Dither:' : 'Дизеринг:'}
           name="dither"
           currentValue={
             activeTargetFromatOutputSettings.dither
               ? activeTargetFromatOutputSettings.dither
-              : GIFDitherOptions.OFF
+              : 'off'
           }
           active={true}
         />
@@ -83,7 +83,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
         {activeTargetFromatOutputSettings.merge && (
           <NumberInput
             caption={lang === Lang.EN ? 'delay' : 'кадр'}
-            units={Units.MS}
+            suffix="ms"
             active={true}
             name="animationDelay"
             currentValue={activeTargetFromatOutputSettings.animationDelay}
@@ -98,14 +98,14 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
     isCompressionSetting(activeTargetFromatOutputSettings) && activeTargetFormatName === 'pdf' ? (
       <>
         <SelectInput
-          options={Object.values(PDFCompressionTypes)}
+          options={PDF_COMPRESSION_OPTIONS}
           label={lang === Lang.EN ? 'Compression:' : 'Компрессия:'}
           name="compression"
           currentValue={activeTargetFromatOutputSettings.compression}
           active={true}
         />
 
-        {activeTargetFromatOutputSettings.compression === PDFCompressionTypes.JPG && (
+        {activeTargetFromatOutputSettings.compression === 'jpeg' && (
           <SliderInput
             label={lang === Lang.EN ? 'Quality:' : 'Качество:'}
             currentValue={activeTargetFromatOutputSettings.quality}
@@ -145,7 +145,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
           name="resize"
         />
         <SelectInput
-          options={[Units.PERCENTAGES, Units.PIXELS]}
+          options={RESIZE_UNITS}
           label={lang === Lang.EN ? 'Units:' : 'Ед. измерения:'}
           name="units"
           currentValue={units}
@@ -155,7 +155,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
         <StyledResizeDimensionsContainer>
           <NumberInput
             caption={lang === Lang.EN ? 'width' : 'ширина'}
-            units={units}
+            suffix={units === 'pixels' ? 'px' : '%'}
             active={resize}
             name="targetWidth"
             currentValue={targetWidth}
@@ -164,7 +164,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
           />
           <NumberInput
             caption={lang === Lang.EN ? 'height' : 'высота'}
-            units={units}
+            suffix={units === 'pixels' ? 'px' : '%'}
             active={resize}
             name="targetHeight"
             currentValue={targetHeight}
@@ -174,10 +174,10 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
         </StyledResizeDimensionsContainer>
 
         <SelectInput
-          options={Object.values(SmoothingPresets)}
+          options={SMOOTHING_OPTIONS}
           label={lang === Lang.EN ? 'Resize smoothing:' : 'Сглаживание при масштабировании:'}
           name="smoothing"
-          currentValue={smoothing ? smoothing : SmoothingPresets.OFF}
+          currentValue={smoothing ? smoothing : 'off'}
           active={resize}
         />
       </StyledResizeSettingsContainer>

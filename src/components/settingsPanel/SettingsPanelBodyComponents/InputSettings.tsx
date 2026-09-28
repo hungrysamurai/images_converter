@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { memo } from 'react';
 
-import { Lang, Units } from '@/types/types';
+import { Lang } from '@/types/types';
 
 import { getPDFInputSettings } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 import { useAppSelector } from '@/store/hooks';
@@ -27,7 +27,7 @@ const InputSettings: React.FC<InputSettingsProps> = memo(function InputSettings(
       <StyledPDFRasterizationSettingsContainer>
         <NumberInput
           caption={lang === Lang.EN ? 'resolution' : 'разрешение'}
-          units={Units.PPI}
+          suffix="ppi"
           active={true}
           name="resolution"
           currentValue={resolution}
@@ -37,7 +37,7 @@ const InputSettings: React.FC<InputSettingsProps> = memo(function InputSettings(
         />
         <NumberInput
           caption={lang === Lang.EN ? 'rotation' : 'поворот'}
-          units={Units.DEG}
+          suffix="deg"
           active={true}
           name="rotation"
           currentValue={rotation}

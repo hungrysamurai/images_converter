@@ -1,9 +1,9 @@
-import { SmoothingPresets, Units } from '@/types/types';
+import type { ResizeUnits, Smoothing } from '@/store/slices/conversionSettingsSlice/types';
 
 export const getResizedCanvas = (
   canvas: OffscreenCanvas,
-  smoothing: false | SmoothingPresets,
-  units: Units,
+  smoothing: false | Smoothing,
+  units: ResizeUnits,
   targetWidth?: number | null,
   targetHeight?: number | null,
 ): OffscreenCanvas => {
@@ -16,7 +16,7 @@ export const getResizedCanvas = (
   let resultWidth: number | undefined;
   let resultHeight: number | undefined;
 
-  if (units === Units.PIXELS) {
+  if (units === 'pixels') {
     if (targetWidth && targetHeight) {
       resultWidth = targetWidth;
       resultHeight = targetHeight;
@@ -27,7 +27,7 @@ export const getResizedCanvas = (
       resultWidth = targetWidth;
       resultHeight = Math.round(targetWidth / srcAspectRatio);
     }
-  } else if (units === Units.PERCENTAGES) {
+  } else if (units === 'percentages') {
     if (targetWidth && targetHeight) {
       resultWidth = Math.round((srcWidth * targetWidth) / 100);
       resultHeight = Math.round((srcHeight * targetHeight) / 100);

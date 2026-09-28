@@ -1,8 +1,6 @@
 import React, { ChangeEvent, memo } from 'react';
 import styled from 'styled-components';
 
-import { Units } from '@/types/types';
-
 import getClosestMatchedValue from '@/lib/utils/getClosestMatchesValue';
 import { useAppDispatch } from '@/store/hooks';
 import {
@@ -12,7 +10,7 @@ import {
 
 type NumberInputProps = {
   caption: string;
-  units: Units;
+  suffix?: string;
   min: string | null;
   max: string | null;
   name: NumericOptionsKeys;
@@ -23,7 +21,7 @@ type NumberInputProps = {
 };
 
 const NumberInput: React.FC<NumberInputProps> = memo(
-  ({ caption, units, min, max, name, active, currentValue, inputSetting, step }) => {
+  ({ caption, suffix, min, max, name, active, currentValue, inputSetting, step }) => {
     const dispatch = useAppDispatch();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -73,11 +71,7 @@ const NumberInput: React.FC<NumberInputProps> = memo(
 
         {caption && <StyledNumberInputCaption>{caption}</StyledNumberInputCaption>}
 
-        {units && (
-          <StyledInputUnitsLabel>
-            {units === Units.PIXELS ? 'px' : units === Units.PERCENTAGES ? '%' : units}
-          </StyledInputUnitsLabel>
-        )}
+        {suffix && <StyledInputUnitsLabel>{suffix}</StyledInputUnitsLabel>}
       </StyledNumberContainer>
     );
   },
