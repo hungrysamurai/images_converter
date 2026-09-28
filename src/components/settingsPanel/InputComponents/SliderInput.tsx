@@ -1,48 +1,41 @@
 import styled from 'styled-components';
 
-import { useAppDispatch } from '@/store/hooks';
-
 import React, { ChangeEvent, memo } from 'react';
-import { updateActiveTargetFormatSliderSetting } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
-import type { QualityOption } from '@/store/slices/conversionSettingsSlice/types';
 
 type SliderInputProps = {
   label: string;
-  currentValue: number;
-  min: string;
-  max: string;
-  name: keyof QualityOption;
+  value: number;
+  min: number;
+  max: number;
+  step?: number;
+  onChange: (value: number) => void;
 };
 
-const SliderInput: React.FC<SliderInputProps> = memo(({ label, currentValue, min, max, name }) => {
-  const dispatch = useAppDispatch();
+const SliderInput: React.FC<SliderInputProps> = memo(
+  ({ label, value, min, max, step, onChange }) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      onChange(Number(e.target.value));
+    };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(
-      updateActiveTargetFormatSliderSetting({
-        [name]: Number(e.target.value),
-      }),
+    return (
+      <StyledSliderContainer>
+        <StyledSliderLabel>
+          {label}
+          <StyledSliderInput
+            type="range"
+            min={min}
+            max={max}
+            step={step}
+            onChange={handleChange}
+            value={value}
+          />
+        </StyledSliderLabel>
+
+        <StyledSliderDisplayValue>{value}</StyledSliderDisplayValue>
+      </StyledSliderContainer>
     );
-  };
-
-  return (
-    <StyledSliderContainer>
-      <StyledSliderLabel>
-        {label}
-        <StyledSliderInput
-          type="range"
-          min={min}
-          max={max}
-          onChange={handleChange}
-          value={currentValue}
-          name={name}
-        />
-      </StyledSliderLabel>
-
-      <StyledSliderDisplayValue>{currentValue}</StyledSliderDisplayValue>
-    </StyledSliderContainer>
-  );
-});
+  },
+);
 
 const StyledSliderContainer = styled.div`
   width: 100%;

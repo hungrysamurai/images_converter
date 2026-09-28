@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { checkPDFInSourceFiles } from '@/store/slices/sourceFilesSlice/sourceFilesSlice';
 import {
   getActiveTargetFormatName,
-  defaultActiveTargetFormat,
+  resetActiveFormat,
 } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
 import IconCloseSettingsPanel from '../icons/IconCloseSettingsPanel';
@@ -72,7 +72,7 @@ const SettingsPanelWrapper: React.FC<SettingsPanelWrapperType> = ({
               activeTargetFormatName={activeTargetFormatName}
             />
 
-            <StyledDefaultButton onClick={() => dispatch(defaultActiveTargetFormat())}>
+            <StyledDefaultButton onClick={() => dispatch(resetActiveFormat())}>
               {lang === Lang.EN ? 'Default Settings' : 'Сбросить настройки'}
             </StyledDefaultButton>
           </StyledSettingsPanel>

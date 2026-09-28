@@ -1,50 +1,42 @@
-import { ChangeEvent, memo } from 'react';
+import { ChangeEvent } from 'react';
 import styled from 'styled-components';
 
-import { useAppDispatch } from '@/store/hooks';
-import { updateActiveTargetFormatSelectSetting } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
-import type {
-  SelectOptions,
-  SelectOptionsKeys,
-  SelectOptionsValues,
-} from '@/store/slices/conversionSettingsSlice/types';
-
-type SelectInputProps = {
-  options: readonly SelectOptionsValues[];
+type SelectInputProps<T extends string> = {
+  options: readonly T[];
   label: string;
-  name: SelectOptionsKeys;
-  currentValue: SelectOptionsValues;
+  value: T;
   active: boolean;
+  onChange: (value: T) => void;
 };
 
-const SelectInput: React.FC<SelectInputProps> = memo(
-  ({ options, label, name, currentValue, active }) => {
-    const dispatch = useAppDispatch();
+const SelectInput = <T extends string>({
+  options,
+  label,
+  value,
+  active,
+  onChange,
+}: SelectInputProps<T>) => {
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selected = options.find((option) => option === e.target.value);
 
-    const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-      dispatch(
-        updateActiveTargetFormatSelectSetting({
-          [name]: e.target.value,
-        } as SelectOptions),
-      );
-    };
+    if (selected) onChange(selected);
+  };
 
-    return (
-      <StyledInputContainer className={!active ? 'inactive' : ''}>
-        <StyledLabel>
-          {label}
-          <StyledSelect onChange={handleChange} name={name} value={currentValue}>
-            {options.map((optionName, i) => (
-              <option key={i} value={optionName}>
-                {optionName}
-              </option>
-            ))}
-          </StyledSelect>
-        </StyledLabel>
-      </StyledInputContainer>
-    );
-  },
-);
+  return (
+    <StyledInputContainer className={!active ? 'inactive' : ''}>
+      <StyledLabel>
+        {label}
+        <StyledSelect onChange={handleChange} value={value}>
+          {options.map((optionName) => (
+            <option key={optionName} value={optionName}>
+              {optionName}
+            </option>
+          ))}
+        </StyledSelect>
+      </StyledLabel>
+    </StyledInputContainer>
+  );
+};
 
 const StyledInputContainer = styled.div`
   width: 100%;

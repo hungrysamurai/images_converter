@@ -2,60 +2,29 @@ import React, { ChangeEvent, memo } from 'react';
 import styled from 'styled-components';
 
 import getClosestMatchedValue from '@/lib/utils/getClosestMatchesValue';
-import { useAppDispatch } from '@/store/hooks';
-import {
-  updateActiveTargetFormatNumericSetting,
-  updateInputSettings,
-} from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
-import type {
-  NumericOptions,
-  NumericOptionsKeys,
-} from '@/store/slices/conversionSettingsSlice/types';
-
 type NumberInputProps = {
   caption: string;
   suffix?: string;
-  min: string | null;
-  max: string | null;
-  name: NumericOptionsKeys;
-  currentValue: number | null;
+  min: number;
+  max: number;
+  step?: number;
+  value: number | null;
   active: boolean;
-  inputSetting?: boolean;
-  step?: string;
+  onChange: (value: number) => void;
 };
 
 const NumberInput: React.FC<NumberInputProps> = memo(
-  ({ caption, suffix, min, max, name, active, currentValue, inputSetting, step }) => {
-    const dispatch = useAppDispatch();
-
+  ({ caption, suffix, min, max, step, value, active, onChange }) => {
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
       const newValue = Number(e.target.value);
-      if (newValue < 0 || newValue > Number(max)) return;
+      if (newValue < 0 || newValue > max) return;
 
-      updateState(newValue);
+      onChange(newValue);
     };
 
     const checkValue = () => {
       if (step) {
-        const newValue = getClosestMatchedValue(currentValue as number, Number(max), Number(step));
-
-        updateState(newValue);
-      }
-    };
-
-    const updateState = (value: number) => {
-      if (inputSetting) {
-        dispatch(
-          updateInputSettings({
-            [name]: value,
-          } as NumericOptions),
-        );
-      } else {
-        dispatch(
-          updateActiveTargetFormatNumericSetting({
-            [name]: value,
-          } as NumericOptions),
-        );
+        onChange(getClosestMatchedValue(value ?? 0, max, step));
       }
     };
 
@@ -63,14 +32,13 @@ const NumberInput: React.FC<NumberInputProps> = memo(
       <StyledNumberContainer className={!active ? 'inactive' : ''}>
         <StyledNumberInput
           type="number"
-          placeholder={currentValue ? currentValue.toString() : 'auto'}
-          value={currentValue ? currentValue : ''}
+          placeholder={value ? value.toString() : 'auto'}
+          value={value ? value : ''}
           onChange={handleChange}
           onBlur={checkValue}
-          max={max ? max : ''}
-          min={min ? min : '1'}
-          name={name}
-          step={step ? step : ''}
+          max={max}
+          min={min}
+          step={step}
         />
 
         {caption && <StyledNumberInputCaption>{caption}</StyledNumberInputCaption>}

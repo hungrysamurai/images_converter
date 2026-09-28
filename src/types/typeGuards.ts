@@ -1,40 +1,10 @@
-import {
-  type BasicOutputConversionSettings,
-  DITHER_OPTIONS,
-  type Dither,
-  type GIFOutputConversionSettings,
-  type JPEG_WEBPOutputConversionSettings,
-  PDF_COMPRESSION_OPTIONS,
-  type PDFCompression,
-  type PDFOutputConversionSettings,
-  RESIZE_UNITS,
-  type ResizeUnits,
-  type SelectOptionsValues,
-  SMOOTHING_OPTIONS,
-  type Smoothing,
+import type {
+  BasicOutputConversionSettings,
+  GIFOutputConversionSettings,
+  JPEG_WEBPOutputConversionSettings,
+  PDFOutputConversionSettings,
 } from '@/store/slices/conversionSettingsSlice/types';
 import type { ProcessedFile, SourceFile } from './files';
-
-// Type checkers for conversion setting store slice
-
-const isOneOf = <T extends string>(options: readonly T[], toCheck: string): toCheck is T =>
-  (options as readonly string[]).includes(toCheck);
-
-export function isUnits(toCheck: SelectOptionsValues): toCheck is ResizeUnits {
-  return isOneOf(RESIZE_UNITS, toCheck);
-}
-
-export function isSmoothingOption(toCheck: SelectOptionsValues): toCheck is Smoothing {
-  return isOneOf(SMOOTHING_OPTIONS, toCheck);
-}
-
-export function isDitherOption(toCheck: SelectOptionsValues): toCheck is Dither {
-  return isOneOf(DITHER_OPTIONS, toCheck);
-}
-
-export function isCompressionOption(toCheck: SelectOptionsValues): toCheck is PDFCompression {
-  return isOneOf(PDF_COMPRESSION_OPTIONS, toCheck);
-}
 
 // Type checkers for Output Conversion settings object
 

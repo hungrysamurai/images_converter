@@ -1,31 +1,18 @@
 import styled from 'styled-components';
 import React, { ChangeEvent, memo } from 'react';
 
-import { useAppDispatch } from '@/store/hooks';
-import { updateActiveTargetFormatToggleSetting } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
-import type {
-  CheckboxOptions,
-  CheckboxOptionsKeys,
-} from '@/store/slices/conversionSettingsSlice/types';
-
 type CheckboxInputProps = {
-  currentValue: boolean;
+  value: boolean;
   displayValueOn: string;
   displayValueOff: string;
   label: string;
-  name: CheckboxOptionsKeys;
+  onChange: (value: boolean) => void;
 };
 
 const CheckboxInput: React.FC<CheckboxInputProps> = memo(
-  ({ currentValue, displayValueOn, displayValueOff, label, name }) => {
-    const dispatch = useAppDispatch();
-
+  ({ value, displayValueOn, displayValueOff, label, onChange }) => {
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      dispatch(
-        updateActiveTargetFormatToggleSetting({
-          [name]: e.target.checked,
-        } as CheckboxOptions),
-      );
+      onChange(e.target.checked);
     };
 
     return (
@@ -34,19 +21,14 @@ const CheckboxInput: React.FC<CheckboxInputProps> = memo(
 
         <StyledToggleWrapper>
           <StyledToggler>
-            <StyledInputCheckbox
-              type="checkbox"
-              name={name}
-              onChange={handleChange}
-              checked={currentValue}
-            />
+            <StyledInputCheckbox type="checkbox" onChange={handleChange} checked={value} />
 
             <StyledTogglerBall />
           </StyledToggler>
         </StyledToggleWrapper>
 
         <StyledCheckboxDisplayValue>
-          {currentValue ? displayValueOn : displayValueOff}
+          {value ? displayValueOn : displayValueOff}
         </StyledCheckboxDisplayValue>
       </StyledCheckboxContainer>
     );

@@ -23,7 +23,7 @@ const SettingsPanelBody: React.FC<SettingsPanelBodyProps> = memo(function Settin
     <>
       <FormatSelect lang={lang} activeTargetFormatName={activeTargetFormatName} />
 
-      <OutputSettings lang={lang} activeTargetFormatName={activeTargetFormatName} />
+      <OutputSettings lang={lang} />
 
       {isPDF && (
         <>

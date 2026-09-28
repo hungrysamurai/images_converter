@@ -3,8 +3,12 @@ import { memo } from 'react';
 
 import { Lang } from '@/types/types';
 
-import { getPDFInputSettings } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
-import { useAppSelector } from '@/store/hooks';
+import {
+  getPDFInputSettings,
+  setPDFResolution,
+  setPDFRotation,
+} from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 import NumberInput from '../InputComponents/NumberInput';
 
@@ -13,9 +17,8 @@ type InputSettingsProps = {
 };
 
 const InputSettings: React.FC<InputSettingsProps> = memo(function InputSettings({ lang }) {
-  const PDFInputSettings = useAppSelector(getPDFInputSettings);
-
-  const { resolution, rotation } = PDFInputSettings;
+  const dispatch = useAppDispatch();
+  const { resolution, rotation } = useAppSelector(getPDFInputSettings);
 
   return (
     <StyledInputSettingsContainer>
@@ -29,22 +32,20 @@ const InputSettings: React.FC<InputSettingsProps> = memo(function InputSettings(
           caption={lang === Lang.EN ? 'resolution' : 'разрешение'}
           suffix="ppi"
           active={true}
-          name="resolution"
-          currentValue={resolution}
-          min="8"
-          max="1200"
-          inputSetting={true}
+          value={resolution}
+          min={8}
+          max={1200}
+          onChange={(value) => dispatch(setPDFResolution(value))}
         />
         <NumberInput
           caption={lang === Lang.EN ? 'rotation' : 'поворот'}
           suffix="deg"
           active={true}
-          name="rotation"
-          currentValue={rotation}
-          min="0"
-          max="360"
-          inputSetting={true}
-          step="90"
+          value={rotation}
+          min={0}
+          max={360}
+          step={90}
+          onChange={(value) => dispatch(setPDFRotation(value))}
         />
       </StyledPDFRasterizationSettingsContainer>
     </StyledInputSettingsContainer>

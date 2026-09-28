@@ -22,104 +22,29 @@ export type PDFCompression = (typeof PDF_COMPRESSION_OPTIONS)[number];
 export const RESIZE_UNITS = ['percentages', 'pixels'] as const;
 export type ResizeUnits = (typeof RESIZE_UNITS)[number];
 
-// Checkbox
-export type ResizeOption = {
+export type BasicOutputConversionSettings = {
   resize: boolean;
-};
-
-export type MergeOption = {
-  merge: boolean;
-};
-
-export type CheckboxOptions = ResizeOption | MergeOption;
-
-export type CheckboxOptionsKeys = keyof ResizeOption | keyof MergeOption;
-
-// Slider
-export type QualityOption = {
-  quality: number;
-};
-
-// Select
-export type UnitsOption = {
   units: ResizeUnits;
-};
-
-export type SmoothingOption = {
+  targetWidth: number | null;
+  targetHeight: number | null;
   smoothing: Smoothing;
 };
 
-export type DitherOption = {
+export type JPEG_WEBPOutputConversionSettings = BasicOutputConversionSettings & {
+  quality: number;
+};
+
+export type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings & {
   dither: Dither;
-};
-
-export type CompressionOption = {
-  compression: PDFCompression;
-};
-
-export type SelectOptions = UnitsOption | SmoothingOption | DitherOption | CompressionOption;
-
-export type SelectOptionsValues = ResizeUnits | Smoothing | Dither | PDFCompression;
-export type SelectOptionsKeys =
-  keyof UnitsOption | keyof SmoothingOption | keyof DitherOption | keyof CompressionOption;
-
-// Output numeric settings
-export type TargetWidthOption = {
-  targetWidth: number | null;
-};
-
-export type TargetHeightOption = {
-  targetHeight: number | null;
-};
-
-export type GIFAnimationDelay = {
+  merge: boolean;
   animationDelay: number;
 };
 
-// Input numeric settings
-export type PDFInputSettings = {
-  resolution: number;
-  rotation: number;
+export type PDFOutputConversionSettings = BasicOutputConversionSettings & {
+  quality: number;
+  compression: PDFCompression;
+  merge: boolean;
 };
-
-export type NumericOptions =
-  TargetHeightOption | TargetWidthOption | PDFInputSettings | GIFAnimationDelay;
-
-export type NumericOptionsKeys =
-  | keyof TargetHeightOption
-  | keyof TargetWidthOption
-  | keyof PDFInputSettings
-  | keyof GIFAnimationDelay;
-
-// Comp
-export type BasicOutputConversionSettings = ResizeOption &
-  UnitsOption &
-  TargetWidthOption &
-  TargetHeightOption &
-  SmoothingOption;
-
-export type JPEG_WEBPOutputConversionSettings = BasicOutputConversionSettings & QualityOption;
-
-export type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings &
-  DitherOption &
-  MergeOption &
-  GIFAnimationDelay;
-
-export type PDFOutputConversionSettings = BasicOutputConversionSettings &
-  CompressionOption &
-  MergeOption &
-  QualityOption;
-
-export type OutputConversionSettings =
-  | BasicOutputConversionSettings
-  | JPEG_WEBPOutputConversionSettings
-  | GIFOutputConversionSettings
-  | PDFOutputConversionSettings;
-
-export type CombinedOutputConversionSettings = BasicOutputConversionSettings &
-  JPEG_WEBPOutputConversionSettings &
-  GIFOutputConversionSettings &
-  PDFOutputConversionSettings;
 
 export type OutputSettingsMap = {
   jpeg: JPEG_WEBPOutputConversionSettings;
@@ -129,6 +54,17 @@ export type OutputSettingsMap = {
   bmp: BasicOutputConversionSettings;
   gif: GIFOutputConversionSettings;
   tiff: BasicOutputConversionSettings;
+};
+
+export type OutputConversionSettings = OutputSettingsMap[OutputFormat];
+
+export type OutputTarget<F extends OutputFormat = OutputFormat> = {
+  [K in F]: { format: K; settings: OutputSettingsMap[K] };
+}[F];
+
+export type PDFInputSettings = {
+  resolution: number;
+  rotation: number;
 };
 
 export type ConversionSettingsState = {

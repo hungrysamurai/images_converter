@@ -2,15 +2,27 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 
 import { Lang } from '@/types/types';
-import { type OutputFormat } from '@/types/formats';
 
-import { useAppSelector } from '@/store/hooks';
-import { getActiveFormatOutputSettings } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import {
+  getActiveOutputTarget,
+  setAnimationDelay,
+  setCompression,
+  setDither,
+  setMerge,
+  setQuality,
+  setResize,
+  setResizeUnits,
+  setSmoothing,
+  setTargetHeight,
+  setTargetWidth,
+} from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 import {
   DITHER_OPTIONS,
   PDF_COMPRESSION_OPTIONS,
   RESIZE_UNITS,
   SMOOTHING_OPTIONS,
+  type OutputTarget,
 } from '@/store/slices/conversionSettingsSlice/types';
 
 import CheckboxInput from '../InputComponents/CheckboxInput';
@@ -19,112 +31,127 @@ import SelectInput from '../InputComponents/SelectInput';
 import SliderInput from '../InputComponents/SliderInput';
 import { StyledDivider } from './StyledDivider';
 
-import { isCompressionSetting, isDitherSetting, isQualitySetting } from '@/types/typeGuards';
-
 type OutputSettingsType = {
   lang: Lang;
-  activeTargetFormatName: OutputFormat;
 };
 
-const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSettings({
-  lang,
-  activeTargetFormatName,
-}) {
-  // Current format settings
-  const activeTargetFromatOutputSettings = useAppSelector(getActiveFormatOutputSettings);
+type FormatSettingsProps = {
+  lang: Lang;
+  target: OutputTarget;
+};
 
-  // Basic options
-  const { resize, units, targetHeight, targetWidth, smoothing } = activeTargetFromatOutputSettings;
+const FormatSettings: React.FC<FormatSettingsProps> = ({ lang, target }) => {
+  const dispatch = useAppDispatch();
 
-  // Format specific options
-  const JPEG_WEBP_QualitySlider =
-    isQualitySetting(activeTargetFromatOutputSettings) &&
-    (activeTargetFormatName === 'jpeg' || activeTargetFormatName === 'webp') ? (
-      <SliderInput
-        label={lang === Lang.EN ? 'Quality:' : 'Качество:'}
-        currentValue={activeTargetFromatOutputSettings.quality}
-        min="1"
-        max="100"
-        name="quality"
-      />
-    ) : null;
+  const qualityLabel = lang === Lang.EN ? 'Quality:' : 'Качество:';
 
-  const GIFSettings =
-    isDitherSetting(activeTargetFromatOutputSettings) && activeTargetFormatName === 'gif' ? (
-      <>
+  const mergeCheckbox = (merge: boolean) => (
+    <CheckboxInput
+      label={lang === Lang.EN ? 'To one file:' : 'В один файл'}
+      value={merge}
+      displayValueOn={lang === Lang.EN ? 'On' : 'Вкл'}
+      displayValueOff={lang === Lang.EN ? 'Off' : 'Выкл'}
+      onChange={(value) => dispatch(setMerge(value))}
+    />
+  );
+
+  switch (target.format) {
+    case 'jpeg':
+    case 'webp':
+      return (
         <SliderInput
-          label={lang === Lang.EN ? 'Quality:' : 'Качество:'}
-          currentValue={activeTargetFromatOutputSettings.quality}
-          min="1"
-          max="20"
-          name="quality"
+          label={qualityLabel}
+          value={target.settings.quality}
+          min={1}
+          max={100}
+          onChange={(value) => dispatch(setQuality(value))}
         />
-        <SelectInput
-          options={DITHER_OPTIONS}
-          label={lang === Lang.EN ? 'Dither:' : 'Дизеринг:'}
-          name="dither"
-          currentValue={activeTargetFromatOutputSettings.dither}
-          active={true}
-        />
-        <CheckboxInput
-          label={lang === Lang.EN ? 'To one file:' : 'В один файл'}
-          currentValue={activeTargetFromatOutputSettings.merge}
-          displayValueOn={lang === Lang.EN ? 'On' : 'Вкл'}
-          displayValueOff={lang === Lang.EN ? 'Off' : 'Выкл'}
-          name="merge"
-        />
+      );
 
-        {activeTargetFromatOutputSettings.merge && (
-          <NumberInput
-            caption={lang === Lang.EN ? 'delay' : 'кадр'}
-            suffix="ms"
-            active={true}
-            name="animationDelay"
-            currentValue={activeTargetFromatOutputSettings.animationDelay}
-            min="1"
-            max="10000"
-          />
-        )}
-      </>
-    ) : null;
+    case 'gif': {
+      const { quality, dither, merge, animationDelay } = target.settings;
 
-  const PDFCompressionSettings =
-    isCompressionSetting(activeTargetFromatOutputSettings) && activeTargetFormatName === 'pdf' ? (
-      <>
-        <SelectInput
-          options={PDF_COMPRESSION_OPTIONS}
-          label={lang === Lang.EN ? 'Compression:' : 'Компрессия:'}
-          name="compression"
-          currentValue={activeTargetFromatOutputSettings.compression}
-          active={true}
-        />
-
-        {activeTargetFromatOutputSettings.compression === 'jpeg' && (
+      return (
+        <>
           <SliderInput
-            label={lang === Lang.EN ? 'Quality:' : 'Качество:'}
-            currentValue={activeTargetFromatOutputSettings.quality}
-            min="1"
-            max="100"
-            name="quality"
+            label={qualityLabel}
+            value={quality}
+            min={1}
+            max={20}
+            onChange={(value) => dispatch(setQuality(value))}
           />
-        )}
+          <SelectInput
+            options={DITHER_OPTIONS}
+            label={lang === Lang.EN ? 'Dither:' : 'Дизеринг:'}
+            value={dither}
+            active={true}
+            onChange={(value) => dispatch(setDither(value))}
+          />
+          {mergeCheckbox(merge)}
 
-        <CheckboxInput
-          label={lang === Lang.EN ? 'To one file:' : 'В один файл'}
-          currentValue={activeTargetFromatOutputSettings.merge}
-          displayValueOn={lang === Lang.EN ? 'On' : 'Вкл'}
-          displayValueOff={lang === Lang.EN ? 'Off' : 'Выкл'}
-          name="merge"
-        />
-      </>
-    ) : null;
+          {merge && (
+            <NumberInput
+              caption={lang === Lang.EN ? 'delay' : 'кадр'}
+              suffix="ms"
+              active={true}
+              value={animationDelay}
+              min={1}
+              max={10000}
+              onChange={(value) => dispatch(setAnimationDelay(value))}
+            />
+          )}
+        </>
+      );
+    }
+
+    case 'pdf': {
+      const { compression, quality, merge } = target.settings;
+
+      return (
+        <>
+          <SelectInput
+            options={PDF_COMPRESSION_OPTIONS}
+            label={lang === Lang.EN ? 'Compression:' : 'Компрессия:'}
+            value={compression}
+            active={true}
+            onChange={(value) => dispatch(setCompression(value))}
+          />
+
+          {compression === 'jpeg' && (
+            <SliderInput
+              label={qualityLabel}
+              value={quality}
+              min={1}
+              max={100}
+              onChange={(value) => dispatch(setQuality(value))}
+            />
+          )}
+
+          {mergeCheckbox(merge)}
+        </>
+      );
+    }
+
+    case 'png':
+    case 'bmp':
+    case 'tiff':
+      return null;
+  }
+};
+
+const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSettings({ lang }) {
+  const dispatch = useAppDispatch();
+  const target = useAppSelector(getActiveOutputTarget);
+
+  const { resize, units, targetHeight, targetWidth, smoothing } = target.settings;
+
+  const dimensionSuffix = units === 'pixels' ? 'px' : '%';
+  const dimensionMax = units === 'percentages' ? 1000 : 16384;
 
   return (
     <StyledOutputSettingsContainer>
       <StyledOptionalSettingsContainer>
-        {JPEG_WEBP_QualitySlider}
-        {GIFSettings}
-        {PDFCompressionSettings}
+        <FormatSettings lang={lang} target={target} />
       </StyledOptionalSettingsContainer>
 
       <StyledDivider />
@@ -132,46 +159,46 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
       <StyledResizeSettingsContainer>
         <CheckboxInput
           label={lang === Lang.EN ? 'Resize:' : 'Изм. размер'}
-          currentValue={resize}
+          value={resize}
           displayValueOn={lang === Lang.EN ? 'On' : 'Вкл'}
           displayValueOff={lang === Lang.EN ? 'Off' : 'Выкл'}
-          name="resize"
+          onChange={(value) => dispatch(setResize(value))}
         />
         <SelectInput
           options={RESIZE_UNITS}
           label={lang === Lang.EN ? 'Units:' : 'Ед. измерения:'}
-          name="units"
-          currentValue={units}
+          value={units}
           active={resize}
+          onChange={(value) => dispatch(setResizeUnits(value))}
         />
 
         <StyledResizeDimensionsContainer>
           <NumberInput
             caption={lang === Lang.EN ? 'width' : 'ширина'}
-            suffix={units === 'pixels' ? 'px' : '%'}
+            suffix={dimensionSuffix}
             active={resize}
-            name="targetWidth"
-            currentValue={targetWidth}
-            min="1"
-            max={units === 'percentages' ? '1000' : '16384'}
+            value={targetWidth}
+            min={1}
+            max={dimensionMax}
+            onChange={(value) => dispatch(setTargetWidth(value))}
           />
           <NumberInput
             caption={lang === Lang.EN ? 'height' : 'высота'}
-            suffix={units === 'pixels' ? 'px' : '%'}
+            suffix={dimensionSuffix}
             active={resize}
-            name="targetHeight"
-            currentValue={targetHeight}
-            min="1"
-            max={units === 'percentages' ? '1000' : '16384'}
+            value={targetHeight}
+            min={1}
+            max={dimensionMax}
+            onChange={(value) => dispatch(setTargetHeight(value))}
           />
         </StyledResizeDimensionsContainer>
 
         <SelectInput
           options={SMOOTHING_OPTIONS}
           label={lang === Lang.EN ? 'Resize smoothing:' : 'Сглаживание при масштабировании:'}
-          name="smoothing"
-          currentValue={smoothing}
+          value={smoothing}
           active={resize}
+          onChange={(value) => dispatch(setSmoothing(value))}
         />
       </StyledResizeSettingsContainer>
 

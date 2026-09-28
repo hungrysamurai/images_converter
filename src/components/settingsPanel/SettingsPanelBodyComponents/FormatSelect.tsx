@@ -24,7 +24,9 @@ const FormatSelect: React.FC<FormatSelectProps> = memo(function FormatSelect({
         {lang === 'en' ? 'Target format:' : 'Конвертировать в:'}
         <StyledSelect
           onChange={(e) => {
-            dispatch(selectTargetFormat(e.target.value as OutputFormat));
+            const format = OUTPUT_FORMATS.find((formatName) => formatName === e.target.value);
+
+            if (format) dispatch(selectTargetFormat(format));
           }}
           defaultValue={activeTargetFormatName}
         >
