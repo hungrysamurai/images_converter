@@ -4,7 +4,10 @@ import { AppDispatch, RootState } from '@/store/store';
 
 import Converter from '@/lib/Converter';
 import { zipAndSave } from '@/lib/utils/zipAndSave';
-import { isMergeSetting } from '@/types/typeGuards';
+import {
+  getActiveOutputTarget,
+  getPDFInputSettings,
+} from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 import type { ProcessedFile } from '@/types/files';
 
 const createProcessFilesSlice = buildCreateSlice({
@@ -31,25 +34,14 @@ const processFilesSlice = createProcessFilesSlice({
         const state = thunkApi.getState() as RootState;
         const dispatch = thunkApi.dispatch as AppDispatch;
 
-        const { sourceFiles, conversionSettings } = state;
-
-        const { activeFormat, inputSettings, outputSettings } = conversionSettings;
-        const targetFormatSettings = outputSettings[activeFormat];
-
-        const mergeToOne = isMergeSetting(targetFormatSettings)
-          ? targetFormatSettings.merge
-          : false;
-
         const converter = new Converter(
-          targetFormatSettings,
-          activeFormat,
-          inputSettings,
+          getActiveOutputTarget(state),
+          getPDFInputSettings(state),
           dispatch,
-          mergeToOne,
         );
 
         try {
-          await converter.convert(sourceFiles);
+          await converter.convert(state.sourceFiles);
         } catch (err) {
           console.error(err);
         }

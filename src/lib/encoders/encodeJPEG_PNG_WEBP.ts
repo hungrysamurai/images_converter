@@ -1,21 +1,13 @@
-import { isQualitySetting } from '@/types/typeGuards';
-import { MIME, type OutputFormat } from '@/types/formats';
-import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
+import { MIME } from '@/types/formats';
 
 const encodeJPEG_PNG_WEBP = async (
   canvas: OffscreenCanvas,
-  targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFormat,
+  format: 'jpeg' | 'png' | 'webp',
+  quality?: number,
 ): Promise<Blob> => {
-  let quality: number | undefined;
-
-  if (isQualitySetting(targetFormatSettings)) {
-    quality = targetFormatSettings.quality / 100;
-  }
-
   return canvas.convertToBlob({
-    type: MIME[activeTargetFormatName],
-    quality,
+    type: MIME[format],
+    quality: quality === undefined ? undefined : quality / 100,
   });
 };
 

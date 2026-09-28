@@ -1,19 +1,14 @@
-import { type OutputFormat } from '@/types/formats';
 import encodeCanvas from '@/lib/encode';
 import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
-import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
+import type { OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
 
-const decodeTIFF = async (
-  blobURL: string,
-  targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFormat,
-): Promise<Blob[]> => {
+const decodeTIFF = async (blobURL: string, target: OutputTarget): Promise<Blob[]> => {
   const UTIF = await import('utif');
 
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
 
-  const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth } = target.settings;
 
   const pages = UTIF.decode(arrayBuffer);
 
@@ -39,7 +34,7 @@ const decodeTIFF = async (
       canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
     }
 
-    const encoded = await encodeCanvas(canvas, targetFormatSettings, activeTargetFormatName);
+    const encoded = await encodeCanvas(canvas, target);
 
     if (encoded) {
       pagesBlobs.push(encoded);

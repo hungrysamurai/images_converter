@@ -1,18 +1,13 @@
-import { type OutputFormat } from '@/types/formats';
 import encodeCanvas from '@/lib/encode';
 import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
-import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
+import type { OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
 
-const decodeHEIC = async (
-  blobURL: string,
-  targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFormat,
-): Promise<Blob> => {
+const decodeHEIC = async (blobURL: string, target: OutputTarget): Promise<Blob> => {
   const response = await fetch(blobURL);
   const srcBlob = await response.blob();
   const arrayBuffer = await srcBlob.arrayBuffer();
 
-  const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth } = target.settings;
 
   try {
     const libheif = await import('libheif-js/wasm-bundle');
@@ -44,7 +39,7 @@ const decodeHEIC = async (
             canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
           }
 
-          const encoded = await encodeCanvas(canvas, targetFormatSettings, activeTargetFormatName);
+          const encoded = await encodeCanvas(canvas, target);
 
           resolve(encoded);
         } catch (err) {
@@ -64,7 +59,7 @@ const decodeHEIC = async (
         canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
       }
 
-      const encoded = await encodeCanvas(canvas, targetFormatSettings, activeTargetFormatName);
+      const encoded = await encodeCanvas(canvas, target);
 
       return encoded;
     } else {

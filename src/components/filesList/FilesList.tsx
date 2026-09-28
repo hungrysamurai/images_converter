@@ -6,7 +6,6 @@ import FileElement from './FileElement';
 import { memo } from 'react';
 import { getFileFormat } from '@/lib/utils/getFileFormat';
 import { getFileSize } from '@/lib/utils/getFileSize';
-import { isProcessedFile } from '@/types/typeGuards';
 import type { ProcessedFile, SourceFile } from '@/types/files';
 
 type FilesListProps = {
@@ -25,7 +24,7 @@ const FilesList: React.FC<FilesListProps> = memo(({ files }) => {
               format={getFileFormat(file.type)}
               name={file.name}
               size={getFileSize(file.size)}
-              downloadLink={isProcessedFile(file) ? file.downloadLink : undefined}
+              downloadLink={'downloadLink' in file ? file.downloadLink : undefined}
               souceFileLink={file.blobURL}
             />
           );

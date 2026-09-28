@@ -1,16 +1,9 @@
 import gifWorkerUrl from 'gif.js/dist/gif.worker.js?url';
-import { isDitherSetting } from '@/types/typeGuards';
-import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
+import type { OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
 
-const mergeGIF = async (
-  collection: Blob[],
-  targetFormatSettings: OutputConversionSettings,
-): Promise<Blob> => {
-  if (!isDitherSetting(targetFormatSettings)) {
-    throw new Error('Invalid target format settings for GIF');
-  }
+const mergeGIF = async (collection: Blob[], target: OutputTarget<'gif'>): Promise<Blob> => {
   const GIF = (await import('gif.js')).default;
-  const { quality, dither, animationDelay } = targetFormatSettings;
+  const { quality, dither, animationDelay } = target.settings;
 
   const gif = new GIF({
     workers: 2,

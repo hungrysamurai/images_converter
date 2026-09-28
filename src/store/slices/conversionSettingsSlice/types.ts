@@ -56,8 +56,6 @@ export type OutputSettingsMap = {
   tiff: BasicOutputConversionSettings;
 };
 
-export type OutputConversionSettings = OutputSettingsMap[OutputFormat];
-
 export type OutputTarget<F extends OutputFormat = OutputFormat> = {
   [K in F]: { format: K; settings: OutputSettingsMap[K] };
 }[F];

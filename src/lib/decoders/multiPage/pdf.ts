@@ -1,28 +1,21 @@
 import PdfJsWorker from 'pdfjs-dist/build/pdf.worker.mjs?worker';
-import { type OutputFormat } from '@/types/formats';
 import encodeCanvas from '@/lib/encode';
 import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
-import type {
-  OutputConversionSettings,
-  PDFInputSettings,
-} from '@/store/slices/conversionSettingsSlice/types';
+import type { OutputTarget, PDFInputSettings } from '@/store/slices/conversionSettingsSlice/types';
 
 const decodePDF = async (
   blobURL: string,
-  targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFormat,
-  inputSettings: { pdf: PDFInputSettings },
+  target: OutputTarget,
+  pdfInputSettings: PDFInputSettings,
 ): Promise<Blob[]> => {
-  const {
-    pdf: { resolution, rotation },
-  } = inputSettings;
+  const { resolution, rotation } = pdfInputSettings;
 
-  const { resize, units, smoothing, targetHeight, targetWidth } = targetFormatSettings;
+  const { resize, units, smoothing, targetHeight, targetWidth } = target.settings;
 
   const pagesBlobs: Blob[] = [];
 
   // Don't rasterize PDF Source, just split it!
-  if (activeTargetFormatName === 'pdf' && !targetFormatSettings.resize) {
+  if (target.format === 'pdf' && !resize) {
     const { degrees, PDFDocument } = await import('pdf-lib');
 
     const blob = await fetch(blobURL);
@@ -100,7 +93,7 @@ const decodePDF = async (
         canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
       }
 
-      const encoded = await encodeCanvas(canvas, targetFormatSettings, activeTargetFormatName);
+      const encoded = await encodeCanvas(canvas, target);
 
       pagesBlobs.push(encoded);
     }

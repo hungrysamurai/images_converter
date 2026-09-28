@@ -1,17 +1,11 @@
-import type {
-  OutputConversionSettings,
-  PDFInputSettings,
-} from '@/store/slices/conversionSettingsSlice/types';
-import type { MIMEType, OutputFormat } from '@/types/formats';
+import type { OutputTarget, PDFInputSettings } from '@/store/slices/conversionSettingsSlice/types';
+import type { MIMEType } from '@/types/formats';
 
 export interface ConvertTask {
   type: MIMEType;
   blobURL: string;
-  outputSettings: OutputConversionSettings;
-  targetFormatName: OutputFormat;
-  inputSettings?: {
-    pdf: PDFInputSettings;
-  };
+  target: OutputTarget;
+  pdfInputSettings?: PDFInputSettings;
   bitmap?: ImageBitmap;
 }
 

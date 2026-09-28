@@ -1,14 +1,14 @@
 import { MIME } from '@/types/formats';
 import { getScaledSVGDimensions } from './getScaledSVGDimensions';
-import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
+import type { OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
 
 export default async function SVGToBitmap(
   blobURL: string,
-  outputSettings: OutputConversionSettings,
+  target: OutputTarget,
 ): Promise<ImageBitmap> {
   let svgBlobURL;
 
-  const { resize, units, targetHeight, targetWidth } = outputSettings;
+  const { resize, units, targetHeight, targetWidth } = target.settings;
 
   // Parse SVG
   const file = await fetch(blobURL);

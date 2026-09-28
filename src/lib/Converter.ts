@@ -1,33 +1,29 @@
 import { nanoid } from '@reduxjs/toolkit';
 import { addConvertedFile } from '../store/slices/processFilesSlice/processFilesSlice';
 import type { AppDispatch } from '../store/store';
-import { MIME, type MIMEType, type OutputFormat } from '@/types/formats';
+import { MIME, type MIMEType } from '@/types/formats';
 import SVGToBitmap from './utils/SVGToBitmap';
 
 import { getFileFormat } from './utils/getFileFormat';
 import WorkerPool from './utils/WorkerPool/WorkerPool';
 import type { ConvertTask, ConvertTaskResult } from './utils/WorkerPool/types';
-import type {
-  OutputConversionSettings,
-  PDFInputSettings,
-} from '@/store/slices/conversionSettingsSlice/types';
+import type { OutputTarget, PDFInputSettings } from '@/store/slices/conversionSettingsSlice/types';
 import type { SourceFile } from '@/types/files';
 
 export default class Converter {
   private collection: Blob[] = [];
   private workerPool = new WorkerPool<ConvertTask, ConvertTaskResult>();
   private processTasks: Promise<Blob | Blob[] | void>[] = [];
+  private readonly mergeToOne: boolean;
 
   // TODO: DRY decoders functions into ONE
   constructor(
-    private outputSettings: OutputConversionSettings,
-    private activeTargetFormatName: OutputFormat,
-    private inputSettings: {
-      pdf: PDFInputSettings;
-    },
+    private readonly target: OutputTarget,
+    private readonly pdfInputSettings: PDFInputSettings,
     private UIDispatcher: AppDispatch,
-    private mergeToOne: boolean,
-  ) {}
+  ) {
+    this.mergeToOne = 'merge' in target.settings && target.settings.merge;
+  }
 
   public async convert(sourceFiles: SourceFile[]): Promise<void> {
     for (const source of sourceFiles) {
@@ -57,7 +53,7 @@ export default class Converter {
   }
 
   private async merge() {
-    switch (this.activeTargetFormatName) {
+    switch (this.target.format) {
       case 'pdf':
         {
           const mergePDF = await import('@/lib/aggregators/pdf');
@@ -71,7 +67,7 @@ export default class Converter {
               downloadLink: URL,
               name: `Merged-${Date.now()}`,
               size: merged.size,
-              type: MIME[this.activeTargetFormatName],
+              type: MIME[this.target.format],
               id: nanoid(),
             }),
           );
@@ -82,7 +78,7 @@ export default class Converter {
         {
           const mergeGIF = await import('@/lib/aggregators/gif');
 
-          const merged = await mergeGIF.default(this.collection, this.outputSettings);
+          const merged = await mergeGIF.default(this.collection, this.target);
 
           const URL = window.URL.createObjectURL(merged);
           this.UIDispatcher(
@@ -91,7 +87,7 @@ export default class Converter {
               downloadLink: URL,
               name: `Merged-${Date.now()}`,
               size: merged.size,
-              type: MIME[this.activeTargetFormatName],
+              type: MIME[this.target.format],
               id: nanoid(),
             }),
           );
@@ -125,7 +121,7 @@ export default class Converter {
                   downloadLink: URL,
                   name,
                   size,
-                  type: MIME[this.activeTargetFormatName],
+                  type: MIME[this.target.format],
                   id: nanoid(),
                   sourceId: id,
                 }),
@@ -155,7 +151,7 @@ export default class Converter {
                   downloadLink: URL,
                   name: `${name}_${index + 1}`,
                   size,
-                  type: MIME[this.activeTargetFormatName],
+                  type: MIME[this.target.format],
                   id: nanoid(),
                   sourceId: id,
                 }),
@@ -211,8 +207,7 @@ export default class Converter {
         data: {
           type,
           blobURL,
-          outputSettings: this.outputSettings,
-          targetFormatName: this.activeTargetFormatName,
+          target: this.target,
         },
       });
 
@@ -225,11 +220,7 @@ export default class Converter {
       try {
         const decodeJPEG_PNG_WEBP = await import('@/lib/decoders/singlePage/jpeg_webp_png');
 
-        const processed = await decodeJPEG_PNG_WEBP.default(
-          blobURL,
-          this.outputSettings,
-          this.activeTargetFormatName,
-        );
+        const processed = await decodeJPEG_PNG_WEBP.default(blobURL, this.target);
 
         return processed;
       } catch (err) {
@@ -251,8 +242,7 @@ export default class Converter {
         data: {
           type,
           blobURL,
-          outputSettings: this.outputSettings,
-          targetFormatName: this.activeTargetFormatName,
+          target: this.target,
         },
       });
 
@@ -265,11 +255,7 @@ export default class Converter {
       try {
         const decodeBMP = await import('@/lib/decoders/singlePage/bmp');
 
-        const processed = await decodeBMP.default(
-          blobURL,
-          this.outputSettings,
-          this.activeTargetFormatName,
-        );
+        const processed = await decodeBMP.default(blobURL, this.target);
 
         return processed;
       } catch (err) {
@@ -291,8 +277,7 @@ export default class Converter {
         data: {
           type,
           blobURL,
-          outputSettings: this.outputSettings,
-          targetFormatName: this.activeTargetFormatName,
+          target: this.target,
         },
       });
       return processedInWorker as Blob;
@@ -304,11 +289,7 @@ export default class Converter {
       try {
         const decodeHEIC = await import('@/lib/decoders/singlePage/heic');
 
-        const processed = await decodeHEIC.default(
-          blobURL,
-          this.outputSettings,
-          this.activeTargetFormatName,
-        );
+        const processed = await decodeHEIC.default(blobURL, this.target);
 
         return processed;
       } catch (err) {
@@ -326,14 +307,13 @@ export default class Converter {
     fileName: string,
   ): Promise<Blob | void> {
     try {
-      const bitmap = await SVGToBitmap(blobURL, this.outputSettings);
+      const bitmap = await SVGToBitmap(blobURL, this.target);
 
       const processedInWorker = await this.workerPool.addWork({
         data: {
           type,
           blobURL,
-          outputSettings: this.outputSettings,
-          targetFormatName: this.activeTargetFormatName,
+          target: this.target,
           bitmap,
         },
         transfer: [bitmap],
@@ -348,13 +328,9 @@ export default class Converter {
       try {
         const decodeSVGBitmap = await import('@/lib/decoders/singlePage/svg');
 
-        const bitmap = await SVGToBitmap(blobURL, this.outputSettings);
+        const bitmap = await SVGToBitmap(blobURL, this.target);
 
-        const processed = await decodeSVGBitmap.default(
-          this.outputSettings,
-          this.activeTargetFormatName,
-          bitmap,
-        );
+        const processed = await decodeSVGBitmap.default(this.target, bitmap);
 
         return processed;
       } catch (err) {
@@ -403,8 +379,7 @@ export default class Converter {
         data: {
           type,
           blobURL,
-          outputSettings: this.outputSettings,
-          targetFormatName: this.activeTargetFormatName,
+          target: this.target,
         },
       });
 
@@ -417,11 +392,7 @@ export default class Converter {
       try {
         const decodeTIFF = await import('@/lib/decoders/multiPage/tiff');
 
-        const pagesBlobs = await decodeTIFF.default(
-          blobURL,
-          this.outputSettings,
-          this.activeTargetFormatName,
-        );
+        const pagesBlobs = await decodeTIFF.default(blobURL, this.target);
 
         return pagesBlobs;
       } catch (err) {
@@ -443,9 +414,8 @@ export default class Converter {
         data: {
           type,
           blobURL,
-          outputSettings: this.outputSettings,
-          targetFormatName: this.activeTargetFormatName,
-          inputSettings: this.inputSettings,
+          target: this.target,
+          pdfInputSettings: this.pdfInputSettings,
         },
       });
 
@@ -458,12 +428,7 @@ export default class Converter {
       try {
         const decodePDF = await import('@/lib/decoders/multiPage/pdf');
 
-        const pagesBlobs = await decodePDF.default(
-          blobURL,
-          this.outputSettings,
-          this.activeTargetFormatName,
-          this.inputSettings,
-        );
+        const pagesBlobs = await decodePDF.default(blobURL, this.target, this.pdfInputSettings);
 
         return pagesBlobs;
       } catch (err) {
@@ -485,8 +450,7 @@ export default class Converter {
         data: {
           type,
           blobURL,
-          outputSettings: this.outputSettings,
-          targetFormatName: this.activeTargetFormatName,
+          target: this.target,
         },
       });
 
@@ -498,11 +462,7 @@ export default class Converter {
 
       try {
         const decodeGIF = await import('@/lib/decoders/multiPage/gif');
-        const pagesBlobs = await decodeGIF.default(
-          blobURL,
-          this.outputSettings,
-          this.activeTargetFormatName,
-        );
+        const pagesBlobs = await decodeGIF.default(blobURL, this.target);
 
         return pagesBlobs;
       } catch (err) {

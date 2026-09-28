@@ -1,24 +1,15 @@
-import { type OutputFormat } from '@/types/formats';
 import encodeCanvas from '@/lib/encode';
-import type { OutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
+import type { OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
 
-const decodeSVGBitmap = async (
-  targetFormatSettings: OutputConversionSettings,
-  activeTargetFormatName: OutputFormat,
-  bmp: ImageBitmap,
-): Promise<Blob> => {
-  const { smoothing } = targetFormatSettings;
+const decodeSVGBitmap = async (target: OutputTarget, bmp: ImageBitmap): Promise<Blob> => {
+  const { smoothing } = target.settings;
   const { width, height } = bmp;
 
   const canvas = new OffscreenCanvas(width, height);
   const ctx = canvas.getContext('2d');
 
   // If active output format don't hold transparecy
-  if (
-    activeTargetFormatName !== 'png' &&
-    activeTargetFormatName !== 'tiff' &&
-    activeTargetFormatName !== 'webp'
-  ) {
+  if (target.format !== 'png' && target.format !== 'tiff' && target.format !== 'webp') {
     ctx!.fillStyle = 'white';
     ctx!.fillRect(0, 0, canvas.width, canvas.height);
   }
@@ -32,7 +23,7 @@ const decodeSVGBitmap = async (
 
   ctx!.drawImage(bmp, 0, 0, width, height);
 
-  const encoded = await encodeCanvas(canvas, targetFormatSettings, activeTargetFormatName);
+  const encoded = await encodeCanvas(canvas, target);
 
   return encoded;
 };

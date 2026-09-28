@@ -2,7 +2,7 @@ import { MIME } from '@/types/formats';
 import type { ConvertTask, ConvertTaskResult } from './types';
 
 self.addEventListener('message', async (e: MessageEvent<ConvertTask>) => {
-  const { type, blobURL, outputSettings, targetFormatName, inputSettings, bitmap } = e.data;
+  const { type, blobURL, target, pdfInputSettings, bitmap } = e.data;
 
   try {
     let result: ConvertTaskResult;
@@ -13,7 +13,7 @@ self.addEventListener('message', async (e: MessageEvent<ConvertTask>) => {
       case MIME.webp: {
         const decodeJPEG_WEBP_PNG = await import('@/lib/decoders/singlePage/jpeg_webp_png');
 
-        result = await decodeJPEG_WEBP_PNG.default(blobURL, outputSettings, targetFormatName);
+        result = await decodeJPEG_WEBP_PNG.default(blobURL, target);
 
         break;
       }
@@ -21,7 +21,7 @@ self.addEventListener('message', async (e: MessageEvent<ConvertTask>) => {
       case MIME.bmp: {
         const decodeBMP = await import('@/lib/decoders/singlePage/bmp');
 
-        result = await decodeBMP.default(blobURL, outputSettings, targetFormatName);
+        result = await decodeBMP.default(blobURL, target);
 
         break;
       }
@@ -29,7 +29,7 @@ self.addEventListener('message', async (e: MessageEvent<ConvertTask>) => {
       case MIME.heic: {
         const decodeHEIC = await import('@/lib/decoders/singlePage/heic');
 
-        result = await decodeHEIC.default(blobURL, outputSettings, targetFormatName);
+        result = await decodeHEIC.default(blobURL, target);
 
         break;
       }
@@ -39,35 +39,30 @@ self.addEventListener('message', async (e: MessageEvent<ConvertTask>) => {
 
         const decodeSVGBitmap = await import('@/lib/decoders/singlePage/svg');
 
-        result = await decodeSVGBitmap.default(outputSettings, targetFormatName, bitmap);
+        result = await decodeSVGBitmap.default(target, bitmap);
         break;
       }
 
       case MIME.tiff: {
         const TIFFPagesToBlobs = await import('@/lib/decoders/multiPage/tiff');
 
-        result = await TIFFPagesToBlobs.default(blobURL, outputSettings, targetFormatName);
+        result = await TIFFPagesToBlobs.default(blobURL, target);
 
         break;
       }
 
       case MIME.pdf: {
-        if (!inputSettings) throw new Error('Missing inputSettings for PDF conversion');
+        if (!pdfInputSettings) throw new Error('Missing pdfInputSettings for PDF conversion');
         const PDFPagesToBlobs = await import('@/lib/decoders/multiPage/pdf');
 
-        result = await PDFPagesToBlobs.default(
-          blobURL,
-          outputSettings,
-          targetFormatName,
-          inputSettings,
-        );
+        result = await PDFPagesToBlobs.default(blobURL, target, pdfInputSettings);
         break;
       }
 
       case MIME.gif: {
         const decodeGIF = await import('@/lib/decoders/multiPage/gif');
 
-        result = await decodeGIF.default(blobURL, outputSettings, targetFormatName);
+        result = await decodeGIF.default(blobURL, target);
         break;
       }
 
