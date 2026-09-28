@@ -1,5 +1,5 @@
-import { isQualitySetting } from '../../types/typeGuards';
-import { OutputFileFormatsNames } from '../../types/types';
+import { isQualitySetting } from '@/types/typeGuards';
+import { OutputFileFormatsNames } from '@/types/types';
 
 const encodeJPEG_PNG_WEBP = async (
   canvas: OffscreenCanvas,

@@ -1,5 +1,5 @@
-import { isCompressionSetting } from '../../types/typeGuards';
-import { PDFCompressionTypes } from '../../types/types';
+import { isCompressionSetting } from '@/types/typeGuards';
+import { PDFCompressionTypes } from '@/types/types';
 
 const encodePDF = async (
   canvas: OffscreenCanvas,

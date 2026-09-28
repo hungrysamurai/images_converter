@@ -1,4 +1,4 @@
-import { Units } from '../../types/types';
+import { Units } from '@/types/types';
 
 export const getScaledSVGDimensions = (
   currentHeight: number,

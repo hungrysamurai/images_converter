@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import React, { ChangeEvent, memo } from 'react';
 
-import { useAppDispatch } from '../../../store/hooks';
-import { updateActiveTargetFormatToggleSetting } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import { useAppDispatch } from '@/store/hooks';
+import { updateActiveTargetFormatToggleSetting } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
 type CheckboxInputProps = {
   currentValue: boolean;

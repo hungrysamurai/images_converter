@@ -6,8 +6,8 @@ import {
   isDitherOption,
   isSmoothingOption,
   isUnits,
-} from '../../../types/typeGuards';
-import { GIFDitherOptions, OutputFileFormatsNames, SmoothingPresets } from '../../../types/types';
+} from '@/types/typeGuards';
+import { GIFDitherOptions, OutputFileFormatsNames, SmoothingPresets } from '@/types/types';
 
 export const conversionSettingsSlice = createSlice({
   name: 'conversionSettings',

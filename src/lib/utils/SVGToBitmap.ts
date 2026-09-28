@@ -1,4 +1,4 @@
-import { MIMETypes } from '../../types/types';
+import { MIMETypes } from '@/types/types';
 import { getScaledSVGDimensions } from './getScaledSVGDimensions';
 
 export default async function SVGToBitmap(

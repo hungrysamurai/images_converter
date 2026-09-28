@@ -3,19 +3,19 @@ import styled from 'styled-components';
 
 import { memo, useState } from 'react';
 
-import { ElementColorMode, InputFileFormatsNames } from '../../types/types';
+import { ElementColorMode, InputFileFormatsNames } from '@/types/types';
 
 import {
   fileElementAnimation,
   fileInfoContainerAnimation,
   filePreviewIconAnimation,
-} from '../../animations';
+} from '@/animations';
 
-import { useAppDispatch } from '../../store/hooks';
-import { removeConvertedFile } from '../../store/slices/processFilesSlice/processFilesSlice';
-import { removeSourceFile } from '../../store/slices/sourceFilesSlice/sourceFilesSlice';
+import { useAppDispatch } from '@/store/hooks';
+import { removeConvertedFile } from '@/store/slices/processFilesSlice/processFilesSlice';
+import { removeSourceFile } from '@/store/slices/sourceFilesSlice/sourceFilesSlice';
 
-import { isPreviewFormat } from '../../types/typeGuards';
+import { isPreviewFormat } from '@/types/typeGuards';
 import IconDownloadElement from '../icons/IconDownloadElement';
 import IconPreviewFile from '../icons/IconPreviewFile';
 import IconRemoveElement from '../icons/IconRemoveElement';

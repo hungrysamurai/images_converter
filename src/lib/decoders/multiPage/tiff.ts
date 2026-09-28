@@ -1,6 +1,6 @@
-import { OutputFileFormatsNames } from '../../../types/types';
-import encodeCanvas from '../../encode';
-import { getResizedCanvas } from '../../utils/getResizedCanvas';
+import { OutputFileFormatsNames } from '@/types/types';
+import encodeCanvas from '@/lib/encode';
+import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
 
 const decodeTIFF = async (
   blobURL: string,

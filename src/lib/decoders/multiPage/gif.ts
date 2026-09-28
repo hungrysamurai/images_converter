@@ -1,7 +1,7 @@
-import { OutputFileFormatsNames } from '../../../types/types';
+import { OutputFileFormatsNames } from '@/types/types';
 
-import encodeCanvas from '../../encode';
-import { getResizedCanvas } from '../../utils/getResizedCanvas';
+import encodeCanvas from '@/lib/encode';
+import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
 
 const decodeGIF = async (
   blobURL: string,

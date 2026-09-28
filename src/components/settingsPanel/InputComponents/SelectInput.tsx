@@ -1,8 +1,8 @@
 import { ChangeEvent, memo } from 'react';
 import styled from 'styled-components';
 
-import { useAppDispatch } from '../../../store/hooks';
-import { updateActiveTargetFormatSelectSetting } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import { useAppDispatch } from '@/store/hooks';
+import { updateActiveTargetFormatSelectSetting } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
 type SelectInputProps = {
   options: SelectOptionsValues[];

@@ -8,10 +8,10 @@ import {
   PDFCompressionTypes,
   SmoothingPresets,
   Units,
-} from '../../../types/types';
+} from '@/types/types';
 
-import { useAppSelector } from '../../../store/hooks';
-import { getActiveFormatOutputSettings } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import { useAppSelector } from '@/store/hooks';
+import { getActiveFormatOutputSettings } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
 import CheckboxInput from '../InputComponents/CheckboxInput';
 import NumberInput from '../InputComponents/NumberInput';
@@ -19,7 +19,7 @@ import SelectInput from '../InputComponents/SelectInput';
 import SliderInput from '../InputComponents/SliderInput';
 import { StyledDivider } from './StyledDivider';
 
-import { isCompressionSetting, isDitherSetting, isQualitySetting } from '../../../types/typeGuards';
+import { isCompressionSetting, isDitherSetting, isQualitySetting } from '@/types/typeGuards';
 
 type OutputSettingsType = {
   lang: Lang;

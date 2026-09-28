@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { memo } from 'react';
 
-import { Lang, Units } from '../../../types/types';
+import { Lang, Units } from '@/types/types';
 
-import { getPDFInputSettings } from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
-import { useAppSelector } from '../../../store/hooks';
+import { getPDFInputSettings } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
+import { useAppSelector } from '@/store/hooks';
 
 import NumberInput from '../InputComponents/NumberInput';
 

@@ -1,5 +1,5 @@
-import { OutputFileFormatsNames } from '../../../types/types';
-import encodeCanvas from '../../encode';
+import { OutputFileFormatsNames } from '@/types/types';
+import encodeCanvas from '@/lib/encode';
 
 const decodeSVGBitmap = async (
   targetFormatSettings: OutputConversionSettings,

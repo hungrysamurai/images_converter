@@ -1,7 +1,7 @@
 import PdfJsWorker from 'pdfjs-dist/build/pdf.worker.mjs?worker';
-import { OutputFileFormatsNames } from '../../../types/types';
-import encodeCanvas from '../../encode';
-import { getResizedCanvas } from '../../utils/getResizedCanvas';
+import { OutputFileFormatsNames } from '@/types/types';
+import encodeCanvas from '@/lib/encode';
+import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
 
 const decodePDF = async (
   blobURL: string,

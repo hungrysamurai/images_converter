@@ -1,10 +1,10 @@
 import {
   InputFileFormatsNames,
   OutputFileFormatsNames,
-  Units,
-  SmoothingPresets,
   PDFCompressionTypes,
-} from '../../../types/types';
+  SmoothingPresets,
+  Units,
+} from '@/types/types';
 
 export const initialState: ConversionSettings = {
   inputSettings: {

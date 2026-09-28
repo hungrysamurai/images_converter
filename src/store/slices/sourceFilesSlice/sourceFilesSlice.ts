@@ -1,8 +1,8 @@
 import { createSlice, current, nanoid, PayloadAction } from '@reduxjs/toolkit';
 
-import { MIMETypes } from '../../../types/types';
+import { MIMETypes } from '@/types/types';
 
-import { trimFileName } from '../../../lib/utils/trimFileName';
+import { trimFileName } from '@/lib/utils/trimFileName';
 
 const initialState: SourceFile[] = [];
 

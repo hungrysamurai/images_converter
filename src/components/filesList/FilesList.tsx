@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import FileElement from './FileElement';
 
 import { memo } from 'react';
-import { getFileFormat } from '../../lib/utils/getFileFormat';
-import { getFileSize } from '../../lib/utils/getFileSize';
-import { isProcessedFile } from '../../types/typeGuards';
+import { getFileFormat } from '@/lib/utils/getFileFormat';
+import { getFileSize } from '@/lib/utils/getFileSize';
+import { isProcessedFile } from '@/types/typeGuards';
 
 type FilesListProps = {
   files: ProcessedFile[] | SourceFile[];

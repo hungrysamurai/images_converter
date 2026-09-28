@@ -1,14 +1,14 @@
 import React, { ChangeEvent, memo } from 'react';
 import styled from 'styled-components';
 
-import { Units } from '../../../types/types';
+import { Units } from '@/types/types';
 
-import getClosestMatchedValue from '../../../lib/utils/getClosestMatchesValue';
-import { useAppDispatch } from '../../../store/hooks';
+import getClosestMatchedValue from '@/lib/utils/getClosestMatchesValue';
+import { useAppDispatch } from '@/store/hooks';
 import {
   updateActiveTargetFormatNumericSetting,
   updateInputSettings,
-} from '../../../store/slices/conversionSettingsSlice/conversionSettingsSlice';
+} from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 
 type NumberInputProps = {
   caption: string;

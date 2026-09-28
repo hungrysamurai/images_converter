@@ -1,4 +1,4 @@
-import { ElementColorMode } from '../../types/types';
+import { ElementColorMode } from '@/types/types';
 
 type IconProp = {
   fillColor: ElementColorMode;

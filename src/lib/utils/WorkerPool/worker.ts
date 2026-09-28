@@ -1,4 +1,4 @@
-import { MIMETypes, OutputFileFormatsNames } from '../../../types/types';
+import { MIMETypes, OutputFileFormatsNames } from '@/types/types';
 
 interface WorkerMessage {
   type: MIMETypes;

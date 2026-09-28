@@ -1,10 +1,10 @@
 import { asyncThunkCreator, buildCreateSlice, current, PayloadAction } from '@reduxjs/toolkit';
 
-import { AppDispatch, RootState } from '../../store';
+import { AppDispatch, RootState } from '@/store/store';
 
-import Converter from '../../../lib/Converter';
-import { zipAndSave } from '../../../lib/utils/zipAndSave';
-import { isMergeSetting } from '../../../types/typeGuards';
+import Converter from '@/lib/Converter';
+import { zipAndSave } from '@/lib/utils/zipAndSave';
+import { isMergeSetting } from '@/types/typeGuards';
 
 const createProcessFilesSlice = buildCreateSlice({
   creators: { asyncThunk: asyncThunkCreator },

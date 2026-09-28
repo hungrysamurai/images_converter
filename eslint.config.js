@@ -46,6 +46,17 @@ export default tseslint.config(
       'react/function-component-definition': ['warn', { namedComponents: 'arrow-function' }],
       'react/self-closing-comp': ['error', { component: true, html: true }],
       'no-unreachable': 'warn',
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '^(\\.\\./){2,}',
+              message: 'Use the @/ alias instead of ../../ imports.',
+            },
+          ],
+        },
+      ],
     },
   },
   {
