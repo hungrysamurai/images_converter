@@ -308,12 +308,17 @@ const StyledDragHandle = styled(motion.div)`
   display: flex;
 
   button {
+    position: relative;
     display: flex;
     padding: 0;
     background: none;
     border: none;
     cursor: grab;
     touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   svg {
@@ -328,6 +333,17 @@ const StyledDragHandle = styled(motion.div)`
     svg {
       width: 0.9rem;
       height: 0.9rem;
+    }
+
+    /* ~24px touch target around the 0.9rem icon; shifted down-right, because the card clips
+       everything above and left of it */
+    button::before {
+      content: '';
+      position: absolute;
+      top: -0.2rem;
+      left: -0.3rem;
+      width: 1.5rem;
+      height: 1.5rem;
     }
   }
 `;
