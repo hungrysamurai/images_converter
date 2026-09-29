@@ -34,6 +34,7 @@ export type FileElementProps = {
   souceFileLink?: string;
   dragHandleProps?: DragHandleProps;
   isDragActive?: boolean;
+  isOverlay?: boolean;
 };
 
 const elementsColor = {
@@ -49,8 +50,25 @@ const elementsColor = {
 };
 
 const FileElement: React.FC<FileElementProps> = memo(
-  ({ id, format, size, name, downloadLink, souceFileLink, dragHandleProps, isDragActive }) => {
+  ({
+    id,
+    format,
+    size,
+    name,
+    downloadLink,
+    souceFileLink,
+    dragHandleProps,
+    isDragActive = false,
+    isOverlay = false,
+  }) => {
     const [previewBtn, setPreviewBtn] = useState(false);
+
+    // reset hover preview when drag starts, so it doesn't stick after drop
+    const [prevDragActive, setPrevDragActive] = useState(isDragActive);
+    if (isDragActive !== prevDragActive) {
+      setPrevDragActive(isDragActive);
+      if (isDragActive) setPreviewBtn(false);
+    }
 
     const dispatch = useAppDispatch();
 
@@ -67,14 +85,14 @@ const FileElement: React.FC<FileElementProps> = memo(
     return (
       <StyledFileElement
         variants={fileElementAnimation}
-        initial="hidden"
+        initial={isOverlay ? false : 'hidden'}
         animate="show"
         exit="exit"
         layout={!isDragActive}
         $bg={format}
         $color={elementsColor[format]}
         onMouseEnter={() => {
-          setPreviewBtn(() => true);
+          if (!isDragActive) setPreviewBtn(() => true);
         }}
         onMouseLeave={() => {
           setPreviewBtn(() => false);
@@ -84,8 +102,12 @@ const FileElement: React.FC<FileElementProps> = memo(
           <IconRemoveElement bg={elementsColor[format]} />
         </StyledRemoveElementButton>
 
-        {dragHandleProps && (
-          <StyledDragHandleButton type="button" {...dragHandleProps}>
+        {(dragHandleProps || isOverlay) && (
+          <StyledDragHandleButton
+            type="button"
+            tabIndex={isOverlay ? -1 : undefined}
+            {...dragHandleProps}
+          >
             <IconDragHandle bg={elementsColor[format]} />
           </StyledDragHandleButton>
         )}

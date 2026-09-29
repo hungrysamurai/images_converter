@@ -22,8 +22,7 @@ const SortableFileElement: React.FC<SortableFileElementProps> = (props) => {
       style={{
         transform: CSS.Translate.toString(transform),
         transition,
-        position: 'relative',
-        zIndex: isDragging ? 2 : undefined,
+        opacity: isDragging ? 0.3 : undefined,
       }}
     >
       <FileElement
