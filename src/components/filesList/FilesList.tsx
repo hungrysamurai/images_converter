@@ -4,19 +4,25 @@ import styled, { createGlobalStyle } from 'styled-components';
 import {
   DndContext,
   DragOverlay,
+  KeyboardSensor,
   MeasuringStrategy,
   PointerSensor,
   defaultDropAnimation,
   getClientRect,
   useSensor,
   useSensors,
+  type Announcements,
   type DragEndEvent,
   type DragStartEvent,
   type DropAnimation,
   type DropAnimationKeyframeResolver,
   type DropAnimationSideEffects,
 } from '@dnd-kit/core';
-import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
+import {
+  SortableContext,
+  rectSortingStrategy,
+  sortableKeyboardCoordinates,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 import FileElement from './FileElement';
@@ -28,11 +34,13 @@ import { useAppDispatch } from '@/store/hooks';
 import { reorderSourceFiles } from '@/store/slices/sourceFilesSlice/sourceFilesSlice';
 import { getFileFormat } from '@/lib/utils/getFileFormat';
 import { getFileSize } from '@/lib/utils/getFileSize';
+import { Lang } from '@/types/types';
 import type { ProcessedFile, SourceFile } from '@/types/files';
 
 type FilesListProps = {
   files: ProcessedFile[] | SourceFile[];
   sortable?: boolean;
+  lang?: Lang;
 };
 
 const DROP_DURATION = 200;
@@ -95,6 +103,64 @@ const autoScroll = {
   },
 };
 
+// dnd-kit defaults are English only and announce raw ids, so screen readers get file names
+// and 1-based positions in the interface language instead
+const getAccessibility = (lang: Lang, files: ProcessedFile[] | SourceFile[]) => {
+  const en = lang === Lang.EN;
+
+  const describe = (id: string | number) => {
+    const index = files.findIndex((file) => file.id === id);
+
+    return { name: files[index]?.name ?? '', position: index + 1, total: files.length };
+  };
+
+  const announcements: Announcements = {
+    onDragStart({ active }) {
+      const { name, position, total } = describe(active.id);
+
+      return en
+        ? `Picked up ${name}. Position ${position} of ${total}.`
+        : `Файл ${name} взят. Позиция ${position} из ${total}.`;
+    },
+    onDragOver({ active, over }) {
+      if (!over) return;
+
+      const { name } = describe(active.id);
+      const { position, total } = describe(over.id);
+
+      return en
+        ? `${name} moved to position ${position} of ${total}.`
+        : `Файл ${name} перемещён на позицию ${position} из ${total}.`;
+    },
+    onDragEnd({ active, over }) {
+      const { name } = describe(active.id);
+
+      if (!over) return en ? `${name} dropped.` : `Файл ${name} отпущен.`;
+
+      const { position, total } = describe(over.id);
+
+      return en
+        ? `${name} dropped at position ${position} of ${total}.`
+        : `Файл ${name} перемещён на позицию ${position} из ${total}.`;
+    },
+    onDragCancel({ active }) {
+      const { name } = describe(active.id);
+
+      return en
+        ? `Moving cancelled. ${name} returned to its position.`
+        : `Перемещение отменено. Файл ${name} возвращён на место.`;
+    },
+  };
+
+  const screenReaderInstructions = {
+    draggable: en
+      ? 'To pick up a file, press Space or Enter. Use the arrow keys to move it. Press Space again to drop it, or Escape to cancel.'
+      : 'Чтобы взять файл, нажмите Пробел или Enter. Перемещайте его стрелками. Нажмите Пробел ещё раз, чтобы отпустить, или Escape для отмены.',
+  };
+
+  return { announcements, screenReaderInstructions };
+};
+
 const getElementProps = (file: ProcessedFile | SourceFile) => ({
   id: file.id,
   format: getFileFormat(file.type),
@@ -104,10 +170,13 @@ const getElementProps = (file: ProcessedFile | SourceFile) => ({
   souceFileLink: file.blobURL,
 });
 
-const FilesList: React.FC<FilesListProps> = memo(({ files, sortable = false }) => {
+const FilesList: React.FC<FilesListProps> = memo(({ files, sortable = false, lang = Lang.EN }) => {
   const dispatch = useAppDispatch();
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const isDragActive = activeId !== null;
@@ -132,6 +201,7 @@ const FilesList: React.FC<FilesListProps> = memo(({ files, sortable = false }) =
         {...getElementProps(file)}
         isDragActive={isDragActive}
         hasHandle={files.length > 1}
+        lang={lang}
       />
     ) : (
       <FileElement key={file.id} {...getElementProps(file)} />
@@ -151,6 +221,7 @@ const FilesList: React.FC<FilesListProps> = memo(({ files, sortable = false }) =
       sensors={sensors}
       measuring={measuring}
       autoScroll={autoScroll}
+      accessibility={getAccessibility(lang, files)}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onDragCancel={() => setActiveId(null)}
@@ -167,7 +238,7 @@ const FilesList: React.FC<FilesListProps> = memo(({ files, sortable = false }) =
       {createPortal(
         <DragOverlay dropAnimation={dropAnimation}>
           {activeFile && (
-            <StyledOverlayCard>
+            <StyledOverlayCard aria-hidden>
               <FileElement {...getElementProps(activeFile)} isDragActive isOverlay />
             </StyledOverlayCard>
           )}

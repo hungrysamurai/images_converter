@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { memo, useState, type ButtonHTMLAttributes, type Ref } from 'react';
 
-import { ElementColorMode } from '@/types/types';
+import { ElementColorMode, Lang } from '@/types/types';
 import { isPreviewFormat, type InputFormat } from '@/types/formats';
 
 import {
@@ -36,6 +36,7 @@ export type FileElementProps = {
   dragHandleProps?: DragHandleProps;
   isDragActive?: boolean;
   isOverlay?: boolean;
+  lang?: Lang;
 };
 
 const elementsColor = {
@@ -61,6 +62,7 @@ const FileElement: React.FC<FileElementProps> = memo(
     dragHandleProps,
     isDragActive = false,
     isOverlay = false,
+    lang = Lang.EN,
   }) => {
     const [previewBtn, setPreviewBtn] = useState(false);
 
@@ -111,8 +113,16 @@ const FileElement: React.FC<FileElementProps> = memo(
               animate="show"
               exit="exit"
               key="drag-handle"
+              $color={elementsColor[format]}
             >
-              <button type="button" tabIndex={isOverlay ? -1 : undefined} {...dragHandleProps}>
+              <button
+                type="button"
+                tabIndex={isOverlay ? -1 : undefined}
+                aria-label={
+                  lang === Lang.EN ? `Reorder file ${name}` : `Изменить порядок файла ${name}`
+                }
+                {...dragHandleProps}
+              >
                 <IconDragHandle bg={elementsColor[format]} />
               </button>
             </StyledDragHandle>
@@ -301,7 +311,7 @@ const StyledDownloadElementLink = styled.a`
   }
 `;
 
-const StyledDragHandle = styled(motion.div)`
+const StyledDragHandle = styled(motion.div)<{ $color: ElementColorMode }>`
   position: absolute;
   top: 0.33rem;
   left: 0.66rem;
@@ -319,6 +329,12 @@ const StyledDragHandle = styled(motion.div)`
     -webkit-user-select: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
+    border-radius: 0.25rem;
+
+    &:focus-visible {
+      outline: 2px solid var(--icon-${(props) => props.$color}-gray);
+      outline-offset: 1px;
+    }
   }
 
   svg {
