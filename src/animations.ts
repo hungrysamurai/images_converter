@@ -128,3 +128,25 @@ export const fadeAnimation: Variants = {
     },
   },
 };
+
+// same timing as the preview icon, but without the vertical shift: the handle sits in a corner
+export const dragHandleAnimation: Variants = {
+  hidden: {
+    opacity: 0,
+  },
+  show: {
+    opacity: 1,
+    transition: {
+      ease: 'easeIn',
+      duration: 0.1,
+      delay: 0.1,
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      ease: 'easeOut',
+      duration: 0.1,
+    },
+  },
+};

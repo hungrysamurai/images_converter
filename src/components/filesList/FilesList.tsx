@@ -112,7 +112,12 @@ const FilesList: React.FC<FilesListProps> = memo(({ files, sortable = false }) =
 
   const elements = files.map((file) =>
     sortable ? (
-      <SortableFileElement key={file.id} {...getElementProps(file)} isDragActive={isDragActive} />
+      <SortableFileElement
+        key={file.id}
+        {...getElementProps(file)}
+        isDragActive={isDragActive}
+        hasHandle={files.length > 1}
+      />
     ) : (
       <FileElement key={file.id} {...getElementProps(file)} />
     ),

@@ -7,6 +7,7 @@ import { ElementColorMode } from '@/types/types';
 import { isPreviewFormat, type InputFormat } from '@/types/formats';
 
 import {
+  dragHandleAnimation,
   fileElementAnimation,
   fileInfoContainerAnimation,
   filePreviewIconAnimation,
@@ -102,15 +103,21 @@ const FileElement: React.FC<FileElementProps> = memo(
           <IconRemoveElement bg={elementsColor[format]} />
         </StyledRemoveElementButton>
 
-        {(dragHandleProps || isOverlay) && (
-          <StyledDragHandleButton
-            type="button"
-            tabIndex={isOverlay ? -1 : undefined}
-            {...dragHandleProps}
-          >
-            <IconDragHandle bg={elementsColor[format]} />
-          </StyledDragHandleButton>
-        )}
+        <AnimatePresence initial={false}>
+          {(dragHandleProps || isOverlay) && (
+            <StyledDragHandle
+              variants={dragHandleAnimation}
+              initial={isOverlay ? false : 'hidden'}
+              animate="show"
+              exit="exit"
+              key="drag-handle"
+            >
+              <button type="button" tabIndex={isOverlay ? -1 : undefined} {...dragHandleProps}>
+                <IconDragHandle bg={elementsColor[format]} />
+              </button>
+            </StyledDragHandle>
+          )}
+        </AnimatePresence>
 
         {downloadLink && (
           <StyledDownloadElementLink href={downloadLink} download={name}>
@@ -294,16 +301,20 @@ const StyledDownloadElementLink = styled.a`
   }
 `;
 
-const StyledDragHandleButton = styled.button`
+const StyledDragHandle = styled(motion.div)`
   position: absolute;
   top: 0.33rem;
   left: 0.66rem;
   display: flex;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: grab;
-  touch-action: none;
+
+  button {
+    display: flex;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: grab;
+    touch-action: none;
+  }
 
   svg {
     width: 1.25rem;

@@ -3,9 +3,12 @@ import { CSS } from '@dnd-kit/utilities';
 
 import FileElement, { type FileElementProps } from './FileElement';
 
-type SortableFileElementProps = Omit<FileElementProps, 'dragHandleProps'>;
+type SortableFileElementProps = Omit<FileElementProps, 'dragHandleProps'> & {
+  // a lone file has nothing to swap with, so it gets no handle and can't be dragged
+  hasHandle: boolean;
+};
 
-const SortableFileElement: React.FC<SortableFileElementProps> = (props) => {
+const SortableFileElement: React.FC<SortableFileElementProps> = ({ hasHandle, ...props }) => {
   const {
     attributes,
     listeners,
@@ -14,7 +17,7 @@ const SortableFileElement: React.FC<SortableFileElementProps> = (props) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: props.id });
+  } = useSortable({ id: props.id, disabled: !hasHandle });
 
   return (
     <div
@@ -27,7 +30,9 @@ const SortableFileElement: React.FC<SortableFileElementProps> = (props) => {
     >
       <FileElement
         {...props}
-        dragHandleProps={{ ...attributes, ...listeners, ref: setActivatorNodeRef }}
+        dragHandleProps={
+          hasHandle ? { ...attributes, ...listeners, ref: setActivatorNodeRef } : undefined
+        }
       />
     </div>
   );
