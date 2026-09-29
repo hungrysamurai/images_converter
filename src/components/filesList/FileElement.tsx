@@ -33,6 +33,7 @@ export type FileElementProps = {
   downloadLink?: string;
   souceFileLink?: string;
   dragHandleProps?: DragHandleProps;
+  isDragActive?: boolean;
 };
 
 const elementsColor = {
@@ -48,7 +49,7 @@ const elementsColor = {
 };
 
 const FileElement: React.FC<FileElementProps> = memo(
-  ({ id, format, size, name, downloadLink, souceFileLink, dragHandleProps }) => {
+  ({ id, format, size, name, downloadLink, souceFileLink, dragHandleProps, isDragActive }) => {
     const [previewBtn, setPreviewBtn] = useState(false);
 
     const dispatch = useAppDispatch();
@@ -69,7 +70,7 @@ const FileElement: React.FC<FileElementProps> = memo(
         initial="hidden"
         animate="show"
         exit="exit"
-        layout={!dragHandleProps}
+        layout={!isDragActive}
         $bg={format}
         $color={elementsColor[format]}
         onMouseEnter={() => {

@@ -7,7 +7,7 @@ import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import FileElement from './FileElement';
 import SortableFileElement from './SortableFileElement';
 
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { useAppDispatch } from '@/store/hooks';
 import { reorderSourceFiles } from '@/store/slices/sourceFilesSlice/sourceFilesSlice';
 import { getFileFormat } from '@/lib/utils/getFileFormat';
@@ -24,7 +24,11 @@ const FilesList: React.FC<FilesListProps> = memo(({ files, sortable = false }) =
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
 
+  const [isDragActive, setIsDragActive] = useState(false);
+
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
+    setIsDragActive(false);
+
     if (!over) return;
 
     dispatch(reorderSourceFiles({ activeId: String(active.id), overId: String(over.id) }));
@@ -41,7 +45,7 @@ const FilesList: React.FC<FilesListProps> = memo(({ files, sortable = false }) =
     };
 
     return sortable ? (
-      <SortableFileElement key={file.id} {...props} />
+      <SortableFileElement key={file.id} {...props} isDragActive={isDragActive} />
     ) : (
       <FileElement key={file.id} {...props} />
     );
@@ -56,9 +60,14 @@ const FilesList: React.FC<FilesListProps> = memo(({ files, sortable = false }) =
   }
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      onDragStart={() => setIsDragActive(true)}
+      onDragEnd={handleDragEnd}
+      onDragCancel={() => setIsDragActive(false)}
+    >
       <SortableContext items={files.map((file) => file.id)} strategy={rectSortingStrategy}>
-        <StyledFilesList>
+        <StyledFilesList layout layoutRoot>
           <AnimatePresence>{elements}</AnimatePresence>
         </StyledFilesList>
       </SortableContext>
