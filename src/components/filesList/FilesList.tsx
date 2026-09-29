@@ -7,14 +7,17 @@ import {
   MeasuringStrategy,
   PointerSensor,
   defaultDropAnimation,
+  getClientRect,
   useSensor,
   useSensors,
   type DragEndEvent,
   type DragStartEvent,
   type DropAnimation,
+  type DropAnimationKeyframeResolver,
   type DropAnimationSideEffects,
 } from '@dnd-kit/core';
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 import FileElement from './FileElement';
 import SortableFileElement from './SortableFileElement';
@@ -35,37 +38,49 @@ type FilesListProps = {
 const DROP_DURATION = 200;
 const OVERLAY_SHADOW = '0px 8px 16px 0px rgba(0, 0, 0, 0.33)';
 
-// lifted overlay card settles back to normal scale and shadow while flying into its slot
+// lifted overlay card settles back to normal scale and shadow while flying into its slot.
+// The animation is not cancelled on cleanup: the overlay is unmounted a frame later, and
+// cancelling would pop the card back to `scale(1.05)` on top of the already visible original
 const settleOverlayCard: DropAnimationSideEffects = (params) => {
   const cleanupDefault = defaultDropAnimation.sideEffects?.(params);
   const card = params.dragOverlay.node.firstElementChild;
 
-  const animation =
-    card instanceof HTMLElement
-      ? card.animate(
-          [
-            { transform: 'scale(1.05)', boxShadow: OVERLAY_SHADOW },
-            { transform: 'scale(1)', boxShadow: '0px 0px 0px 0px rgba(0, 0, 0, 0)' },
-          ],
-          { duration: DROP_DURATION, easing: 'ease', fill: 'forwards' },
-        )
-      : null;
+  if (card instanceof HTMLElement) {
+    card.animate(
+      [
+        { transform: 'scale(1.05)', boxShadow: OVERLAY_SHADOW },
+        { transform: 'scale(1)', boxShadow: '0px 0px 0px 0px rgba(0, 0, 0, 0)' },
+      ],
+      { duration: DROP_DURATION, easing: 'ease', fill: 'forwards' },
+    );
+  }
 
   return () => {
-    animation?.cancel();
     cleanupDefault?.();
   };
 };
 
+// dnd-kit skips the drop animation (and its side effects) when first and last keyframes are equal,
+// i.e. when the card is released exactly over its slot. Explicit offsets keep them distinct,
+// so the card always settles instead of snapping from the lifted state
+const dropKeyframes: DropAnimationKeyframeResolver = ({ transform: { initial, final } }) => [
+  { transform: CSS.Transform.toString(initial), offset: 0 },
+  { transform: CSS.Transform.toString(final), offset: 1 },
+];
+
 const dropAnimation: DropAnimation = {
   ...defaultDropAnimation,
   duration: DROP_DURATION,
+  keyframes: dropKeyframes,
   sideEffects: settleOverlayCard,
 };
 
-// grid keeps moving while the container autoscrolls, so slots are re-measured on every frame
+// grid keeps moving while the container autoscrolls, so slots are re-measured on every frame.
+// Overlay is measured without its lift `scale(1.05)`, otherwise the drop animation aims
+// a couple of pixels off the slot and the card jumps when the overlay is swapped for it
 const measuring = {
   droppable: { strategy: MeasuringStrategy.Always },
+  dragOverlay: { measure: (node: HTMLElement) => getClientRect(node, { ignoreTransform: true }) },
 };
 
 // `#root` and `html` are `overflow: hidden`, yet still scrollable in code: without this dnd-kit
