@@ -1,7 +1,7 @@
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { memo, useState } from 'react';
+import { memo, useState, type ButtonHTMLAttributes, type Ref } from 'react';
 
 import { ElementColorMode } from '@/types/types';
 import { isPreviewFormat, type InputFormat } from '@/types/formats';
@@ -17,16 +17,22 @@ import { removeConvertedFile } from '@/store/slices/processFilesSlice/processFil
 import { removeSourceFile } from '@/store/slices/sourceFilesSlice/sourceFilesSlice';
 
 import IconDownloadElement from '../icons/IconDownloadElement';
+import IconDragHandle from '../icons/IconDragHandle';
 import IconPreviewFile from '../icons/IconPreviewFile';
 import IconRemoveElement from '../icons/IconRemoveElement';
 
-type FileElementProps = {
+export type DragHandleProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  ref: Ref<HTMLButtonElement>;
+};
+
+export type FileElementProps = {
   id: string;
   format: InputFormat;
   size: string;
   name: string;
   downloadLink?: string;
   souceFileLink?: string;
+  dragHandleProps?: DragHandleProps;
 };
 
 const elementsColor = {
@@ -42,7 +48,7 @@ const elementsColor = {
 };
 
 const FileElement: React.FC<FileElementProps> = memo(
-  ({ id, format, size, name, downloadLink, souceFileLink }) => {
+  ({ id, format, size, name, downloadLink, souceFileLink, dragHandleProps }) => {
     const [previewBtn, setPreviewBtn] = useState(false);
 
     const dispatch = useAppDispatch();
@@ -63,7 +69,7 @@ const FileElement: React.FC<FileElementProps> = memo(
         initial="hidden"
         animate="show"
         exit="exit"
-        layout
+        layout={!dragHandleProps}
         $bg={format}
         $color={elementsColor[format]}
         onMouseEnter={() => {
@@ -76,6 +82,12 @@ const FileElement: React.FC<FileElementProps> = memo(
         <StyledRemoveElementButton onClick={() => removeElement(id)}>
           <IconRemoveElement bg={elementsColor[format]} />
         </StyledRemoveElementButton>
+
+        {dragHandleProps && (
+          <StyledDragHandleButton type="button" {...dragHandleProps}>
+            <IconDragHandle bg={elementsColor[format]} />
+          </StyledDragHandleButton>
+        )}
 
         {downloadLink && (
           <StyledDownloadElementLink href={downloadLink} download={name}>
@@ -242,6 +254,33 @@ const StyledDownloadElementLink = styled.a`
   position: absolute;
   top: 0.33rem;
   left: 0.66rem;
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  @media (max-width: 768px) {
+    top: 0.2rem;
+    left: 0.35rem;
+
+    svg {
+      width: 0.9rem;
+      height: 0.9rem;
+    }
+  }
+`;
+
+const StyledDragHandleButton = styled.button`
+  position: absolute;
+  top: 0.33rem;
+  left: 0.66rem;
+  display: flex;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: grab;
+  touch-action: none;
 
   svg {
     width: 1.25rem;

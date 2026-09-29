@@ -104,7 +104,7 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
             ref={filesListWrapperRef}
             key="uploaded-files-list"
           >
-            <FilesList files={sourceFiles} />
+            <FilesList files={sourceFiles} sortable />
           </StyledUploadedFilesListWrapper>
         )}
       </AnimatePresence>

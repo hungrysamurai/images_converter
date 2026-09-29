@@ -40,6 +40,18 @@ export const sourceFilesSlice = createSlice({
 
       return state.filter((el) => el.id !== action.payload);
     }),
+
+    reorderSourceFiles: create.reducer(
+      (state, action: PayloadAction<{ activeId: string; overId: string }>) => {
+        const from = state.findIndex((el) => el.id === action.payload.activeId);
+        const to = state.findIndex((el) => el.id === action.payload.overId);
+
+        if (from === -1 || to === -1 || from === to) return;
+
+        const [moved] = state.splice(from, 1);
+        state.splice(to, 0, moved);
+      },
+    ),
   }),
 
   selectors: {
@@ -48,7 +60,7 @@ export const sourceFilesSlice = createSlice({
   },
 });
 
-export const { addSourceFile, removeSourceFile } = sourceFilesSlice.actions;
+export const { addSourceFile, removeSourceFile, reorderSourceFiles } = sourceFilesSlice.actions;
 
 export const { getAllSourceFiles, checkPDFInSourceFiles } = sourceFilesSlice.selectors;
 

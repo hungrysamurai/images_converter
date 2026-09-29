@@ -22,6 +22,9 @@
     "postinstall": "node -e \"if(process.env.npm_execpath.indexOf('pnpm') === -1) { console.error('\\n\\x1b[31m✖ Please use pnpm to install dependencies\\x1b[0m\\n'); process.exit(1); }\""
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@reduxjs/toolkit": "^2.12.0",
     "file-saver": "^2.0.5",
     "framer-motion": "^13.4.4",
@@ -45,9 +48,9 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/utif": "^3.0.6",
-    "@typescript/native": "npm:typescript@^7.0.2",
     "@typescript-eslint/eslint-plugin": "^8.70.1",
     "@typescript-eslint/parser": "^8.70.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-react": "^6.1.1",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
