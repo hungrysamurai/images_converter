@@ -1,13 +1,13 @@
 import { nanoid } from '@reduxjs/toolkit';
 import { addConvertedFile } from '@/store/slices/processFilesSlice/processFilesSlice';
 import type { AppDispatch } from '@/store/store';
-import { MIME, type MIMEType } from '@/types/formats';
-import SVGToBitmap from './prepare/SVGToBitmap';
+import { MIME } from '@/types/formats';
 
 import { getFileFormat } from '@/lib/utils/getFileFormat';
 import WorkerPool from '@/lib/utils/WorkerPool';
 import type { ConvertTask, WorkerResponse } from './types';
 import { getOutputFormatEntry, shouldMerge } from './outputFormats';
+import { getInputFormatEntry } from './inputFormats';
 import ConversionWorker from './worker?worker';
 import runPipeline from './pipeline';
 import type {
@@ -83,14 +83,15 @@ export default class Converter {
   }
 
   private async processFile(file: SourceFile): Promise<Blob | Blob[] | void> {
-    const { blobURL, type, name, id } = file;
+    const { name, id } = file;
 
     switch (file.type) {
       case MIME.jpeg:
       case MIME.png:
       case MIME.webp:
       case MIME.bmp:
-      case MIME.heic: {
+      case MIME.heic:
+      case MIME.svg: {
         const blobs = await this.convertInPipeline(file);
 
         if (!this.mergeToOne) {
@@ -98,16 +99,6 @@ export default class Converter {
         }
 
         return blobs;
-      }
-
-      case MIME.svg: {
-        const processed = await this.convertSVG(blobURL, type, name);
-
-        if (processed && !this.mergeToOne) {
-          this.dispatchConvertedFile(processed, name, id);
-        }
-
-        return processed;
       }
 
       case MIME.tiff:
@@ -142,14 +133,6 @@ export default class Converter {
     );
   }
 
-  private async runInWorker(task: ConvertTask, transfer?: Transferable[]): Promise<Blob[]> {
-    const response = await this.workerPool.addWork({ data: task, transfer });
-
-    if (!response.ok) throw new Error(response.message);
-
-    return response.blobs;
-  }
-
   // Falls back to main thread only when the worker itself fails, not the file
   private async convertInPipeline({ blobURL, type, name }: SourceFile): Promise<Blob[]> {
     const task: ConvertTask = {
@@ -159,18 +142,26 @@ export default class Converter {
       inputSettings: this.inputSettings,
     };
     const format = getFileFormat(type).toUpperCase();
+    const prepare = getInputFormatEntry(type)?.prepare;
 
+    const bitmap = prepare && (await prepare(task));
     let response: WorkerResponse;
 
     try {
-      response = await this.workerPool.addWork({ data: task });
+      response = await this.workerPool.addWork({
+        data: { ...task, bitmap },
+        transfer: bitmap ? [bitmap] : undefined,
+      });
     } catch (err) {
       console.error(
         `Worker failed on ${format} file '${name}': ${(err as ErrorEvent).message}. Trying to process in main thread...`,
       );
 
       try {
-        return await runPipeline(task);
+        // Bitmap sent to the worker is detached, prepare it again
+        const bitmap = prepare && (await prepare(task));
+
+        return await runPipeline({ ...task, bitmap });
       } catch (err) {
         console.error(
           `Failed to process ${format} file '${name}' in main thread: ${(err as Error).message}`,
@@ -185,44 +176,6 @@ export default class Converter {
     }
 
     return response.blobs;
-  }
-
-  // Legacy decoders
-
-  private async convertSVG(
-    blobURL: string,
-    type: MIMEType,
-    fileName: string,
-  ): Promise<Blob | void> {
-    try {
-      const bitmap = await SVGToBitmap(blobURL, this.target);
-
-      const [processedInWorker] = await this.runInWorker(
-        { type, blobURL, target: this.target, inputSettings: this.inputSettings, bitmap },
-        [bitmap],
-      );
-
-      return processedInWorker;
-    } catch (err) {
-      console.error(
-        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as Error).message}. Trying to process in main thread...`,
-      );
-
-      try {
-        const decodeSVGBitmap = await import('@/lib/conversion/decoders/svg');
-
-        const bitmap = await SVGToBitmap(blobURL, this.target);
-
-        const processed = await decodeSVGBitmap.default(this.target, bitmap);
-
-        return processed;
-      } catch (err) {
-        console.error(
-          `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in main thread: ${(err as Error).message}`,
-        );
-        throw err;
-      }
-    }
   }
 
   public dispose() {
