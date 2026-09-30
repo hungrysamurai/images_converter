@@ -1,9 +1,12 @@
 import gifWorkerUrl from 'gif.js/dist/gif.worker.js?url';
-import type { OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
+import type { GIFOutputConversionSettings } from '@/store/slices/conversionSettingsSlice/types';
 
-const mergeGIF = async (collection: Blob[], target: OutputTarget<'gif'>): Promise<Blob> => {
+const mergeGIF = async (
+  collection: Blob[],
+  settings: GIFOutputConversionSettings,
+): Promise<Blob> => {
   const GIF = (await import('gif.js')).default;
-  const { quality, dither, animationDelay } = target.settings;
+  const { quality, dither, animationDelay } = settings;
 
   const gif = new GIF({
     workers: 2,

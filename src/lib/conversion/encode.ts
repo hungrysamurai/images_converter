@@ -1,38 +1,12 @@
-import encodeBMP from './encoders/encodeBMP';
-import encodeGIF from './encoders/encodeGIF';
-import encodeJPEG_PNG_WEBP from './encoders/encodeJPEG_PNG_WEBP';
-import encodePDF from './encoders/encodePDF';
-import encodeTIFF from './encoders/encodeTIFF';
+import { getOutputFormatEntry } from './outputFormats';
 import type { OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
+import type { OutputFormat } from '@/types/formats';
 
-export default async function encodeCanvas(
+export default async function encodeCanvas<F extends OutputFormat>(
   canvas: OffscreenCanvas,
-  target: OutputTarget,
+  target: OutputTarget<F>,
 ): Promise<Blob> {
-  switch (target.format) {
-    case 'jpeg':
-    case 'webp': {
-      return encodeJPEG_PNG_WEBP(canvas, target.format, target.settings.quality);
-    }
+  const encode = await getOutputFormatEntry(target).loadEncoder();
 
-    case 'png': {
-      return encodeJPEG_PNG_WEBP(canvas, target.format);
-    }
-
-    case 'bmp': {
-      return encodeBMP(canvas);
-    }
-
-    case 'tiff': {
-      return encodeTIFF(canvas);
-    }
-
-    case 'pdf': {
-      return encodePDF(canvas, target.settings);
-    }
-
-    case 'gif': {
-      return encodeGIF(canvas, target.settings);
-    }
-  }
+  return encode(canvas, target.settings);
 }

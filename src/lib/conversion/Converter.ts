@@ -7,6 +7,7 @@ import SVGToBitmap from './prepare/SVGToBitmap';
 import { getFileFormat } from '@/lib/utils/getFileFormat';
 import WorkerPool from '@/lib/utils/WorkerPool';
 import type { ConvertTask, ConvertTaskResult } from './types';
+import { getOutputFormatEntry, shouldMerge } from './outputFormats';
 import ConversionWorker from './worker?worker';
 import type { OutputTarget, PDFInputSettings } from '@/store/slices/conversionSettingsSlice/types';
 import type { SourceFile } from '@/types/files';
@@ -23,7 +24,7 @@ export default class Converter {
     private readonly pdfInputSettings: PDFInputSettings,
     private UIDispatcher: AppDispatch,
   ) {
-    this.mergeToOne = 'merge' in target.settings && target.settings.merge;
+    this.mergeToOne = shouldMerge(target);
   }
 
   public async convert(sourceFiles: SourceFile[]): Promise<void> {
@@ -54,47 +55,23 @@ export default class Converter {
   }
 
   private async merge() {
-    switch (this.target.format) {
-      case 'pdf':
-        {
-          const mergePDF = await import('@/lib/conversion/aggregators/pdf');
+    const loadAggregator = getOutputFormatEntry(this.target).loadAggregator;
+    if (!loadAggregator) return;
 
-          const merged = await mergePDF.default(this.collection);
+    const aggregate = await loadAggregator();
+    const merged = await aggregate(this.collection, this.target.settings);
 
-          const URL = window.URL.createObjectURL(merged);
-          this.UIDispatcher(
-            addConvertedFile({
-              blobURL: URL,
-              downloadLink: URL,
-              name: `Merged-${Date.now()}`,
-              size: merged.size,
-              type: MIME[this.target.format],
-              id: nanoid(),
-            }),
-          );
-        }
-        break;
-
-      case 'gif':
-        {
-          const mergeGIF = await import('@/lib/conversion/aggregators/gif');
-
-          const merged = await mergeGIF.default(this.collection, this.target);
-
-          const URL = window.URL.createObjectURL(merged);
-          this.UIDispatcher(
-            addConvertedFile({
-              blobURL: URL,
-              downloadLink: URL,
-              name: `Merged-${Date.now()}`,
-              size: merged.size,
-              type: MIME[this.target.format],
-              id: nanoid(),
-            }),
-          );
-        }
-        break;
-    }
+    const URL = window.URL.createObjectURL(merged);
+    this.UIDispatcher(
+      addConvertedFile({
+        blobURL: URL,
+        downloadLink: URL,
+        name: `Merged-${Date.now()}`,
+        size: merged.size,
+        type: MIME[this.target.format],
+        id: nanoid(),
+      }),
+    );
   }
 
   private async processFile(file: SourceFile): Promise<Blob | Blob[] | void> {
