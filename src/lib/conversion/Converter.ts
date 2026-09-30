@@ -1,18 +1,19 @@
 import { nanoid } from '@reduxjs/toolkit';
-import { addConvertedFile } from '../store/slices/processFilesSlice/processFilesSlice';
-import type { AppDispatch } from '../store/store';
+import { addConvertedFile } from '@/store/slices/processFilesSlice/processFilesSlice';
+import type { AppDispatch } from '@/store/store';
 import { MIME, type MIMEType } from '@/types/formats';
-import SVGToBitmap from './utils/SVGToBitmap';
+import SVGToBitmap from './prepare/SVGToBitmap';
 
-import { getFileFormat } from './utils/getFileFormat';
-import WorkerPool from './utils/WorkerPool/WorkerPool';
-import type { ConvertTask, ConvertTaskResult } from './utils/WorkerPool/types';
+import { getFileFormat } from '@/lib/utils/getFileFormat';
+import WorkerPool from '@/lib/utils/WorkerPool';
+import type { ConvertTask, ConvertTaskResult } from './types';
+import ConversionWorker from './worker?worker';
 import type { OutputTarget, PDFInputSettings } from '@/store/slices/conversionSettingsSlice/types';
 import type { SourceFile } from '@/types/files';
 
 export default class Converter {
   private collection: Blob[] = [];
-  private workerPool = new WorkerPool<ConvertTask, ConvertTaskResult>();
+  private workerPool = new WorkerPool<ConvertTask, ConvertTaskResult>(() => new ConversionWorker());
   private processTasks: Promise<Blob | Blob[] | void>[] = [];
   private readonly mergeToOne: boolean;
 
@@ -56,7 +57,7 @@ export default class Converter {
     switch (this.target.format) {
       case 'pdf':
         {
-          const mergePDF = await import('@/lib/aggregators/pdf');
+          const mergePDF = await import('@/lib/conversion/aggregators/pdf');
 
           const merged = await mergePDF.default(this.collection);
 
@@ -76,7 +77,7 @@ export default class Converter {
 
       case 'gif':
         {
-          const mergeGIF = await import('@/lib/aggregators/gif');
+          const mergeGIF = await import('@/lib/conversion/aggregators/gif');
 
           const merged = await mergeGIF.default(this.collection, this.target);
 
@@ -218,7 +219,8 @@ export default class Converter {
       );
 
       try {
-        const decodeJPEG_PNG_WEBP = await import('@/lib/decoders/singlePage/jpeg_webp_png');
+        const decodeJPEG_PNG_WEBP =
+          await import('@/lib/conversion/decoders/singlePage/jpeg_webp_png');
 
         const processed = await decodeJPEG_PNG_WEBP.default(blobURL, this.target);
 
@@ -253,7 +255,7 @@ export default class Converter {
       );
 
       try {
-        const decodeBMP = await import('@/lib/decoders/singlePage/bmp');
+        const decodeBMP = await import('@/lib/conversion/decoders/singlePage/bmp');
 
         const processed = await decodeBMP.default(blobURL, this.target);
 
@@ -287,7 +289,7 @@ export default class Converter {
       );
 
       try {
-        const decodeHEIC = await import('@/lib/decoders/singlePage/heic');
+        const decodeHEIC = await import('@/lib/conversion/decoders/singlePage/heic');
 
         const processed = await decodeHEIC.default(blobURL, this.target);
 
@@ -326,7 +328,7 @@ export default class Converter {
       );
 
       try {
-        const decodeSVGBitmap = await import('@/lib/decoders/singlePage/svg');
+        const decodeSVGBitmap = await import('@/lib/conversion/decoders/singlePage/svg');
 
         const bitmap = await SVGToBitmap(blobURL, this.target);
 
@@ -390,7 +392,7 @@ export default class Converter {
       );
 
       try {
-        const decodeTIFF = await import('@/lib/decoders/multiPage/tiff');
+        const decodeTIFF = await import('@/lib/conversion/decoders/multiPage/tiff');
 
         const pagesBlobs = await decodeTIFF.default(blobURL, this.target);
 
@@ -426,7 +428,7 @@ export default class Converter {
       );
 
       try {
-        const decodePDF = await import('@/lib/decoders/multiPage/pdf');
+        const decodePDF = await import('@/lib/conversion/decoders/multiPage/pdf');
 
         const pagesBlobs = await decodePDF.default(blobURL, this.target, this.pdfInputSettings);
 
@@ -461,7 +463,7 @@ export default class Converter {
       );
 
       try {
-        const decodeGIF = await import('@/lib/decoders/multiPage/gif');
+        const decodeGIF = await import('@/lib/conversion/decoders/multiPage/gif');
         const pagesBlobs = await decodeGIF.default(blobURL, this.target);
 
         return pagesBlobs;

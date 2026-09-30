@@ -1,4 +1,4 @@
-import encodeCanvas from '@/lib/encode';
+import encodeCanvas from '@/lib/conversion/encode';
 import type { OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
 
 const decodeSVGBitmap = async (target: OutputTarget, bmp: ImageBitmap): Promise<Blob> => {

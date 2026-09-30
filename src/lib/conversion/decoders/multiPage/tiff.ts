@@ -1,4 +1,4 @@
-import encodeCanvas from '@/lib/encode';
+import encodeCanvas from '@/lib/conversion/encode';
 import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
 import type { OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
 

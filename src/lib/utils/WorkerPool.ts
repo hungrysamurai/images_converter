@@ -1,5 +1,3 @@
-import WorkerConstructor from './worker?worker';
-
 /**
  * Describes a task to be executed by a Web Worker.
  * @template TIn - The type of data to be passed to the worker.
@@ -46,12 +44,11 @@ export default class WorkerPool<TIn, TOut> {
   /**
    * Creates a new instance of the WorkerPool.
    *
-   * @param workerUrl - URL of the JavaScript module for the worker.
+   * @param createWorker - Factory that spawns a new worker instance.
    */
-  constructor() {
+  constructor(createWorker: () => Worker) {
     for (let i = 0; i < this.NUM_WORKERS; i++) {
-      // const worker = new Worker(mainWorker, { type: 'module' });
-      const worker = new WorkerConstructor();
+      const worker = createWorker();
 
       worker.onmessage = (message) => {
         this._handleWorkerDone(worker, null, message.data);

@@ -2,7 +2,7 @@ import { asyncThunkCreator, buildCreateSlice, current, PayloadAction } from '@re
 
 import { AppDispatch, RootState } from '@/store/store';
 
-import Converter from '@/lib/Converter';
+import Converter from '@/lib/conversion/Converter';
 import { zipAndSave } from '@/lib/utils/zipAndSave';
 import {
   getActiveOutputTarget,

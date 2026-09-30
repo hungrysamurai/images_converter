@@ -1,5 +1,5 @@
 import PdfJsWorker from 'pdfjs-dist/build/pdf.worker.mjs?worker';
-import encodeCanvas from '@/lib/encode';
+import encodeCanvas from '@/lib/conversion/encode';
 import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
 import type { OutputTarget, PDFInputSettings } from '@/store/slices/conversionSettingsSlice/types';
 
