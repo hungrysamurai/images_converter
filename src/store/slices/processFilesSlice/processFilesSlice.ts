@@ -6,7 +6,7 @@ import Converter from '@/lib/conversion/Converter';
 import { zipAndSave } from '@/lib/utils/zipAndSave';
 import {
   getActiveOutputTarget,
-  getPDFInputSettings,
+  getInputSettings,
 } from '@/store/slices/conversionSettingsSlice/conversionSettingsSlice';
 import type { ProcessedFile } from '@/types/files';
 
@@ -36,7 +36,7 @@ const processFilesSlice = createProcessFilesSlice({
 
         const converter = new Converter(
           getActiveOutputTarget(state),
-          getPDFInputSettings(state),
+          getInputSettings(state),
           dispatch,
         );
 

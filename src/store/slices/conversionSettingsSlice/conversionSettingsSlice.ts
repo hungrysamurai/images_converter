@@ -122,6 +122,7 @@ export const conversionSettingsSlice = createSlice({
       ],
       toOutputTarget,
     ),
+    getInputSettings: (state) => state.inputSettings,
     getPDFInputSettings: (state) => state.inputSettings.pdf,
   },
 });
@@ -144,7 +145,11 @@ export const {
   setPDFRotation,
 } = conversionSettingsSlice.actions;
 
-export const { getActiveTargetFormatName, getActiveOutputTarget, getPDFInputSettings } =
-  conversionSettingsSlice.selectors;
+export const {
+  getActiveTargetFormatName,
+  getActiveOutputTarget,
+  getInputSettings,
+  getPDFInputSettings,
+} = conversionSettingsSlice.selectors;
 
 export default conversionSettingsSlice.reducer;

@@ -10,114 +10,63 @@ import { getOutputFormatEntry, shouldMerge } from './outputFormats';
 import { getInputFormatEntry } from './inputFormats';
 import ConversionWorker from './worker?worker';
 import runPipeline from './pipeline';
-import type {
-  InputSettings,
-  OutputTarget,
-  PDFInputSettings,
-} from '@/store/slices/conversionSettingsSlice/types';
+import type { InputSettings, OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
 import type { SourceFile } from '@/types/files';
 
 export default class Converter {
-  private collection: Blob[] = [];
   private workerPool = new WorkerPool<ConvertTask, WorkerResponse>(() => new ConversionWorker());
-  private processTasks: Promise<Blob | Blob[] | void>[] = [];
   private readonly mergeToOne: boolean;
-  private readonly inputSettings: InputSettings;
 
-  // TODO: DRY decoders functions into ONE
   constructor(
     private readonly target: OutputTarget,
-    pdfInputSettings: PDFInputSettings,
+    private readonly inputSettings: InputSettings,
     private UIDispatcher: AppDispatch,
   ) {
     this.mergeToOne = shouldMerge(target);
-    // TODO: store will pass the whole input settings object
-    this.inputSettings = { pdf: pdfInputSettings };
   }
 
   public async convert(sourceFiles: SourceFile[]): Promise<void> {
-    for (const source of sourceFiles) {
-      const task = this.processFile(source);
-      this.processTasks.push(task);
-    }
+    // A failed file must not block the others
+    const results = await Promise.allSettled(sourceFiles.map((file) => this.processFile(file)));
 
-    if (this.mergeToOne) {
-      const tasksQueue = await Promise.allSettled(this.processTasks);
+    if (!this.mergeToOne) return;
 
-      tasksQueue.forEach((blob) => {
-        if (blob.status === 'fulfilled' && blob.value) {
-          if (Array.isArray(blob.value)) {
-            blob.value.forEach((blob) => this.collection.push(blob));
-          } else {
-            this.collection.push(blob.value);
-          }
-        }
-      });
+    const collection = results.flatMap((result) =>
+      result.status === 'fulfilled' ? result.value : [],
+    );
 
-      if (this.collection.length > 0) {
-        await this.merge();
-      }
-    } else {
-      await Promise.allSettled(this.processTasks);
+    if (collection.length > 0) {
+      await this.merge(collection);
     }
   }
 
-  private async merge() {
+  private async merge(blobs: Blob[]) {
     const loadAggregator = getOutputFormatEntry(this.target).loadAggregator;
     if (!loadAggregator) return;
 
     const aggregate = await loadAggregator();
-    const merged = await aggregate(this.collection, this.target.settings);
+    const merged = await aggregate(blobs, this.target.settings);
 
-    const URL = window.URL.createObjectURL(merged);
-    this.UIDispatcher(
-      addConvertedFile({
-        blobURL: URL,
-        downloadLink: URL,
-        name: `Merged-${Date.now()}`,
-        size: merged.size,
-        type: MIME[this.target.format],
-        id: nanoid(),
-      }),
-    );
+    this.dispatchConvertedFile(merged, `Merged-${Date.now()}`);
   }
 
-  private async processFile(file: SourceFile): Promise<Blob | Blob[] | void> {
-    const { name, id } = file;
+  private async processFile(file: SourceFile): Promise<Blob[]> {
+    const blobs = await this.runTask(file);
 
-    switch (file.type) {
-      case MIME.jpeg:
-      case MIME.png:
-      case MIME.webp:
-      case MIME.bmp:
-      case MIME.heic:
-      case MIME.svg: {
-        const blobs = await this.convertInPipeline(file);
-
-        if (!this.mergeToOne) {
-          blobs.forEach((blob) => this.dispatchConvertedFile(blob, name, id));
-        }
-
-        return blobs;
-      }
-
-      case MIME.tiff:
-      case MIME.gif:
-      case MIME.pdf: {
-        const pages = await this.convertInPipeline(file);
-
-        if (!this.mergeToOne) {
-          pages.forEach((page, index) =>
-            this.dispatchConvertedFile(page, `${name}_${index + 1}`, id),
-          );
-        }
-
-        return pages;
-      }
+    if (!this.mergeToOne) {
+      blobs.forEach((blob, index) =>
+        this.dispatchConvertedFile(
+          blob,
+          blobs.length > 1 ? `${file.name}_${index + 1}` : file.name,
+          file.id,
+        ),
+      );
     }
+
+    return blobs;
   }
 
-  private dispatchConvertedFile(blob: Blob, name: string, sourceId: string) {
+  private dispatchConvertedFile(blob: Blob, name: string, sourceId?: string) {
     const URL = window.URL.createObjectURL(blob);
 
     this.UIDispatcher(
@@ -134,7 +83,7 @@ export default class Converter {
   }
 
   // Falls back to main thread only when the worker itself fails, not the file
-  private async convertInPipeline({ blobURL, type, name }: SourceFile): Promise<Blob[]> {
+  private async runTask({ blobURL, type, name }: SourceFile): Promise<Blob[]> {
     const task: ConvertTask = {
       type,
       blobURL,
