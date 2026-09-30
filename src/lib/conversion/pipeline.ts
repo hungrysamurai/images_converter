@@ -1,21 +1,9 @@
-import { MIME } from '@/types/formats';
 import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
+import { getCanvasWithWhiteBackground } from '@/lib/utils/getCanvasWithWhiteBackground';
 import encodeCanvas from './encode';
 import { getInputFormatEntry } from './inputFormats';
 import { getOutputFormatEntry } from './outputFormats';
 import type { ConvertTask } from './types';
-
-// TODO: temporary SVG-only white background, becomes a shared helper for all inputs
-const withWhiteBackground = (canvas: OffscreenCanvas): OffscreenCanvas => {
-  const result = new OffscreenCanvas(canvas.width, canvas.height);
-  const ctx = result.getContext('2d') as OffscreenCanvasRenderingContext2D;
-
-  ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, result.width, result.height);
-  ctx.drawImage(canvas, 0, 0);
-
-  return result;
-};
 
 // Shared by the worker and the main thread fallback
 export default async function runPipeline(task: ConvertTask): Promise<Blob[]> {
@@ -24,7 +12,8 @@ export default async function runPipeline(task: ConvertTask): Promise<Blob[]> {
 
   const decode = await entry.loadDecoder();
   const { resize, units, smoothing, targetWidth, targetHeight } = task.target.settings;
-  const needsBackground = task.type === MIME.svg && !getOutputFormatEntry(task.target).alpha;
+  // Output without alpha channel would turn transparent pixels black
+  const needsBackground = !getOutputFormatEntry(task.target).alpha;
 
   const blobs: Blob[] = [];
 
@@ -41,7 +30,7 @@ export default async function runPipeline(task: ConvertTask): Promise<Blob[]> {
     }
 
     if (needsBackground) {
-      canvas = withWhiteBackground(canvas);
+      canvas = getCanvasWithWhiteBackground(canvas);
     }
 
     blobs.push(await encodeCanvas(canvas, task.target));
