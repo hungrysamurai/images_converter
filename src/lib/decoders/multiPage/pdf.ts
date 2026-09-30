@@ -29,7 +29,9 @@ const decodePDF = async (
         const newDocument = await PDFDocument.create();
         const [copiedPage] = await newDocument.copyPages(pdfDoc, [index]);
 
-        copiedPage.setRotation(degrees(rotation));
+        // Add user rotation on top of the page's own /Rotate instead of overwriting it
+        const pageRotation = copiedPage.getRotation().angle;
+        copiedPage.setRotation(degrees((((pageRotation + rotation) % 360) + 360) % 360));
 
         newDocument.addPage(copiedPage);
 
@@ -72,9 +74,10 @@ const decodePDF = async (
       const page = await pdf.getPage(i);
       const scale = resolution / 72;
 
+      // Add user rotation on top of the page's own /Rotate instead of overwriting it
       const viewport = page.getViewport({
         scale,
-        rotation,
+        rotation: (page.rotate + rotation) % 360,
         dontFlip: false,
       });
 
