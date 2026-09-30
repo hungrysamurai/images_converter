@@ -1,6 +1,4 @@
-import encodeCanvas from '@/lib/conversion/encode';
-import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
-import type { OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
+import type { ConvertTask, Frame } from '../types';
 
 interface Bitmap {
   stride: number;
@@ -27,11 +25,9 @@ interface Bitmap {
   };
 }
 
-const decodeBMP = async (blobURL: string, target: OutputTarget): Promise<Blob> => {
+export default async function* decodeBMP({ blobURL }: ConvertTask): AsyncGenerator<Frame> {
   const file = await fetch(blobURL);
   const arrayBuffer = await file.arrayBuffer();
-
-  const { resize, units, smoothing, targetHeight, targetWidth } = target.settings;
 
   const dataView = new DataView(arrayBuffer);
   const bitmap: Bitmap = {
@@ -85,7 +81,7 @@ const decodeBMP = async (blobURL: string, target: OutputTarget): Promise<Blob> =
   const width = bitmap.infoheader.biWidth;
   const height = bitmap.infoheader.biHeight;
 
-  let canvas = new OffscreenCanvas(width, height);
+  const canvas = new OffscreenCanvas(width, height);
   const ctx = canvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
 
   const imageData = ctx.createImageData(width, height);
@@ -106,13 +102,5 @@ const decodeBMP = async (blobURL: string, target: OutputTarget): Promise<Blob> =
 
   ctx.putImageData(imageData, 0, 0);
 
-  if (resize) {
-    canvas = getResizedCanvas(canvas, smoothing, units, targetWidth, targetHeight);
-  }
-
-  const encoded = await encodeCanvas(canvas, target);
-
-  return encoded;
-};
-
-export default decodeBMP;
+  yield canvas;
+}

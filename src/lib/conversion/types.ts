@@ -9,4 +9,9 @@ export interface ConvertTask {
   bitmap?: ImageBitmap;
 }
 
-export type ConvertTaskResult = Blob | Blob[];
+// Ready Blob frames pass through the pipeline untouched
+export type Frame = OffscreenCanvas | Blob;
+
+export type Decoder = (task: ConvertTask) => AsyncGenerator<Frame>;
+
+export type WorkerResponse = { ok: true; blobs: Blob[] } | { ok: false; message: string };

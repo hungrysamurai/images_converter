@@ -6,15 +6,16 @@ import SVGToBitmap from './prepare/SVGToBitmap';
 
 import { getFileFormat } from '@/lib/utils/getFileFormat';
 import WorkerPool from '@/lib/utils/WorkerPool';
-import type { ConvertTask, ConvertTaskResult } from './types';
+import type { ConvertTask, WorkerResponse } from './types';
 import { getOutputFormatEntry, shouldMerge } from './outputFormats';
 import ConversionWorker from './worker?worker';
+import runPipeline from './pipeline';
 import type { OutputTarget, PDFInputSettings } from '@/store/slices/conversionSettingsSlice/types';
 import type { SourceFile } from '@/types/files';
 
 export default class Converter {
   private collection: Blob[] = [];
-  private workerPool = new WorkerPool<ConvertTask, ConvertTaskResult>(() => new ConversionWorker());
+  private workerPool = new WorkerPool<ConvertTask, WorkerResponse>(() => new ConversionWorker());
   private processTasks: Promise<Blob | Blob[] | void>[] = [];
   private readonly mergeToOne: boolean;
 
@@ -75,40 +76,32 @@ export default class Converter {
   }
 
   private async processFile(file: SourceFile): Promise<Blob | Blob[] | void> {
-    const { blobURL, type, name } = file;
+    const { blobURL, type, name, id } = file;
 
     switch (file.type) {
       case MIME.jpeg:
       case MIME.png:
       case MIME.webp:
       case MIME.bmp:
-      case MIME.svg:
-      case MIME.heic:
-        {
-          const processed = await this.processSinglePageFile(blobURL, type, name);
-          if (processed) {
-            if (!this.mergeToOne) {
-              const { name, id } = file;
+      case MIME.heic: {
+        const blobs = await this.convertInPipeline(file);
 
-              const size = processed.size;
-              const URL = window.URL.createObjectURL(processed);
-
-              this.UIDispatcher(
-                addConvertedFile({
-                  blobURL: URL,
-                  downloadLink: URL,
-                  name,
-                  size,
-                  type: MIME[this.target.format],
-                  id: nanoid(),
-                  sourceId: id,
-                }),
-              );
-            }
-            return processed;
-          }
+        if (!this.mergeToOne) {
+          blobs.forEach((blob) => this.dispatchConvertedFile(blob, name, id));
         }
-        break;
+
+        return blobs;
+      }
+
+      case MIME.svg: {
+        const processed = await this.convertSVG(blobURL, type, name);
+
+        if (processed && !this.mergeToOne) {
+          this.dispatchConvertedFile(processed, name, id);
+        }
+
+        return processed;
+      }
 
       case MIME.tiff:
       case MIME.gif:
@@ -117,24 +110,9 @@ export default class Converter {
 
         if (Array.isArray(processedPages) && processedPages.length > 0) {
           if (!this.mergeToOne) {
-            for (const [index, blobPage] of processedPages.entries()) {
-              const { name, id } = file;
-
-              const size = blobPage.size;
-              const URL = window.URL.createObjectURL(blobPage);
-
-              this.UIDispatcher(
-                addConvertedFile({
-                  blobURL: URL,
-                  downloadLink: URL,
-                  name: `${name}_${index + 1}`,
-                  size,
-                  type: MIME[this.target.format],
-                  id: nanoid(),
-                  sourceId: id,
-                }),
-              );
-            }
+            processedPages.forEach((blobPage, index) =>
+              this.dispatchConvertedFile(blobPage, `${name}_${index + 1}`, id),
+            );
           }
 
           return processedPages;
@@ -143,142 +121,63 @@ export default class Converter {
     }
   }
 
-  // Single page
+  private dispatchConvertedFile(blob: Blob, name: string, sourceId: string) {
+    const URL = window.URL.createObjectURL(blob);
 
-  private async processSinglePageFile(
-    blobURL: string,
-    type: MIMEType,
-    fileName: string,
-  ): Promise<Blob | void> {
-    switch (type) {
-      case MIME.jpeg:
-      case MIME.png:
-      case MIME.webp: {
-        return this.convertJPEG_WEBP_PNG(blobURL, type, fileName);
-      }
-
-      case MIME.bmp: {
-        return this.convertBMP(blobURL, type, fileName);
-      }
-
-      case MIME.heic: {
-        return this.convertHEIC(blobURL, type, fileName);
-      }
-
-      case MIME.svg: {
-        return this.convertSVG(blobURL, type, fileName);
-      }
-
-      default: {
-        throw new Error(`Unknown file format: ${type}`);
-      }
-    }
+    this.UIDispatcher(
+      addConvertedFile({
+        blobURL: URL,
+        downloadLink: URL,
+        name,
+        size: blob.size,
+        type: MIME[this.target.format],
+        id: nanoid(),
+        sourceId,
+      }),
+    );
   }
 
-  private async convertJPEG_WEBP_PNG(
-    blobURL: string,
-    type: MIMEType,
-    fileName: string,
-  ): Promise<Blob | void> {
-    try {
-      const processedInWorker = await this.workerPool.addWork({
-        data: {
-          type,
-          blobURL,
-          target: this.target,
-        },
-      });
+  private async runInWorker(task: ConvertTask, transfer?: Transferable[]): Promise<Blob[]> {
+    const response = await this.workerPool.addWork({ data: task, transfer });
 
-      return processedInWorker as Blob;
+    if (!response.ok) throw new Error(response.message);
+
+    return response.blobs;
+  }
+
+  // Falls back to main thread only when the worker itself fails, not the file
+  private async convertInPipeline({ blobURL, type, name }: SourceFile): Promise<Blob[]> {
+    const task: ConvertTask = { type, blobURL, target: this.target };
+    const format = getFileFormat(type).toUpperCase();
+
+    let response: WorkerResponse;
+
+    try {
+      response = await this.workerPool.addWork({ data: task });
     } catch (err) {
       console.error(
-        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as ErrorEvent).message}.Trying to process in main thread...`,
+        `Worker failed on ${format} file '${name}': ${(err as ErrorEvent).message}. Trying to process in main thread...`,
       );
 
       try {
-        const decodeJPEG_PNG_WEBP =
-          await import('@/lib/conversion/decoders/singlePage/jpeg_webp_png');
-
-        const processed = await decodeJPEG_PNG_WEBP.default(blobURL, this.target);
-
-        return processed;
+        return await runPipeline(task);
       } catch (err) {
         console.error(
-          `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in main thread: ${(err as Error).message}`,
+          `Failed to process ${format} file '${name}' in main thread: ${(err as Error).message}`,
         );
         throw err;
       }
     }
-  }
 
-  private async convertBMP(
-    blobURL: string,
-    type: MIMEType,
-    fileName: string,
-  ): Promise<Blob | void> {
-    try {
-      const processedInWorker = await this.workerPool.addWork({
-        data: {
-          type,
-          blobURL,
-          target: this.target,
-        },
-      });
-
-      return processedInWorker as Blob;
-    } catch (err) {
-      console.error(
-        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as ErrorEvent).message}.Trying to process in main thread...`,
-      );
-
-      try {
-        const decodeBMP = await import('@/lib/conversion/decoders/singlePage/bmp');
-
-        const processed = await decodeBMP.default(blobURL, this.target);
-
-        return processed;
-      } catch (err) {
-        console.error(
-          `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in main thread: ${(err as Error).message}`,
-        );
-        throw err;
-      }
+    if (!response.ok) {
+      console.error(`Failed to process ${format} file '${name}': ${response.message}`);
+      throw new Error(response.message);
     }
+
+    return response.blobs;
   }
 
-  private async convertHEIC(
-    blobURL: string,
-    type: MIMEType,
-    fileName: string,
-  ): Promise<Blob | void> {
-    try {
-      const processedInWorker = await this.workerPool.addWork({
-        data: {
-          type,
-          blobURL,
-          target: this.target,
-        },
-      });
-      return processedInWorker as Blob;
-    } catch (err) {
-      console.error(
-        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as ErrorEvent).message}.Trying to process in main thread...`,
-      );
-
-      try {
-        const decodeHEIC = await import('@/lib/conversion/decoders/singlePage/heic');
-
-        const processed = await decodeHEIC.default(blobURL, this.target);
-
-        return processed;
-      } catch (err) {
-        console.error(
-          `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in main thread: ${(err as Error).message}`,
-        );
-        throw err;
-      }
-    }
-  }
+  // Legacy decoders
 
   private async convertSVG(
     blobURL: string,
@@ -288,20 +187,15 @@ export default class Converter {
     try {
       const bitmap = await SVGToBitmap(blobURL, this.target);
 
-      const processedInWorker = await this.workerPool.addWork({
-        data: {
-          type,
-          blobURL,
-          target: this.target,
-          bitmap,
-        },
-        transfer: [bitmap],
-      });
+      const [processedInWorker] = await this.runInWorker(
+        { type, blobURL, target: this.target, bitmap },
+        [bitmap],
+      );
 
-      return processedInWorker as Blob;
+      return processedInWorker;
     } catch (err) {
       console.error(
-        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as ErrorEvent).message}.Trying to process in main thread...`,
+        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as Error).message}. Trying to process in main thread...`,
       );
 
       try {
@@ -354,18 +248,10 @@ export default class Converter {
     fileName: string,
   ): Promise<Blob[] | void> {
     try {
-      const pagesBlobsProcessedInWorker = await this.workerPool.addWork({
-        data: {
-          type,
-          blobURL,
-          target: this.target,
-        },
-      });
-
-      return pagesBlobsProcessedInWorker as Blob[];
+      return await this.runInWorker({ type, blobURL, target: this.target });
     } catch (err) {
       console.error(
-        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as ErrorEvent).message}.Trying to process in main thread...`,
+        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as Error).message}. Trying to process in main thread...`,
       );
 
       try {
@@ -389,19 +275,15 @@ export default class Converter {
     fileName: string,
   ): Promise<Blob[] | void> {
     try {
-      const pagesBlobsProcessedInWorker = await this.workerPool.addWork({
-        data: {
-          type,
-          blobURL,
-          target: this.target,
-          pdfInputSettings: this.pdfInputSettings,
-        },
+      return await this.runInWorker({
+        type,
+        blobURL,
+        target: this.target,
+        pdfInputSettings: this.pdfInputSettings,
       });
-
-      return pagesBlobsProcessedInWorker as Blob[];
     } catch (err) {
       console.error(
-        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as ErrorEvent).message}.Trying to process in main thread...`,
+        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as Error).message}. Trying to process in main thread...`,
       );
 
       try {
@@ -425,18 +307,10 @@ export default class Converter {
     fileName: string,
   ): Promise<Blob[] | void> {
     try {
-      const pagesBlobsProcessedInWorker = await this.workerPool.addWork({
-        data: {
-          type,
-          blobURL,
-          target: this.target,
-        },
-      });
-
-      return pagesBlobsProcessedInWorker as Blob[];
+      return await this.runInWorker({ type, blobURL, target: this.target });
     } catch (err) {
       console.error(
-        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as ErrorEvent).message}.Trying to process in main thread...`,
+        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as Error).message}. Trying to process in main thread...`,
       );
 
       try {

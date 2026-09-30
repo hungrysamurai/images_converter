@@ -1,80 +1,58 @@
 import { MIME } from '@/types/formats';
-import type { ConvertTask, ConvertTaskResult } from './types';
+import { getInputFormatEntry } from './inputFormats';
+import runPipeline from './pipeline';
+import type { ConvertTask, WorkerResponse } from './types';
 
-self.addEventListener('message', async (e: MessageEvent<ConvertTask>) => {
-  const { type, blobURL, target, pdfInputSettings, bitmap } = e.data;
+// TODO: legacy dispatch for formats not yet migrated to the pipeline
+const runLegacyDecoder = async (task: ConvertTask): Promise<Blob[]> => {
+  const { type, blobURL, target, pdfInputSettings, bitmap } = task;
 
-  try {
-    let result: ConvertTaskResult;
+  switch (type) {
+    case MIME.svg: {
+      if (!bitmap) throw new Error('Missing bitmap for SVG conversion');
 
-    switch (type) {
-      case MIME.jpeg:
-      case MIME.png:
-      case MIME.webp: {
-        const decodeJPEG_WEBP_PNG =
-          await import('@/lib/conversion/decoders/singlePage/jpeg_webp_png');
+      const decodeSVGBitmap = await import('@/lib/conversion/decoders/singlePage/svg');
 
-        result = await decodeJPEG_WEBP_PNG.default(blobURL, target);
-
-        break;
-      }
-
-      case MIME.bmp: {
-        const decodeBMP = await import('@/lib/conversion/decoders/singlePage/bmp');
-
-        result = await decodeBMP.default(blobURL, target);
-
-        break;
-      }
-
-      case MIME.heic: {
-        const decodeHEIC = await import('@/lib/conversion/decoders/singlePage/heic');
-
-        result = await decodeHEIC.default(blobURL, target);
-
-        break;
-      }
-
-      case MIME.svg: {
-        if (!bitmap) throw new Error('Missing bitmap for SVG conversion');
-
-        const decodeSVGBitmap = await import('@/lib/conversion/decoders/singlePage/svg');
-
-        result = await decodeSVGBitmap.default(target, bitmap);
-        break;
-      }
-
-      case MIME.tiff: {
-        const TIFFPagesToBlobs = await import('@/lib/conversion/decoders/multiPage/tiff');
-
-        result = await TIFFPagesToBlobs.default(blobURL, target);
-
-        break;
-      }
-
-      case MIME.pdf: {
-        if (!pdfInputSettings) throw new Error('Missing pdfInputSettings for PDF conversion');
-        const PDFPagesToBlobs = await import('@/lib/conversion/decoders/multiPage/pdf');
-
-        result = await PDFPagesToBlobs.default(blobURL, target, pdfInputSettings);
-        break;
-      }
-
-      case MIME.gif: {
-        const decodeGIF = await import('@/lib/conversion/decoders/multiPage/gif');
-
-        result = await decodeGIF.default(blobURL, target);
-        break;
-      }
-
-      default:
-        throw new Error(`Unsupported file type: ${type}`);
+      return [await decodeSVGBitmap.default(target, bitmap)];
     }
 
-    postMessage(result);
-  } catch (err) {
-    setTimeout(() => {
-      throw err;
-    });
+    case MIME.tiff: {
+      const TIFFPagesToBlobs = await import('@/lib/conversion/decoders/multiPage/tiff');
+
+      return TIFFPagesToBlobs.default(blobURL, target);
+    }
+
+    case MIME.pdf: {
+      if (!pdfInputSettings) throw new Error('Missing pdfInputSettings for PDF conversion');
+      const PDFPagesToBlobs = await import('@/lib/conversion/decoders/multiPage/pdf');
+
+      return PDFPagesToBlobs.default(blobURL, target, pdfInputSettings);
+    }
+
+    case MIME.gif: {
+      const decodeGIF = await import('@/lib/conversion/decoders/multiPage/gif');
+
+      return decodeGIF.default(blobURL, target);
+    }
+
+    default:
+      throw new Error(`Unsupported file type: ${type}`);
   }
+};
+
+self.addEventListener('message', async (e: MessageEvent<ConvertTask>) => {
+  const task = e.data;
+  let response: WorkerResponse;
+
+  try {
+    const blobs = getInputFormatEntry(task.type)
+      ? await runPipeline(task)
+      : await runLegacyDecoder(task);
+
+    response = { ok: true, blobs };
+  } catch (err) {
+    response = { ok: false, message: err instanceof Error ? err.message : String(err) };
+  }
+
+  postMessage(response);
 });
