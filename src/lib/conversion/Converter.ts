@@ -10,7 +10,11 @@ import type { ConvertTask, WorkerResponse } from './types';
 import { getOutputFormatEntry, shouldMerge } from './outputFormats';
 import ConversionWorker from './worker?worker';
 import runPipeline from './pipeline';
-import type { OutputTarget, PDFInputSettings } from '@/store/slices/conversionSettingsSlice/types';
+import type {
+  InputSettings,
+  OutputTarget,
+  PDFInputSettings,
+} from '@/store/slices/conversionSettingsSlice/types';
 import type { SourceFile } from '@/types/files';
 
 export default class Converter {
@@ -18,14 +22,17 @@ export default class Converter {
   private workerPool = new WorkerPool<ConvertTask, WorkerResponse>(() => new ConversionWorker());
   private processTasks: Promise<Blob | Blob[] | void>[] = [];
   private readonly mergeToOne: boolean;
+  private readonly inputSettings: InputSettings;
 
   // TODO: DRY decoders functions into ONE
   constructor(
     private readonly target: OutputTarget,
-    private readonly pdfInputSettings: PDFInputSettings,
+    pdfInputSettings: PDFInputSettings,
     private UIDispatcher: AppDispatch,
   ) {
     this.mergeToOne = shouldMerge(target);
+    // TODO: store will pass the whole input settings object
+    this.inputSettings = { pdf: pdfInputSettings };
   }
 
   public async convert(sourceFiles: SourceFile[]): Promise<void> {
@@ -106,17 +113,15 @@ export default class Converter {
       case MIME.tiff:
       case MIME.gif:
       case MIME.pdf: {
-        const processedPages = await this.processMultiPageFile(blobURL, type, name);
+        const pages = await this.convertInPipeline(file);
 
-        if (Array.isArray(processedPages) && processedPages.length > 0) {
-          if (!this.mergeToOne) {
-            processedPages.forEach((blobPage, index) =>
-              this.dispatchConvertedFile(blobPage, `${name}_${index + 1}`, id),
-            );
-          }
-
-          return processedPages;
+        if (!this.mergeToOne) {
+          pages.forEach((page, index) =>
+            this.dispatchConvertedFile(page, `${name}_${index + 1}`, id),
+          );
         }
+
+        return pages;
       }
     }
   }
@@ -147,7 +152,12 @@ export default class Converter {
 
   // Falls back to main thread only when the worker itself fails, not the file
   private async convertInPipeline({ blobURL, type, name }: SourceFile): Promise<Blob[]> {
-    const task: ConvertTask = { type, blobURL, target: this.target };
+    const task: ConvertTask = {
+      type,
+      blobURL,
+      target: this.target,
+      inputSettings: this.inputSettings,
+    };
     const format = getFileFormat(type).toUpperCase();
 
     let response: WorkerResponse;
@@ -188,7 +198,7 @@ export default class Converter {
       const bitmap = await SVGToBitmap(blobURL, this.target);
 
       const [processedInWorker] = await this.runInWorker(
-        { type, blobURL, target: this.target, bitmap },
+        { type, blobURL, target: this.target, inputSettings: this.inputSettings, bitmap },
         [bitmap],
       );
 
@@ -199,125 +209,13 @@ export default class Converter {
       );
 
       try {
-        const decodeSVGBitmap = await import('@/lib/conversion/decoders/singlePage/svg');
+        const decodeSVGBitmap = await import('@/lib/conversion/decoders/svg');
 
         const bitmap = await SVGToBitmap(blobURL, this.target);
 
         const processed = await decodeSVGBitmap.default(this.target, bitmap);
 
         return processed;
-      } catch (err) {
-        console.error(
-          `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in main thread: ${(err as Error).message}`,
-        );
-        throw err;
-      }
-    }
-  }
-
-  // Multi page
-
-  private async processMultiPageFile(
-    blobURL: string,
-    type: MIMEType,
-    fileName: string,
-  ): Promise<Blob[] | void> {
-    switch (type) {
-      case MIME.tiff: {
-        const pagesBlobs = await this.convertTIFF(blobURL, type, fileName);
-        return pagesBlobs;
-      }
-      case MIME.pdf: {
-        const pagesBlobs = await this.convertPDF(blobURL, type, fileName);
-        return pagesBlobs;
-      }
-      case MIME.gif: {
-        const pagesBlobs = await this.convertGIF(blobURL, type, fileName);
-        return pagesBlobs;
-      }
-
-      default: {
-        throw new Error(`Unknown file format: ${type}`);
-      }
-    }
-  }
-
-  private async convertTIFF(
-    blobURL: string,
-    type: MIMEType,
-    fileName: string,
-  ): Promise<Blob[] | void> {
-    try {
-      return await this.runInWorker({ type, blobURL, target: this.target });
-    } catch (err) {
-      console.error(
-        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as Error).message}. Trying to process in main thread...`,
-      );
-
-      try {
-        const decodeTIFF = await import('@/lib/conversion/decoders/multiPage/tiff');
-
-        const pagesBlobs = await decodeTIFF.default(blobURL, this.target);
-
-        return pagesBlobs;
-      } catch (err) {
-        console.error(
-          `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in main thread: ${(err as Error).message}`,
-        );
-        throw err;
-      }
-    }
-  }
-
-  private async convertPDF(
-    blobURL: string,
-    type: MIMEType,
-    fileName: string,
-  ): Promise<Blob[] | void> {
-    try {
-      return await this.runInWorker({
-        type,
-        blobURL,
-        target: this.target,
-        pdfInputSettings: this.pdfInputSettings,
-      });
-    } catch (err) {
-      console.error(
-        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as Error).message}. Trying to process in main thread...`,
-      );
-
-      try {
-        const decodePDF = await import('@/lib/conversion/decoders/multiPage/pdf');
-
-        const pagesBlobs = await decodePDF.default(blobURL, this.target, this.pdfInputSettings);
-
-        return pagesBlobs;
-      } catch (err) {
-        console.error(
-          `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in main thread: ${(err as Error).message}`,
-        );
-        throw err;
-      }
-    }
-  }
-
-  private async convertGIF(
-    blobURL: string,
-    type: MIMEType,
-    fileName: string,
-  ): Promise<Blob[] | void> {
-    try {
-      return await this.runInWorker({ type, blobURL, target: this.target });
-    } catch (err) {
-      console.error(
-        `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in worker: ${(err as Error).message}. Trying to process in main thread...`,
-      );
-
-      try {
-        const decodeGIF = await import('@/lib/conversion/decoders/multiPage/gif');
-        const pagesBlobs = await decodeGIF.default(blobURL, this.target);
-
-        return pagesBlobs;
       } catch (err) {
         console.error(
           `Failed to process ${getFileFormat(type).toUpperCase()} file '${fileName}' in main thread: ${(err as Error).message}`,

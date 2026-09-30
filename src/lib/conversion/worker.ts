@@ -5,34 +5,15 @@ import type { ConvertTask, WorkerResponse } from './types';
 
 // TODO: legacy dispatch for formats not yet migrated to the pipeline
 const runLegacyDecoder = async (task: ConvertTask): Promise<Blob[]> => {
-  const { type, blobURL, target, pdfInputSettings, bitmap } = task;
+  const { type, target, bitmap } = task;
 
   switch (type) {
     case MIME.svg: {
       if (!bitmap) throw new Error('Missing bitmap for SVG conversion');
 
-      const decodeSVGBitmap = await import('@/lib/conversion/decoders/singlePage/svg');
+      const decodeSVGBitmap = await import('@/lib/conversion/decoders/svg');
 
       return [await decodeSVGBitmap.default(target, bitmap)];
-    }
-
-    case MIME.tiff: {
-      const TIFFPagesToBlobs = await import('@/lib/conversion/decoders/multiPage/tiff');
-
-      return TIFFPagesToBlobs.default(blobURL, target);
-    }
-
-    case MIME.pdf: {
-      if (!pdfInputSettings) throw new Error('Missing pdfInputSettings for PDF conversion');
-      const PDFPagesToBlobs = await import('@/lib/conversion/decoders/multiPage/pdf');
-
-      return PDFPagesToBlobs.default(blobURL, target, pdfInputSettings);
-    }
-
-    case MIME.gif: {
-      const decodeGIF = await import('@/lib/conversion/decoders/multiPage/gif');
-
-      return decodeGIF.default(blobURL, target);
     }
 
     default:

@@ -65,10 +65,12 @@ export type PDFInputSettings = {
   rotation: number;
 };
 
+export type InputSettings = {
+  pdf: PDFInputSettings;
+};
+
 export type ConversionSettingsState = {
   activeFormat: OutputFormat;
   outputSettings: OutputSettingsMap;
-  inputSettings: {
-    pdf: PDFInputSettings;
-  };
+  inputSettings: InputSettings;
 };
