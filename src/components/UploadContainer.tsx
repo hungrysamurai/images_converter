@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { Lang, ScreenOrientations } from '../types/types';
-import { MIME } from '@/types/formats';
+import { EXTENSIONS, INPUT_FORMATS, MIME } from '@/types/formats';
 
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
@@ -18,8 +18,16 @@ import StyledInnerShadow from './StyledInnerShadow';
 
 import { fadeAnimation } from '../animations';
 
-import { checkFileType } from '../lib/utils/checkFileType';
-import { isHEIC } from '../lib/utils/isHEIC';
+import { resolveFileType } from '../lib/utils/resolveFileType';
+
+const ACCEPT = [
+  ...Object.values(MIME),
+  ...Object.values(EXTENSIONS)
+    .flat()
+    .map((extension) => `.${extension}`),
+].join(',');
+
+const FORMATS_LINE = `(${INPUT_FORMATS.map((format) => format.toUpperCase()).join(', ')})`;
 
 type UploadContainerProps = {
   lang: Lang;
@@ -68,14 +76,18 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
 
   const handleFiles = (files: File[]) => {
     files.forEach((file) => {
-      if (isHEIC(file)) {
-        const heicFile = new File([file], file.name, {
-          type: MIME.heic,
-        });
-        dispatch(addSourceFile(heicFile));
-      } else if (checkFileType(file.type)) {
-        dispatch(addSourceFile(file));
+      const type = resolveFileType(file);
+      if (!type) {
+        return;
       }
+
+      dispatch(
+        addSourceFile(
+          type === file.type
+            ? file
+            : new File([file], file.name, { type, lastModified: file.lastModified }),
+        ),
+      );
     });
   };
 
@@ -110,7 +122,14 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
       </AnimatePresence>
 
       <StyledImagesUploadForm id="form-file-upload">
-        <input type="file" id="input-file-upload" multiple={true} onChange={handleClick} hidden />
+        <input
+          type="file"
+          id="input-file-upload"
+          multiple={true}
+          accept={ACCEPT}
+          onChange={handleClick}
+          hidden
+        />
 
         <label
           htmlFor="input-file-upload"
@@ -130,7 +149,7 @@ const UploadContainer: React.FC<UploadContainerProps> = ({ lang }) => {
                   <br />
                 </>
               )}
-              <span className="formats">(JPEG, PNG, GIF, WEBP, BMP, TIFF, PDF, HEIC, SVG)</span>
+              <span className="formats">{FORMATS_LINE}</span>
             </h3>
           </div>
         </label>

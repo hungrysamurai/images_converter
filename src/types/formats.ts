@@ -22,3 +22,18 @@ export const MIME = {
 } as const satisfies Record<InputFormat, string>;
 
 export type MIMEType = (typeof MIME)[InputFormat];
+
+// Single source of truth for extension fallback, the file input `accept`
+// attribute and the formats line on the upload screen. Must be complete:
+// a missing extension becomes invisible in the file picker
+export const EXTENSIONS = {
+  jpeg: ['jpg', 'jpeg', 'jpe', 'jfif'],
+  png: ['png'],
+  webp: ['webp'],
+  pdf: ['pdf'],
+  bmp: ['bmp', 'dib'],
+  gif: ['gif'],
+  tiff: ['tif', 'tiff'],
+  heic: ['heic', 'heif'],
+  svg: ['svg'],
+} as const satisfies Record<InputFormat, readonly string[]>;
