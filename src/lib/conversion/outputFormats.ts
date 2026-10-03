@@ -39,6 +39,13 @@ export const OUTPUT_FORMATS_REGISTRY: { [F in OutputFormat]: OutputFormatEntry<F
     loadEncoder: loadCanvasEncoder('webp'),
     alpha: true,
   },
+  // A 12 MP encode peaks at hundreds of MB, and running it in main thread would freeze the UI
+  avif: {
+    loadEncoder: () => import('./encoders/encodeAVIF').then((m) => m.default),
+    alpha: true,
+    maxConcurrency: 2,
+    mainThreadFallback: false,
+  },
   bmp: {
     loadEncoder: () => import('./encoders/encodeBMP').then((m) => m.default),
     alpha: false,

@@ -25,6 +25,10 @@ export default defineConfig({
       },
     },
   },
+  optimizeDeps: {
+    // Pre-bundling breaks `new URL('*.wasm', import.meta.url)` inside the emscripten glue
+    exclude: ['@jsquash/avif'],
+  },
   worker: {
     format: 'es',
     rollupOptions: {

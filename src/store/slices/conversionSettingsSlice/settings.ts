@@ -24,6 +24,15 @@ const outputSettings = {
     smoothing: 'medium',
     quality: 75,
   },
+  // AVIF q60 looks roughly like JPEG q75-80 at a much smaller size
+  avif: {
+    resize: false,
+    units: 'pixels',
+    targetWidth: null,
+    targetHeight: null,
+    smoothing: 'medium',
+    quality: 60,
+  },
   bmp: {
     resize: false,
     units: 'pixels',

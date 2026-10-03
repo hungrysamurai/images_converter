@@ -58,6 +58,7 @@ const FormatSettings: React.FC<FormatSettingsProps> = ({ lang, target }) => {
   switch (target.format) {
     case 'jpeg':
     case 'webp':
+    case 'avif':
       return (
         <SliderInput
           label={qualityLabel}

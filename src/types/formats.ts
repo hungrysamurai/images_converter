@@ -1,8 +1,7 @@
-export const OUTPUT_FORMATS = ['jpeg', 'png', 'webp', 'pdf', 'bmp', 'gif', 'tiff'] as const;
+export const OUTPUT_FORMATS = ['jpeg', 'png', 'webp', 'avif', 'pdf', 'bmp', 'gif', 'tiff'] as const;
 export type OutputFormat = (typeof OUTPUT_FORMATS)[number];
 
-// AVIF is input-only until its encoder lands; then it moves to OUTPUT_FORMATS after webp
-export const INPUT_FORMATS = [...OUTPUT_FORMATS, 'avif', 'heic', 'svg'] as const;
+export const INPUT_FORMATS = [...OUTPUT_FORMATS, 'heic', 'svg'] as const;
 export type InputFormat = (typeof INPUT_FORMATS)[number];
 
 export type PreviewFormat = Exclude<InputFormat, 'tiff' | 'heic'>;

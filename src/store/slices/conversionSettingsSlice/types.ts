@@ -50,6 +50,7 @@ export type OutputSettingsMap = {
   jpeg: JPEG_WEBPOutputConversionSettings;
   png: BasicOutputConversionSettings;
   webp: JPEG_WEBPOutputConversionSettings;
+  avif: JPEG_WEBPOutputConversionSettings;
   pdf: PDFOutputConversionSettings;
   bmp: BasicOutputConversionSettings;
   gif: GIFOutputConversionSettings;
