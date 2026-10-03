@@ -28,7 +28,7 @@ import { CSS } from '@dnd-kit/utilities';
 import FileElement from './FileElement';
 import SortableFileElement from './SortableFileElement';
 
-import { memo, useState } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAppDispatch } from '@/store/hooks';
 import { reorderSourceFiles } from '@/store/slices/sourceFilesSlice/sourceFilesSlice';
@@ -170,7 +170,7 @@ const getElementProps = (file: ProcessedFile | SourceFile) => ({
   souceFileLink: file.blobURL,
 });
 
-const FilesList: React.FC<FilesListProps> = memo(({ files, sortable = false, lang = Lang.EN }) => {
+const FilesList: React.FC<FilesListProps> = ({ files, sortable = false, lang = Lang.EN }) => {
   const dispatch = useAppDispatch();
 
   const sensors = useSensors(
@@ -247,7 +247,7 @@ const FilesList: React.FC<FilesListProps> = memo(({ files, sortable = false, lan
       )}
     </DndContext>
   );
-});
+};
 
 // smooth scrolling fights the per-frame scroll steps of dnd-kit autoscroll, so it is off while dragging
 const DragActiveGlobalStyle = createGlobalStyle`

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { memo } from 'react';
 
 import { Lang } from '@/types/types';
 import { OUTPUT_FORMATS, type OutputFormat } from '@/types/formats';
@@ -12,10 +11,7 @@ type FormatSelectProps = {
   activeTargetFormatName: OutputFormat;
 };
 
-const FormatSelect: React.FC<FormatSelectProps> = memo(function FormatSelect({
-  lang,
-  activeTargetFormatName,
-}) {
+const FormatSelect: React.FC<FormatSelectProps> = ({ lang, activeTargetFormatName }) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -39,7 +35,7 @@ const FormatSelect: React.FC<FormatSelectProps> = memo(function FormatSelect({
       </StyledLabel>
     </StyledFormatSelect>
   );
-});
+};
 
 const StyledFormatSelect = styled.div`
   width: 100%;

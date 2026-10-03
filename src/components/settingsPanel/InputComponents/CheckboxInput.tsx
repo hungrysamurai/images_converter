@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { ChangeEvent, memo } from 'react';
+import React, { ChangeEvent } from 'react';
 
 type CheckboxInputProps = {
   value: boolean;
@@ -9,31 +9,35 @@ type CheckboxInputProps = {
   onChange: (value: boolean) => void;
 };
 
-const CheckboxInput: React.FC<CheckboxInputProps> = memo(
-  ({ value, displayValueOn, displayValueOff, label, onChange }) => {
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      onChange(e.target.checked);
-    };
+const CheckboxInput: React.FC<CheckboxInputProps> = ({
+  value,
+  displayValueOn,
+  displayValueOff,
+  label,
+  onChange,
+}) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.checked);
+  };
 
-    return (
-      <StyledCheckboxContainer>
-        <StyledCheckboxDescription>{label}</StyledCheckboxDescription>
+  return (
+    <StyledCheckboxContainer>
+      <StyledCheckboxDescription>{label}</StyledCheckboxDescription>
 
-        <StyledToggleWrapper>
-          <StyledToggler>
-            <StyledInputCheckbox type="checkbox" onChange={handleChange} checked={value} />
+      <StyledToggleWrapper>
+        <StyledToggler>
+          <StyledInputCheckbox type="checkbox" onChange={handleChange} checked={value} />
 
-            <StyledTogglerBall />
-          </StyledToggler>
-        </StyledToggleWrapper>
+          <StyledTogglerBall />
+        </StyledToggler>
+      </StyledToggleWrapper>
 
-        <StyledCheckboxDisplayValue>
-          {value ? displayValueOn : displayValueOff}
-        </StyledCheckboxDisplayValue>
-      </StyledCheckboxContainer>
-    );
-  },
-);
+      <StyledCheckboxDisplayValue>
+        {value ? displayValueOn : displayValueOff}
+      </StyledCheckboxDisplayValue>
+    </StyledCheckboxContainer>
+  );
+};
 
 const StyledCheckboxContainer = styled.div`
   width: 100%;

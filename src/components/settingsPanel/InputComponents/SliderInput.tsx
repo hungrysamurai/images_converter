@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import React, { ChangeEvent, memo } from 'react';
+import React, { ChangeEvent } from 'react';
 
 type SliderInputProps = {
   label: string;
@@ -11,31 +11,29 @@ type SliderInputProps = {
   onChange: (value: number) => void;
 };
 
-const SliderInput: React.FC<SliderInputProps> = memo(
-  ({ label, value, min, max, step, onChange }) => {
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      onChange(Number(e.target.value));
-    };
+const SliderInput: React.FC<SliderInputProps> = ({ label, value, min, max, step, onChange }) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onChange(Number(e.target.value));
+  };
 
-    return (
-      <StyledSliderContainer>
-        <StyledSliderLabel>
-          {label}
-          <StyledSliderInput
-            type="range"
-            min={min}
-            max={max}
-            step={step}
-            onChange={handleChange}
-            value={value}
-          />
-        </StyledSliderLabel>
+  return (
+    <StyledSliderContainer>
+      <StyledSliderLabel>
+        {label}
+        <StyledSliderInput
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          onChange={handleChange}
+          value={value}
+        />
+      </StyledSliderLabel>
 
-        <StyledSliderDisplayValue>{value}</StyledSliderDisplayValue>
-      </StyledSliderContainer>
-    );
-  },
-);
+      <StyledSliderDisplayValue>{value}</StyledSliderDisplayValue>
+    </StyledSliderContainer>
+  );
+};
 
 const StyledSliderContainer = styled.div`
   width: 100%;

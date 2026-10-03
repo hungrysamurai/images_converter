@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import { Lang } from '@/types/types';
@@ -139,7 +139,7 @@ const FormatSettings: React.FC<FormatSettingsProps> = ({ lang, target }) => {
   }
 };
 
-const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSettings({ lang }) {
+const OutputSettings: React.FC<OutputSettingsType> = ({ lang }) => {
   const dispatch = useAppDispatch();
   const target = useAppSelector(getActiveOutputTarget);
 
@@ -205,7 +205,7 @@ const OutputSettings: React.FC<OutputSettingsType> = memo(function OutputSetting
       <StyledDivider />
     </StyledOutputSettingsContainer>
   );
-});
+};
 
 const StyledOutputSettingsContainer = styled.div`
   width: 100%;

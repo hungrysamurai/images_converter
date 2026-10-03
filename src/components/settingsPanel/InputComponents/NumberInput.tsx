@@ -1,4 +1,4 @@
-import React, { ChangeEvent, memo } from 'react';
+import React, { ChangeEvent } from 'react';
 import styled from 'styled-components';
 
 import getClosestMatchedValue from '@/lib/utils/getClosestMatchesValue';
@@ -13,41 +13,48 @@ type NumberInputProps = {
   onChange: (value: number) => void;
 };
 
-const NumberInput: React.FC<NumberInputProps> = memo(
-  ({ caption, suffix, min, max, step, value, active, onChange }) => {
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const newValue = Number(e.target.value);
-      if (newValue < 0 || newValue > max) return;
+const NumberInput: React.FC<NumberInputProps> = ({
+  caption,
+  suffix,
+  min,
+  max,
+  step,
+  value,
+  active,
+  onChange,
+}) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newValue = Number(e.target.value);
+    if (newValue < 0 || newValue > max) return;
 
-      onChange(newValue);
-    };
+    onChange(newValue);
+  };
 
-    const checkValue = () => {
-      if (step) {
-        onChange(getClosestMatchedValue(value ?? 0, max, step));
-      }
-    };
+  const checkValue = () => {
+    if (step) {
+      onChange(getClosestMatchedValue(value ?? 0, max, step));
+    }
+  };
 
-    return (
-      <StyledNumberContainer className={!active ? 'inactive' : ''}>
-        <StyledNumberInput
-          type="number"
-          placeholder={value ? value.toString() : 'auto'}
-          value={value ? value : ''}
-          onChange={handleChange}
-          onBlur={checkValue}
-          max={max}
-          min={min}
-          step={step}
-        />
+  return (
+    <StyledNumberContainer className={!active ? 'inactive' : ''}>
+      <StyledNumberInput
+        type="number"
+        placeholder={value ? value.toString() : 'auto'}
+        value={value ? value : ''}
+        onChange={handleChange}
+        onBlur={checkValue}
+        max={max}
+        min={min}
+        step={step}
+      />
 
-        {caption && <StyledNumberInputCaption>{caption}</StyledNumberInputCaption>}
+      {caption && <StyledNumberInputCaption>{caption}</StyledNumberInputCaption>}
 
-        {suffix && <StyledInputUnitsLabel>{suffix}</StyledInputUnitsLabel>}
-      </StyledNumberContainer>
-    );
-  },
-);
+      {suffix && <StyledInputUnitsLabel>{suffix}</StyledInputUnitsLabel>}
+    </StyledNumberContainer>
+  );
+};
 
 const StyledNumberContainer = styled.label`
   margin: 0.5rem 0;

@@ -51,6 +51,8 @@ const elementsColor = {
   svg: ElementColorMode.Light,
 };
 
+// kept despite React Compiler: it memoizes FilesList's files.map() as a whole,
+// so without memo every card re-renders whenever the files array changes
 const FileElement: React.FC<FileElementProps> = memo(
   ({
     id,

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { memo } from 'react';
 
 import { Lang } from '@/types/types';
 
@@ -16,7 +15,7 @@ type InputSettingsProps = {
   lang: Lang;
 };
 
-const InputSettings: React.FC<InputSettingsProps> = memo(function InputSettings({ lang }) {
+const InputSettings: React.FC<InputSettingsProps> = ({ lang }) => {
   const dispatch = useAppDispatch();
   const { resolution, rotation } = useAppSelector(getPDFInputSettings);
 
@@ -50,7 +49,7 @@ const InputSettings: React.FC<InputSettingsProps> = memo(function InputSettings(
       </StyledPDFRasterizationSettingsContainer>
     </StyledInputSettingsContainer>
   );
-});
+};
 
 const StyledInputSettingsContainer = styled.div`
   width: 100%;

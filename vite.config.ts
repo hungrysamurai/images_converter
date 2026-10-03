@@ -1,10 +1,11 @@
-import react from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
   // Served by nginx at /projects/images_converter/ (see wrapper repo nginx/locations.conf).
   // The standalone convert-it.ru build overrides it with --base=./
   base: '/projects/images_converter/',

@@ -23,6 +23,7 @@ export default tseslint.config(
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  eslintReactHooks.configs.flat.recommended,
   {
     languageOptions: {
       globals: {

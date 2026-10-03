@@ -1,5 +1,3 @@
-import { memo } from 'react';
-
 import { Lang } from '@/types/types';
 import { type OutputFormat } from '@/types/formats';
 
@@ -14,11 +12,11 @@ type SettingsPanelBodyProps = {
   activeTargetFormatName: OutputFormat;
 };
 
-const SettingsPanelBody: React.FC<SettingsPanelBodyProps> = memo(function SettingsPanelBody({
+const SettingsPanelBody: React.FC<SettingsPanelBodyProps> = ({
   isPDF,
   lang,
   activeTargetFormatName,
-}) {
+}) => {
   return (
     <>
       <FormatSelect lang={lang} activeTargetFormatName={activeTargetFormatName} />
@@ -33,6 +31,6 @@ const SettingsPanelBody: React.FC<SettingsPanelBodyProps> = memo(function Settin
       )}
     </>
   );
-});
+};
 
 export default SettingsPanelBody;
