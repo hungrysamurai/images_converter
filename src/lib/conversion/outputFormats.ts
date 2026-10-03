@@ -16,6 +16,10 @@ export type OutputFormatEntry<F extends OutputFormat> = {
   // Aggregators run in main thread only
   loadAggregator?: () => Promise<Aggregator<F>>;
   alpha: boolean;
+  // Upper bound for the worker pool size, e.g. for memory-heavy WASM encoders
+  maxConcurrency?: number;
+  // Whether a file may be retried in main thread when its worker fails (default: true)
+  mainThreadFallback?: boolean;
 };
 
 // All imports must stay lazy: the registry is part of the worker bundle

@@ -38,16 +38,16 @@ export default class WorkerPool<TIn, TOut> {
     [resolve: (value: TOut) => void, reject: (err?: unknown) => void]
   > = new Map();
 
-  /** Number of worker threads to spawn (defaults to one less than CPU cores). */
-  private readonly NUM_WORKERS = Math.max(navigator.hardwareConcurrency - 1, 1);
-
   /**
    * Creates a new instance of the WorkerPool.
    *
    * @param createWorker - Factory that spawns a new worker instance.
+   * @param size - Number of worker threads to spawn (at least 1).
    */
-  constructor(createWorker: () => Worker) {
-    for (let i = 0; i < this.NUM_WORKERS; i++) {
+  constructor(createWorker: () => Worker, size: number) {
+    const numWorkers = Math.max(Math.floor(size), 1);
+
+    for (let i = 0; i < numWorkers; i++) {
       const worker = createWorker();
 
       worker.onmessage = (message) => {

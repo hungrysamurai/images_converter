@@ -13,16 +13,26 @@ import runPipeline from './pipeline';
 import type { InputSettings, OutputTarget } from '@/store/slices/conversionSettingsSlice/types';
 import type { SourceFile } from '@/types/files';
 
+const getPoolSize = (target: OutputTarget) => {
+  const defaultSize = Math.max(navigator.hardwareConcurrency - 1, 1);
+  const { maxConcurrency } = getOutputFormatEntry(target);
+
+  return maxConcurrency ? Math.min(defaultSize, maxConcurrency) : defaultSize;
+};
+
 export default class Converter {
-  private workerPool = new WorkerPool<ConvertTask, WorkerResponse>(() => new ConversionWorker());
+  private readonly workerPool: WorkerPool<ConvertTask, WorkerResponse>;
   private readonly mergeToOne: boolean;
+  private readonly mainThreadFallback: boolean;
 
   constructor(
     private readonly target: OutputTarget,
     private readonly inputSettings: InputSettings,
     private UIDispatcher: AppDispatch,
   ) {
+    this.workerPool = new WorkerPool(() => new ConversionWorker(), getPoolSize(target));
     this.mergeToOne = shouldMerge(target);
+    this.mainThreadFallback = getOutputFormatEntry(target).mainThreadFallback ?? true;
   }
 
   public async convert(sourceFiles: SourceFile[]): Promise<void> {
@@ -82,7 +92,8 @@ export default class Converter {
     );
   }
 
-  // Falls back to main thread only when the worker itself fails, not the file
+  // Falls back to main thread only when the worker itself fails, not the file,
+  // and only if the target format allows it
   private async runTask({ blobURL, type, name }: SourceFile): Promise<Blob[]> {
     const task: ConvertTask = {
       type,
@@ -102,8 +113,15 @@ export default class Converter {
         transfer: bitmap ? [bitmap] : undefined,
       });
     } catch (err) {
+      const message = (err as ErrorEvent).message;
+
+      if (!this.mainThreadFallback) {
+        console.error(`Worker failed on ${format} file '${name}': ${message}`);
+        throw new Error(message, { cause: err });
+      }
+
       console.error(
-        `Worker failed on ${format} file '${name}': ${(err as ErrorEvent).message}. Trying to process in main thread...`,
+        `Worker failed on ${format} file '${name}': ${message}. Trying to process in main thread...`,
       );
 
       try {
