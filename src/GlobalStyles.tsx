@@ -41,6 +41,7 @@ const GlobalStyles = createGlobalStyle`
     --format-color-pdf:#FF9F1C;
     --format-color-heic:#8E06F9;
     --format-color-svg:#D915B5;
+    --format-color-avif:#CDED76;
 
     --container-inner-shadow: inset 0px 24px 24px 0px rgba(0, 0, 0, 0.25), inset 0px 6px 6px 6px rgba(0, 0, 0, 0.16) ;
     --image-element-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.33); 

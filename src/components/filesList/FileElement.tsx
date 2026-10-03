@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { memo, useState, type ButtonHTMLAttributes, type Ref } from 'react';
 
-import { ElementColorMode, Lang } from '@/types/types';
 import { isPreviewFormat, type InputFormat } from '@/types/formats';
+import { ElementColorMode, Lang } from '@/types/types';
 
 import {
   dragHandleAnimation,
@@ -49,6 +49,7 @@ const elementsColor = {
   tiff: ElementColorMode.Light,
   heic: ElementColorMode.Light,
   svg: ElementColorMode.Light,
+  avif: ElementColorMode.Dark,
 };
 
 // kept despite React Compiler: it memoizes FilesList's files.map() as a whole,
