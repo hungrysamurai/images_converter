@@ -1,7 +1,8 @@
 export const OUTPUT_FORMATS = ['jpeg', 'png', 'webp', 'pdf', 'bmp', 'gif', 'tiff'] as const;
 export type OutputFormat = (typeof OUTPUT_FORMATS)[number];
 
-export const INPUT_FORMATS = [...OUTPUT_FORMATS, 'heic', 'svg'] as const;
+// AVIF is input-only until its encoder lands; then it moves to OUTPUT_FORMATS after webp
+export const INPUT_FORMATS = [...OUTPUT_FORMATS, 'avif', 'heic', 'svg'] as const;
 export type InputFormat = (typeof INPUT_FORMATS)[number];
 
 export type PreviewFormat = Exclude<InputFormat, 'tiff' | 'heic'>;
@@ -17,6 +18,7 @@ export const MIME = {
   bmp: 'image/bmp',
   gif: 'image/gif',
   tiff: 'image/tiff',
+  avif: 'image/avif',
   heic: 'image/heic',
   svg: 'image/svg+xml',
 } as const satisfies Record<InputFormat, string>;
@@ -34,6 +36,7 @@ export const EXTENSIONS = {
   bmp: ['bmp', 'dib'],
   gif: ['gif'],
   tiff: ['tif', 'tiff'],
+  avif: ['avif'],
   heic: ['heic', 'heif'],
   svg: ['svg'],
 } as const satisfies Record<InputFormat, readonly string[]>;

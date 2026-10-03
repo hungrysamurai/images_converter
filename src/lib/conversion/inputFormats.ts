@@ -17,6 +17,8 @@ export const INPUT_FORMATS_REGISTRY: Record<MIMEType, InputFormatEntry> = {
   [MIME.jpeg]: { loadDecoder: loadNativeDecoder },
   [MIME.png]: { loadDecoder: loadNativeDecoder },
   [MIME.webp]: { loadDecoder: loadNativeDecoder },
+  // Animated AVIF yields its first frame only
+  [MIME.avif]: { loadDecoder: loadNativeDecoder },
   [MIME.bmp]: { loadDecoder: () => import('./decoders/bmp').then((m) => m.default) },
   [MIME.heic]: { loadDecoder: () => import('./decoders/heic').then((m) => m.default) },
   [MIME.tiff]: { loadDecoder: () => import('./decoders/tiff').then((m) => m.default) },
