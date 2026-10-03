@@ -1,6 +1,10 @@
 import type { ExifWriter } from '../outputFormats';
+import { insertIntoJPEG } from './jpeg';
 
-// Placeholder: returns the JPEG untouched until the APP1 writer lands
-const writeJPEG: ExifWriter = async (encoded) => encoded;
+const writeJPEG: ExifWriter = async (encoded, tiff) => {
+  const jpeg = new Uint8Array(await encoded.arrayBuffer());
+
+  return new Blob([insertIntoJPEG(jpeg, tiff)], { type: encoded.type });
+};
 
 export default writeJPEG;

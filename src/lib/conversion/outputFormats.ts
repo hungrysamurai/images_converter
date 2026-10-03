@@ -83,3 +83,6 @@ export const shouldMerge = (target: OutputTarget): boolean =>
 
 export const supportsMetadata = (target: OutputTarget): boolean =>
   Boolean(getOutputFormatEntry(target).loadExifWriter);
+
+export const shouldKeepMetadata = (target: OutputTarget): boolean =>
+  supportsMetadata(target) && 'keepMetadata' in target.settings && target.settings.keepMetadata;

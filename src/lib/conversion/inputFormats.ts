@@ -1,8 +1,13 @@
 import { MIME, type MIMEType } from '@/types/formats';
 import type { ConvertTask, Decoder } from './types';
 
+// Source file bytes → raw EXIF (TIFF structure) or null when the file has none
+export type ExifExtractor = (bytes: Uint8Array) => Uint8Array | null;
+
 export type InputFormatEntry = {
   loadDecoder: () => Promise<Decoder>;
+  // Presence marks the format as a possible EXIF source
+  loadExifExtractor?: () => Promise<ExifExtractor>;
   // Runs in main thread before the task is sent, result goes to task.bitmap
   prepare?: (task: ConvertTask) => Promise<ImageBitmap>;
   // Decoder already yields frames in target size, pipeline must not resize them
@@ -14,7 +19,10 @@ export type InputFormatEntry = {
 const loadNativeDecoder = () => import('./decoders/native').then((m) => m.default);
 
 export const INPUT_FORMATS_REGISTRY: Record<MIMEType, InputFormatEntry> = {
-  [MIME.jpeg]: { loadDecoder: loadNativeDecoder },
+  [MIME.jpeg]: {
+    loadDecoder: loadNativeDecoder,
+    loadExifExtractor: () => import('./exif/jpeg').then((m) => m.extractFromJPEG),
+  },
   [MIME.png]: { loadDecoder: loadNativeDecoder },
   [MIME.webp]: { loadDecoder: loadNativeDecoder },
   // Animated AVIF yields its first frame only

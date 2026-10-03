@@ -2,6 +2,7 @@ import { getResizedCanvas } from '@/lib/utils/getResizedCanvas';
 import { getCanvasWithWhiteBackground } from '@/lib/utils/getCanvasWithWhiteBackground';
 import encodeCanvas from './encode';
 import { getInputFormatEntry } from './inputFormats';
+import { embedExif, readSourceExif } from './metadata';
 import { getOutputFormatEntry } from './outputFormats';
 import type { ConvertTask } from './types';
 
@@ -14,6 +15,9 @@ export default async function runPipeline(task: ConvertTask): Promise<Blob[]> {
   const { resize, units, smoothing, targetWidth, targetHeight } = task.target.settings;
   // Output without alpha channel would turn transparent pixels black
   const needsBackground = !getOutputFormatEntry(task.target).alpha;
+
+  // Read alongside decoding, never rejects
+  const exifPromise = readSourceExif(task, entry);
 
   const blobs: Blob[] = [];
 
@@ -33,7 +37,10 @@ export default async function runPipeline(task: ConvertTask): Promise<Blob[]> {
       canvas = getCanvasWithWhiteBackground(canvas);
     }
 
-    blobs.push(await encodeCanvas(canvas, task.target));
+    const encoded = await encodeCanvas(canvas, task.target);
+    const exif = await exifPromise;
+
+    blobs.push(exif ? await embedExif(encoded, exif, task) : encoded);
   }
 
   return blobs;
