@@ -17,6 +17,8 @@ export type InputFormatEntry = {
 // All imports must stay lazy: the registry is part of the worker bundle
 // Browser-native decoding via createImageBitmap
 const loadNativeDecoder = () => import('./decoders/native').then((m) => m.default);
+// HEIC and AVIF share the HEIF container
+const loadISOBMFFExtractor = () => import('./exif/isobmff').then((m) => m.extractFromISOBMFF);
 
 export const INPUT_FORMATS_REGISTRY: Record<MIMEType, InputFormatEntry> = {
   [MIME.jpeg]: {
@@ -26,9 +28,12 @@ export const INPUT_FORMATS_REGISTRY: Record<MIMEType, InputFormatEntry> = {
   [MIME.png]: { loadDecoder: loadNativeDecoder },
   [MIME.webp]: { loadDecoder: loadNativeDecoder },
   // Animated AVIF yields its first frame only
-  [MIME.avif]: { loadDecoder: loadNativeDecoder },
+  [MIME.avif]: { loadDecoder: loadNativeDecoder, loadExifExtractor: loadISOBMFFExtractor },
   [MIME.bmp]: { loadDecoder: () => import('./decoders/bmp').then((m) => m.default) },
-  [MIME.heic]: { loadDecoder: () => import('./decoders/heic').then((m) => m.default) },
+  [MIME.heic]: {
+    loadDecoder: () => import('./decoders/heic').then((m) => m.default),
+    loadExifExtractor: loadISOBMFFExtractor,
+  },
   [MIME.tiff]: { loadDecoder: () => import('./decoders/tiff').then((m) => m.default) },
   [MIME.gif]: { loadDecoder: () => import('./decoders/gif').then((m) => m.default) },
   [MIME.pdf]: { loadDecoder: () => import('./decoders/pdf').then((m) => m.default) },

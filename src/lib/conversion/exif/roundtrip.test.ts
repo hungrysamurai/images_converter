@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
+import { extractFromISOBMFF } from './isobmff';
 import { extractFromJPEG, insertIntoJPEG } from './jpeg';
 import { patchExif } from './tiff';
 import {
   TAG,
+  buildExifItem,
+  buildISOBMFF,
   buildJPEG,
   buildTiff,
   diffOffsets,
@@ -73,6 +76,45 @@ describe('JPEG → JPEG round-trip', () => {
     ];
 
     for (const offset of diffOffsets(tiff.subarray(0, result.length), result)) {
+      expect(changed.some((field) => offset >= field && offset < field + 4)).toBe(true);
+    }
+  });
+});
+
+describe('HEIC / AVIF → JPEG round-trip', () => {
+  it.each(['heic', 'avif'] as const)('carries EXIF over with Orientation reset (%s)', (brand) => {
+    const tiff = buildTiff({
+      byteOrder: 'MM',
+      ifd0: [
+        { tag: TAG.Model, type: 'ASCII', value: 'iPhone 15 Pro' },
+        { tag: TAG.Orientation, type: 'SHORT', value: 6 },
+      ],
+      exif: [
+        { tag: TAG.DateTimeOriginal, type: 'ASCII', value: '2024:05:17 14:03:22' },
+        { tag: TAG.PixelXDimension, type: 'LONG', value: 4032 },
+        { tag: TAG.PixelYDimension, type: 'LONG', value: 3024 },
+      ],
+      gps: [{ tag: TAG.GPSLatitudeRef, type: 'ASCII', value: 'N' }],
+    });
+
+    const extracted = extractFromISOBMFF(buildISOBMFF({ brand, exifItem: buildExifItem(tiff) }));
+    if (!extracted) throw new Error('EXIF not found');
+
+    const output = insertIntoJPEG(buildJPEG(), patchExif(extracted, { width: 3024, height: 4032 }));
+    const result = extractFromJPEG(output);
+    if (!result) throw new Error('EXIF not found in output');
+
+    expect(readIfd0Short(result, TAG.Orientation)).toBe(1);
+    expect(readTag(result, 'exif', TAG.PixelXDimension)).toEqual({ type: 'LONG', value: 3024 });
+    expect(readTag(result, 'exif', TAG.PixelYDimension)).toEqual({ type: 'LONG', value: 4032 });
+
+    const changed = [
+      entryValueField(tiff, 'ifd0', TAG.Orientation),
+      entryValueField(tiff, 'exif', TAG.PixelXDimension),
+      entryValueField(tiff, 'exif', TAG.PixelYDimension),
+    ];
+
+    for (const offset of diffOffsets(tiff, result)) {
       expect(changed.some((field) => offset >= field && offset < field + 4)).toBe(true);
     }
   });
