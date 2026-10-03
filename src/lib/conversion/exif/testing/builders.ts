@@ -388,3 +388,58 @@ export const buildISOBMFF = ({
 
   return concat(ftyp, meta, box('mdat', mdatPayload));
 };
+
+// WebP (RIFF)
+
+const u32le = (value: number) => {
+  const bytes = new Uint8Array(4);
+  new DataView(bytes.buffer).setUint32(0, value, true);
+  return bytes;
+};
+
+// Chunk payload is padded to an even size, the padding is not counted in the size field
+const riffChunk = (type: string, payload: Uint8Array) =>
+  concat(fourCC(type), u32le(payload.length), payload, new Uint8Array(payload.length % 2));
+
+/**
+ * Extended WebP: RIFF header, VP8X, fake VP8 bitstream, optional EXIF chunk.
+ * `exif` is the raw chunk payload (TIFF, optionally with the `Exif\0\0` prefix some writers add)
+ */
+export const buildWebP = (exif?: Uint8Array): Uint8Array => {
+  const vp8x = riffChunk('VP8X', new Uint8Array([exif ? 0x08 : 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]));
+  // Odd size to exercise padding
+  const vp8 = riffChunk('VP8 ', new Uint8Array(33).fill(0xab));
+  const body = concat(fourCC('WEBP'), vp8x, vp8, exif ? riffChunk('EXIF', exif) : new Uint8Array());
+
+  return concat(fourCC('RIFF'), u32le(body.length), body);
+};
+
+// PNG
+
+const PNG_SIGNATURE = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+
+// CRC is not checked by extractors, zeros are enough
+const pngChunk = (type: string, data: Uint8Array) =>
+  concat(u32(data.length), fourCC(type), data, u32(0));
+
+/**
+ * Minimal PNG: IHDR, fake IDAT, IEND. `exif` is the raw eXIf payload, placed
+ * before IDAT or, with `afterIdat`, between IDAT and IEND
+ */
+export const buildPNG = ({
+  exif,
+  afterIdat = false,
+}: { exif?: Uint8Array; afterIdat?: boolean } = {}): Uint8Array => {
+  const ihdr = pngChunk('IHDR', concat(u32(1), u32(1), new Uint8Array([8, 2, 0, 0, 0])));
+  const idat = pngChunk('IDAT', new Uint8Array(20).fill(0xab));
+  const exifChunk = exif ? pngChunk('eXIf', exif) : new Uint8Array();
+
+  return concat(
+    PNG_SIGNATURE,
+    ihdr,
+    afterIdat ? new Uint8Array() : exifChunk,
+    idat,
+    afterIdat ? exifChunk : new Uint8Array(),
+    pngChunk('IEND', new Uint8Array()),
+  );
+};

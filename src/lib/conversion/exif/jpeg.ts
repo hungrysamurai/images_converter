@@ -1,13 +1,9 @@
+import { EXIF_HEADER, hasExifHeader } from './exifHeader';
+
 const SOI = 0xd8;
 const APP1 = 0xe1;
 const SOS = 0xda;
 const EOI = 0xd9;
-
-// "Exif\0\0"
-const EXIF_HEADER = [0x45, 0x78, 0x69, 0x66, 0x00, 0x00];
-
-const hasExifHeader = (bytes: Uint8Array, offset: number) =>
-  EXIF_HEADER.every((byte, i) => bytes[offset + i] === byte);
 
 const isStandalone = (marker: number) => marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7);
 

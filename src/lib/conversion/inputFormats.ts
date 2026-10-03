@@ -25,8 +25,14 @@ export const INPUT_FORMATS_REGISTRY: Record<MIMEType, InputFormatEntry> = {
     loadDecoder: loadNativeDecoder,
     loadExifExtractor: () => import('./exif/jpeg').then((m) => m.extractFromJPEG),
   },
-  [MIME.png]: { loadDecoder: loadNativeDecoder },
-  [MIME.webp]: { loadDecoder: loadNativeDecoder },
+  [MIME.png]: {
+    loadDecoder: loadNativeDecoder,
+    loadExifExtractor: () => import('./exif/png').then((m) => m.extractFromPNG),
+  },
+  [MIME.webp]: {
+    loadDecoder: loadNativeDecoder,
+    loadExifExtractor: () => import('./exif/webp').then((m) => m.extractFromWebP),
+  },
   // Animated AVIF yields its first frame only
   [MIME.avif]: { loadDecoder: loadNativeDecoder, loadExifExtractor: loadISOBMFFExtractor },
   [MIME.bmp]: { loadDecoder: () => import('./decoders/bmp').then((m) => m.default) },

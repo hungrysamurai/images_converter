@@ -2,13 +2,16 @@ import { describe, expect, it } from 'vitest';
 
 import { extractFromISOBMFF } from './isobmff';
 import { extractFromJPEG, insertIntoJPEG } from './jpeg';
+import { extractFromPNG } from './png';
 import { patchExif } from './tiff';
 import {
   TAG,
   buildExifItem,
   buildISOBMFF,
   buildJPEG,
+  buildPNG,
   buildTiff,
+  buildWebP,
   diffOffsets,
   entryValueField,
   ifdOffset,
@@ -18,6 +21,7 @@ import {
   readTag,
   type ByteOrder,
 } from './testing/builders';
+import { extractFromWebP } from './webp';
 
 describe('JPEG → JPEG round-trip', () => {
   it.each<ByteOrder>(['II', 'MM'])('carries EXIF over with stale tags fixed (%s)', (byteOrder) => {
@@ -118,4 +122,53 @@ describe('HEIC / AVIF → JPEG round-trip', () => {
       expect(changed.some((field) => offset >= field && offset < field + 4)).toBe(true);
     }
   });
+});
+
+describe('WebP / PNG → JPEG round-trip', () => {
+  const containers = {
+    webp: (tiff: Uint8Array) => extractFromWebP(buildWebP(tiff)),
+    png: (tiff: Uint8Array) => extractFromPNG(buildPNG({ exif: tiff, afterIdat: true })),
+  };
+
+  it.each(Object.entries(containers))(
+    'carries EXIF over with stale tags fixed (%s)',
+    (_, extract) => {
+      const tiff = buildTiff({
+        byteOrder: 'II',
+        ifd0: [
+          { tag: TAG.Model, type: 'ASCII', value: 'Pixel 8' },
+          { tag: TAG.Orientation, type: 'SHORT', value: 6 },
+        ],
+        exif: [
+          { tag: TAG.DateTimeOriginal, type: 'ASCII', value: '2024:05:17 14:03:22' },
+          { tag: TAG.PixelXDimension, type: 'SHORT', value: 4000 },
+          { tag: TAG.PixelYDimension, type: 'SHORT', value: 3000 },
+        ],
+      });
+
+      const extracted = extract(tiff);
+      if (!extracted) throw new Error('EXIF not found');
+
+      const output = insertIntoJPEG(
+        buildJPEG(),
+        patchExif(extracted, { width: 1500, height: 2000 }),
+      );
+      const result = extractFromJPEG(output);
+      if (!result) throw new Error('EXIF not found in output');
+
+      expect(readIfd0Short(result, TAG.Orientation)).toBe(1);
+      expect(readTag(result, 'exif', TAG.PixelXDimension)).toEqual({ type: 'SHORT', value: 1500 });
+      expect(readTag(result, 'exif', TAG.PixelYDimension)).toEqual({ type: 'SHORT', value: 2000 });
+
+      const changed = [
+        entryValueField(tiff, 'ifd0', TAG.Orientation),
+        entryValueField(tiff, 'exif', TAG.PixelXDimension),
+        entryValueField(tiff, 'exif', TAG.PixelYDimension),
+      ];
+
+      for (const offset of diffOffsets(tiff, result)) {
+        expect(changed.some((field) => offset >= field && offset < field + 4)).toBe(true);
+      }
+    },
+  );
 });
