@@ -10,12 +10,13 @@ export type InputFormatEntry = {
 };
 
 // All imports must stay lazy: the registry is part of the worker bundle
-const loadJPEG_PNG_WEBPDecoder = () => import('./decoders/jpeg_webp_png').then((m) => m.default);
+// Browser-native decoding via createImageBitmap
+const loadNativeDecoder = () => import('./decoders/native').then((m) => m.default);
 
 export const INPUT_FORMATS_REGISTRY: Record<MIMEType, InputFormatEntry> = {
-  [MIME.jpeg]: { loadDecoder: loadJPEG_PNG_WEBPDecoder },
-  [MIME.png]: { loadDecoder: loadJPEG_PNG_WEBPDecoder },
-  [MIME.webp]: { loadDecoder: loadJPEG_PNG_WEBPDecoder },
+  [MIME.jpeg]: { loadDecoder: loadNativeDecoder },
+  [MIME.png]: { loadDecoder: loadNativeDecoder },
+  [MIME.webp]: { loadDecoder: loadNativeDecoder },
   [MIME.bmp]: { loadDecoder: () => import('./decoders/bmp').then((m) => m.default) },
   [MIME.heic]: { loadDecoder: () => import('./decoders/heic').then((m) => m.default) },
   [MIME.tiff]: { loadDecoder: () => import('./decoders/tiff').then((m) => m.default) },

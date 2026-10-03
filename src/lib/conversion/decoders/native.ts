@@ -1,8 +1,6 @@
 import type { ConvertTask, Frame } from '../types';
 
-export default async function* decodeJPEG_WEBP_PNG({
-  blobURL,
-}: ConvertTask): AsyncGenerator<Frame> {
+export default async function* decodeNative({ blobURL }: ConvertTask): AsyncGenerator<Frame> {
   const response = await fetch(blobURL);
   const srcBlob = await response.blob();
 
