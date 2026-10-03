@@ -7,12 +7,18 @@ import {
   buildJPEG,
   buildTiff,
   diffOffsets,
+  entryValueField,
+  ifdOffset,
+  nextIfdField,
   readIfd0Short,
+  readNextIfd,
+  readTag,
   type ByteOrder,
 } from './testing/builders';
 
 describe('JPEG → JPEG round-trip', () => {
-  it.each<ByteOrder>(['II', 'MM'])('carries EXIF over with Orientation reset (%s)', (byteOrder) => {
+  it.each<ByteOrder>(['II', 'MM'])('carries EXIF over with stale tags fixed (%s)', (byteOrder) => {
+    const thumbnail = new Uint8Array(1024).fill(0xcd);
     const tiff = buildTiff({
       byteOrder,
       ifd0: [
@@ -21,6 +27,24 @@ describe('JPEG → JPEG round-trip', () => {
         { tag: TAG.Orientation, type: 'SHORT', value: 6 },
         { tag: TAG.DateTime, type: 'ASCII', value: '2024:05:17 14:03:22' },
       ],
+      exif: [
+        { tag: TAG.DateTimeOriginal, type: 'ASCII', value: '2024:05:17 14:03:22' },
+        { tag: TAG.PixelXDimension, type: 'LONG', value: 4032 },
+        { tag: TAG.PixelYDimension, type: 'SHORT', value: 3024 },
+      ],
+      gps: [
+        { tag: TAG.GPSLatitudeRef, type: 'ASCII', value: 'N' },
+        {
+          tag: TAG.GPSLatitude,
+          type: 'RATIONAL',
+          value: [
+            [55, 1],
+            [45, 1],
+            [2112, 100],
+          ],
+        },
+      ],
+      ifd1: { entries: [{ tag: TAG.Orientation, type: 'SHORT', value: 6 }], thumbnail },
     });
     const source = buildJPEG(tiff);
     // Canvas output has no EXIF
@@ -29,11 +53,27 @@ describe('JPEG → JPEG round-trip', () => {
     const extracted = extractFromJPEG(source);
     if (!extracted) throw new Error('EXIF not found');
 
-    const output = insertIntoJPEG(encoded, patchExif(extracted));
+    const output = insertIntoJPEG(encoded, patchExif(extracted, { width: 1512, height: 2016 }));
     const result = extractFromJPEG(output);
     if (!result) throw new Error('EXIF not found in output');
 
     expect(readIfd0Short(result, TAG.Orientation)).toBe(1);
-    expect(diffOffsets(tiff, result)).toHaveLength(1);
+    expect(readTag(result, 'exif', TAG.PixelXDimension)).toEqual({ type: 'LONG', value: 1512 });
+    expect(readTag(result, 'exif', TAG.PixelYDimension)).toEqual({ type: 'SHORT', value: 2016 });
+    expect(readNextIfd(result)).toBe(0);
+    expect(result.length).toBe(tiff.length - thumbnail.length);
+    expect(ifdOffset(result, 'gps')).toBe(ifdOffset(tiff, 'gps'));
+
+    // Everything else, including date, model and GPS, is kept byte for byte
+    const changed = [
+      entryValueField(tiff, 'ifd0', TAG.Orientation),
+      entryValueField(tiff, 'exif', TAG.PixelXDimension),
+      entryValueField(tiff, 'exif', TAG.PixelYDimension),
+      nextIfdField(tiff),
+    ];
+
+    for (const offset of diffOffsets(tiff.subarray(0, result.length), result)) {
+      expect(changed.some((field) => offset >= field && offset < field + 4)).toBe(true);
+    }
   });
 });

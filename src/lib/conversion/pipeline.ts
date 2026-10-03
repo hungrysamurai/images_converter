@@ -40,7 +40,7 @@ export default async function runPipeline(task: ConvertTask): Promise<Blob[]> {
     const encoded = await encodeCanvas(canvas, task.target);
     const exif = await exifPromise;
 
-    blobs.push(exif ? await embedExif(encoded, exif, task) : encoded);
+    blobs.push(exif ? await embedExif(encoded, exif, canvas, task) : encoded);
   }
 
   return blobs;

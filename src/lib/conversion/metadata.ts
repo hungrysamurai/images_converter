@@ -28,9 +28,11 @@ export const readSourceExif = async (
   }
 };
 
+// `size` is the final canvas the output was encoded from
 export const embedExif = async (
   encoded: Blob,
   exif: Uint8Array,
+  size: { width: number; height: number },
   task: ConvertTask,
 ): Promise<Blob> => {
   const loadWriter = getOutputFormatEntry(task.target).loadExifWriter;
@@ -39,7 +41,7 @@ export const embedExif = async (
   try {
     const [write, { patchExif }] = await Promise.all([loadWriter(), import('./exif/tiff')]);
 
-    return await write(encoded, patchExif(exif));
+    return await write(encoded, patchExif(exif, size));
   } catch (err) {
     console.warn(
       `Failed to write EXIF to ${task.target.format} output, metadata is not kept:`,

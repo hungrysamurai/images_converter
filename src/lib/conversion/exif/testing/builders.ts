@@ -7,63 +7,164 @@ export const TAG = {
   Model: 0x0110,
   Orientation: 0x0112,
   DateTime: 0x0132,
+  JPEGInterchangeFormat: 0x0201,
+  JPEGInterchangeFormatLength: 0x0202,
+  ExifIFD: 0x8769,
+  GPSIFD: 0x8825,
+  DateTimeOriginal: 0x9003,
+  PixelXDimension: 0xa002,
+  PixelYDimension: 0xa003,
+  GPSLatitudeRef: 0x0001,
+  GPSLatitude: 0x0002,
 } as const;
 
-const TYPE = { ASCII: 2, SHORT: 3, LONG: 4 } as const;
+const TYPE = { ASCII: 2, SHORT: 3, LONG: 4, RATIONAL: 5 } as const;
 
 export type TiffEntry =
   | { tag: number; type: 'SHORT' | 'LONG'; value: number }
-  | { tag: number; type: 'ASCII'; value: string };
+  | { tag: number; type: 'ASCII'; value: string }
+  | { tag: number; type: 'RATIONAL'; value: [number, number][] };
 
-const entrySize = (entry: TiffEntry) =>
-  entry.type === 'ASCII' ? entry.value.length + 1 : entry.type === 'SHORT' ? 2 : 4;
+type IfdName = 'ifd0' | 'exif' | 'gps' | 'ifd1';
 
-// TIFF header + IFD0, values longer than 4 bytes go to a data area after the IFD
+const valueSize = (entry: TiffEntry) => {
+  switch (entry.type) {
+    case 'ASCII':
+      return entry.value.length + 1;
+    case 'SHORT':
+      return 2;
+    case 'LONG':
+      return 4;
+    case 'RATIONAL':
+      return entry.value.length * 8;
+  }
+};
+
+const outOfLineSize = (entries: TiffEntry[]) =>
+  entries.reduce((sum, e) => sum + (valueSize(e) > 4 ? valueSize(e) : 0), 0);
+
+const ifdSize = (entries: TiffEntry[]) => 2 + entries.length * 12 + 4 + outOfLineSize(entries);
+
+// Pointer tags are filled in after layout
+const pointer = (tag: number): TiffEntry => ({ tag, type: 'LONG', value: 0 });
+
+/**
+ * TIFF header followed by IFD0, Exif IFD, GPS IFD, IFD1 and the thumbnail, in this order.
+ * Each IFD is followed by its out-of-line values. `trailing` goes after the thumbnail
+ * to simulate data that makes the thumbnail not the tail of the block.
+ */
 export const buildTiff = ({
   byteOrder,
   ifd0,
+  exif,
+  gps,
+  ifd1,
+  trailing,
 }: {
   byteOrder: ByteOrder;
   ifd0: TiffEntry[];
+  exif?: TiffEntry[];
+  gps?: TiffEntry[];
+  ifd1?: { entries: TiffEntry[]; thumbnail: Uint8Array };
+  trailing?: Uint8Array;
 }): Uint8Array => {
   const le = byteOrder === 'II';
-  const ifdOffset = 8;
-  const ifdSize = 2 + ifd0.length * 12 + 4;
-  const dataSize = ifd0.reduce((sum, e) => sum + (entrySize(e) > 4 ? entrySize(e) : 0), 0);
 
-  const bytes = new Uint8Array(ifdOffset + ifdSize + dataSize);
+  const ifds: Partial<Record<IfdName, TiffEntry[]>> = {
+    ifd0: [...ifd0, ...(exif ? [pointer(TAG.ExifIFD)] : []), ...(gps ? [pointer(TAG.GPSIFD)] : [])],
+    exif,
+    gps,
+    ifd1: ifd1 && [
+      ...ifd1.entries,
+      pointer(TAG.JPEGInterchangeFormat),
+      { tag: TAG.JPEGInterchangeFormatLength, type: 'LONG', value: ifd1.thumbnail.length },
+    ],
+  };
+
+  const order: IfdName[] = ['ifd0', 'exif', 'gps', 'ifd1'];
+  const offsets: Partial<Record<IfdName, number>> = {};
+  let cursor = 8;
+
+  for (const name of order) {
+    const entries = ifds[name];
+    if (!entries) continue;
+    offsets[name] = cursor;
+    cursor += ifdSize(entries);
+  }
+
+  const thumbnailOffset = cursor;
+  const thumbnail = ifd1?.thumbnail ?? new Uint8Array();
+  const tail = trailing ?? new Uint8Array();
+
+  const pointers: Record<number, number | undefined> = {
+    [TAG.ExifIFD]: offsets.exif,
+    [TAG.GPSIFD]: offsets.gps,
+    [TAG.JPEGInterchangeFormat]: ifd1 && thumbnailOffset,
+  };
+
+  const bytes = new Uint8Array(thumbnailOffset + thumbnail.length + tail.length);
   const view = new DataView(bytes.buffer);
 
   bytes.set(le ? [0x49, 0x49] : [0x4d, 0x4d], 0);
   view.setUint16(2, 42, le);
-  view.setUint32(4, ifdOffset, le);
-  view.setUint16(ifdOffset, ifd0.length, le);
+  view.setUint32(4, 8, le);
 
-  let dataOffset = ifdOffset + ifdSize;
+  for (const name of order) {
+    const entries = ifds[name];
+    const ifdOffset = offsets[name];
+    if (!entries || ifdOffset === undefined) continue;
 
-  ifd0.forEach((entry, i) => {
-    const at = ifdOffset + 2 + i * 12;
+    view.setUint16(ifdOffset, entries.length, le);
 
-    view.setUint16(at, entry.tag, le);
-    view.setUint16(at + 2, TYPE[entry.type], le);
+    const nextIfdField = ifdOffset + 2 + entries.length * 12;
+    if (name === 'ifd0' && offsets.ifd1 !== undefined)
+      view.setUint32(nextIfdField, offsets.ifd1, le);
 
-    if (entry.type === 'ASCII') {
-      const text = new TextEncoder().encode(entry.value + '\0');
-      view.setUint32(at + 4, text.length, le);
+    let dataOffset = nextIfdField + 4;
 
-      if (text.length > 4) {
+    entries.forEach((entry, i) => {
+      const at = ifdOffset + 2 + i * 12;
+
+      view.setUint16(at, entry.tag, le);
+      view.setUint16(at + 2, TYPE[entry.type], le);
+
+      const size = valueSize(entry);
+      let valueAt = at + 8;
+
+      if (size > 4) {
         view.setUint32(at + 8, dataOffset, le);
-        bytes.set(text, dataOffset);
-        dataOffset += text.length;
-      } else {
-        bytes.set(text, at + 8);
+        valueAt = dataOffset;
+        dataOffset += size;
       }
-    } else {
-      view.setUint32(at + 4, 1, le);
-      if (entry.type === 'SHORT') view.setUint16(at + 8, entry.value, le);
-      else view.setUint32(at + 8, entry.value, le);
-    }
-  });
+
+      switch (entry.type) {
+        case 'ASCII': {
+          const text = new TextEncoder().encode(entry.value + '\0');
+          view.setUint32(at + 4, text.length, le);
+          bytes.set(text, valueAt);
+          break;
+        }
+        case 'SHORT':
+          view.setUint32(at + 4, 1, le);
+          view.setUint16(valueAt, entry.value, le);
+          break;
+        case 'LONG':
+          view.setUint32(at + 4, 1, le);
+          view.setUint32(valueAt, pointers[entry.tag] ?? entry.value, le);
+          break;
+        case 'RATIONAL':
+          view.setUint32(at + 4, entry.value.length, le);
+          entry.value.forEach(([num, den], j) => {
+            view.setUint32(valueAt + j * 8, num, le);
+            view.setUint32(valueAt + j * 8 + 4, den, le);
+          });
+          break;
+      }
+    });
+  }
+
+  bytes.set(thumbnail, thumbnailOffset);
+  bytes.set(tail, thumbnailOffset + thumbnail.length);
 
   return bytes;
 };
@@ -104,19 +205,77 @@ export const buildJPEG = (tiff?: Uint8Array): Uint8Array =>
     new Uint8Array([0xff, 0xd9]),
   );
 
-// Independent IFD0 reader for assertions
-export const readIfd0Short = (tiff: Uint8Array, tag: number): number | undefined => {
-  const view = new DataView(tiff.buffer, tiff.byteOffset, tiff.byteLength);
-  const le = tiff[0] === 0x49;
-  const ifd = view.getUint32(4, le);
+// Independent TIFF reader for assertions
+
+const tiffView = (tiff: Uint8Array) => ({
+  view: new DataView(tiff.buffer, tiff.byteOffset, tiff.byteLength),
+  le: tiff[0] === 0x49,
+});
+
+const findEntryOffset = (tiff: Uint8Array, ifd: number, tag: number): number | undefined => {
+  const { view, le } = tiffView(tiff);
   const count = view.getUint16(ifd, le);
 
   for (let i = 0; i < count; i++) {
     const at = ifd + 2 + i * 12;
-    if (view.getUint16(at, le) === tag) return view.getUint16(at + 8, le);
+    if (view.getUint16(at, le) === tag) return at;
   }
 
   return undefined;
+};
+
+export const ifdOffset = (tiff: Uint8Array, name: 'ifd0' | 'exif' | 'gps'): number => {
+  const { view, le } = tiffView(tiff);
+  const ifd0 = view.getUint32(4, le);
+  if (name === 'ifd0') return ifd0;
+
+  const at = findEntryOffset(tiff, ifd0, name === 'exif' ? TAG.ExifIFD : TAG.GPSIFD);
+  if (at === undefined) throw new Error(`No ${name} IFD pointer`);
+
+  return view.getUint32(at + 8, le);
+};
+
+// Offset of the 4-byte value field of the entry
+export const entryValueField = (
+  tiff: Uint8Array,
+  ifd: 'ifd0' | 'exif' | 'gps',
+  tag: number,
+): number => {
+  const at = findEntryOffset(tiff, ifdOffset(tiff, ifd), tag);
+  if (at === undefined) throw new Error(`No tag ${tag} in ${ifd}`);
+  return at + 8;
+};
+
+// SHORT or LONG value of a single-count entry
+export const readTag = (
+  tiff: Uint8Array,
+  ifd: 'ifd0' | 'exif' | 'gps',
+  tag: number,
+): { type: 'SHORT' | 'LONG'; value: number } | undefined => {
+  const { view, le } = tiffView(tiff);
+  const at = findEntryOffset(tiff, ifdOffset(tiff, ifd), tag);
+  if (at === undefined) return undefined;
+
+  const type = view.getUint16(at + 2, le);
+  if (type === TYPE.SHORT) return { type: 'SHORT', value: view.getUint16(at + 8, le) };
+  if (type === TYPE.LONG) return { type: 'LONG', value: view.getUint32(at + 8, le) };
+
+  throw new Error(`Tag ${tag} is neither SHORT nor LONG`);
+};
+
+export const readIfd0Short = (tiff: Uint8Array, tag: number): number | undefined =>
+  readTag(tiff, 'ifd0', tag)?.value;
+
+// Offset of the next-IFD link of IFD0
+export const nextIfdField = (tiff: Uint8Array): number => {
+  const { view, le } = tiffView(tiff);
+  const ifd0 = view.getUint32(4, le);
+  return ifd0 + 2 + view.getUint16(ifd0, le) * 12;
+};
+
+export const readNextIfd = (tiff: Uint8Array): number => {
+  const { view, le } = tiffView(tiff);
+  return view.getUint32(nextIfdField(tiff), le);
 };
 
 // Offsets at which two equally sized buffers differ
