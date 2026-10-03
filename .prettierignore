@@ -5,3 +5,4 @@ ___temp
 build
 node_modules
 public
+pnpm-lock.yaml
