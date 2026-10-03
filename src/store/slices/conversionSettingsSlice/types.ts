@@ -34,6 +34,10 @@ export type JPEG_WEBPOutputConversionSettings = BasicOutputConversionSettings & 
   quality: number;
 };
 
+export type JPEGOutputConversionSettings = JPEG_WEBPOutputConversionSettings & {
+  keepMetadata: boolean;
+};
+
 export type GIFOutputConversionSettings = JPEG_WEBPOutputConversionSettings & {
   dither: Dither;
   merge: boolean;
@@ -47,7 +51,7 @@ export type PDFOutputConversionSettings = BasicOutputConversionSettings & {
 };
 
 export type OutputSettingsMap = {
-  jpeg: JPEG_WEBPOutputConversionSettings;
+  jpeg: JPEGOutputConversionSettings;
   png: BasicOutputConversionSettings;
   webp: JPEG_WEBPOutputConversionSettings;
   avif: JPEG_WEBPOutputConversionSettings;

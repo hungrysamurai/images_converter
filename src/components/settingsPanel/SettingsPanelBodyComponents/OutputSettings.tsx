@@ -3,12 +3,14 @@ import styled from 'styled-components';
 
 import { Lang } from '@/types/types';
 
+import { supportsMetadata } from '@/lib/conversion/outputFormats';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
   getActiveOutputTarget,
   setAnimationDelay,
   setCompression,
   setDither,
+  setKeepMetadata,
   setMerge,
   setQuality,
   setResize,
@@ -157,6 +159,22 @@ const OutputSettings: React.FC<OutputSettingsType> = ({ lang }) => {
 
       <StyledDivider />
 
+      {supportsMetadata(target) && 'keepMetadata' in target.settings && (
+        <>
+          <StyledMetadataSettingsContainer>
+            <CheckboxInput
+              label={lang === Lang.EN ? 'Keep metadata:' : 'Сохр. метаданные'}
+              value={target.settings.keepMetadata}
+              displayValueOn={lang === Lang.EN ? 'On' : 'Вкл'}
+              displayValueOff={lang === Lang.EN ? 'Off' : 'Выкл'}
+              onChange={(value) => dispatch(setKeepMetadata(value))}
+            />
+          </StyledMetadataSettingsContainer>
+
+          <StyledDivider />
+        </>
+      )}
+
       <StyledResizeSettingsContainer>
         <CheckboxInput
           label={lang === Lang.EN ? 'Resize:' : 'Изм. размер'}
@@ -219,6 +237,14 @@ const StyledOutputSettingsContainer = styled.div`
   @media screen and (max-width: 768px), screen and (max-height: 500px) {
     margin-top: 0.5rem;
   }
+`;
+
+const StyledMetadataSettingsContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const StyledResizeSettingsContainer = styled.div`

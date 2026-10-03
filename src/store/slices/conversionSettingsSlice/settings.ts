@@ -8,6 +8,7 @@ const outputSettings = {
     targetHeight: null,
     smoothing: 'medium',
     quality: 75,
+    keepMetadata: false,
   },
   png: {
     resize: false,

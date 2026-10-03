@@ -11,10 +11,15 @@ export type Aggregator<F extends OutputFormat> = (
   settings: OutputSettingsMap[F],
 ) => Promise<Blob>;
 
+// Embeds cleaned EXIF (raw TIFF bytes) into an already encoded file
+export type ExifWriter = (encoded: Blob, tiff: Uint8Array) => Promise<Blob>;
+
 export type OutputFormatEntry<F extends OutputFormat> = {
   loadEncoder: () => Promise<Encoder<F>>;
   // Aggregators run in main thread only
   loadAggregator?: () => Promise<Aggregator<F>>;
+  // Presence marks the format as able to keep source metadata
+  loadExifWriter?: () => Promise<ExifWriter>;
   alpha: boolean;
   // Upper bound for the worker pool size, e.g. for memory-heavy WASM encoders
   maxConcurrency?: number;
@@ -29,6 +34,7 @@ const loadCanvasEncoder = (format: 'jpeg' | 'png' | 'webp') => () =>
 export const OUTPUT_FORMATS_REGISTRY: { [F in OutputFormat]: OutputFormatEntry<F> } = {
   jpeg: {
     loadEncoder: loadCanvasEncoder('jpeg'),
+    loadExifWriter: () => import('./exif/writeJPEG').then((m) => m.default),
     alpha: false,
   },
   png: {
@@ -74,3 +80,6 @@ export const shouldMerge = (target: OutputTarget): boolean =>
   Boolean(getOutputFormatEntry(target).loadAggregator) &&
   'merge' in target.settings &&
   target.settings.merge;
+
+export const supportsMetadata = (target: OutputTarget): boolean =>
+  Boolean(getOutputFormatEntry(target).loadExifWriter);

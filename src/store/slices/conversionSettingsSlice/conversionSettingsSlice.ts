@@ -103,6 +103,12 @@ export const conversionSettingsSlice = createSlice({
       if ('animationDelay' in settings) settings.animationDelay = action.payload || 200;
     }),
 
+    setKeepMetadata: create.reducer((state, action: PayloadAction<boolean>) => {
+      const settings = getActiveSettings(state);
+
+      if ('keepMetadata' in settings) settings.keepMetadata = action.payload;
+    }),
+
     // Input settings
     setPDFResolution: create.reducer((state, action: PayloadAction<number>) => {
       state.inputSettings.pdf.resolution = action.payload;
@@ -141,6 +147,7 @@ export const {
   setCompression,
   setMerge,
   setAnimationDelay,
+  setKeepMetadata,
   setPDFResolution,
   setPDFRotation,
 } = conversionSettingsSlice.actions;
