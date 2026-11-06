@@ -6,3 +6,4 @@ build
 node_modules
 public
 pnpm-lock.yaml
+deploy
